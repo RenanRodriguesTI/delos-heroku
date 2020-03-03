@@ -10,8 +10,14 @@
     use Delos\Dgp\Events\EditedProjectEvent;
     use Delos\Dgp\Repositories\Eloquent\ProjectRepositoryEloquent;
     use Delos\Dgp\Entities\ProjectProposalValue;
+    use Exception;
     use Prettus\Validator\Contracts\ValidatorInterface;
     use Illuminate\Support\Facades\DB;
+    use Maatwebsite\Excel\Facades\Excel;
+    use Delos\Dgp\Entities\TemporaryImport; 
+    use Delos\Dgp\Entities\Group;
+    use Carbon\Carbon;
+    use Delos\Dgp\Entities\Client;
 
     class ProjectService extends AbstractService
     {
@@ -237,7 +243,6 @@
             $rules['create']['invoice_number'] = 'string|max:15';
             $rules['create']['description']    = 'string';
             $rules['create']['os'] ='unique:project_proposal_values,os';
-
             $rules['update']['value']          = "numeric|max:{$maxValue}";
             $rules['update']['client_id']      = 'array|exists:clients,id';
             $rules['update']['notes']          = 'string';
@@ -277,5 +282,145 @@
             }
 
             return $this->validator->errors();
+        }
+
+        public function importAllProposalValues(){
+            TemporaryImport::query()->forceDelete();
+            $data = function(){
+                try{
+                    yield Excel::load('storage/app/file.xlsx')->get()->all();
+                   
+                } catch(Exception $erro){
+                    yield [];
+                }
+               
+            };
+
+
+            foreach($data() as $rows){
+                foreach($rows as $value){
+                    $obj =  [
+                               'data_os' =>($value->data_os)?$value->data_os->format('d/m/Y'):null,
+                               'numero_os' =>($value->numero_os)?$value->numero_os:'',
+                               'nome_do_cliente' => ($value->nome_do_cliente)? $value->nome_do_cliente:'',
+                               'valor_servico' => ($value->valor_servico)?number_format($value->valor_servico,2,",","."):"",
+                               'codigo_do_cliente'=>($value->codigo_do_cliente)?$value->codigo_do_cliente:'',
+                               'valor_nfse'=>($value->valor_nfse)?number_format($value->valor_nfse,2,",","."):null,
+                               'data_emissao_nfse' => ($value->data_emissao_nfse)?$value->data_emissao_nfse->format('d/m/Y'):null,
+                               'numero_nfs_e' => ($value->numero_nfs_e)?"".$value->numero_nfs_e:"",
+                               'codigo_projeto' => ($value->codigo_projeto)?$value->codigo_projeto:null,
+                               'data_baixa_do_titulo' => ($value->data_baixa_do_titulo)?$value->data_baixa_do_titulo->format('d/m/Y'):null,
+                               'observacao_os' => $value->observacao_os,
+                               'situacao_titulo' =>$value->situacao_titulo,
+                           ];
+
+                           $project = Project::withTrashed()->where('compiled_cod',$obj['codigo_projeto'])->first(['id']);
+                           if($project !=null){
+                            $codcliente = explode('-',$obj['codigo_do_cliente']);
+                            $groupcod = $codcliente[0];
+                            $clientcod = $codcliente[1];       
+                            $group = Group::where('cod',$groupcod)->first();
+                            $clients = $project->clients->pluck('id');
+                            $value = ($obj["valor_nfse"] != null)?$obj["valor_nfse"]:$obj["valor_servico"];
+                            $dt = Carbon::createFromFormat('d/m/Y', $obj['data_os']);
+                            $valuedb = str_replace(",",".",str_replace(".","",$value));
+                            
+                            $client = Client::where('group_id',$group->id)->where('cod',$clientcod)->first();
+                            $proposalvalues = ProjectProposalValue::with('clients')->where('os',$obj['numero_os'])->get();
+                            if($proposalvalues->isEmpty()){
+                                $proposalvalues = ProjectProposalValue::with('clients')->where('project_id',$project->id)
+                                ->where('month',$dt->format('Y-m-d'))
+                                ->where('value',$valuedb)->get();
+                            }
+        
+                            $proposalvalues = $proposalvalues->filter(function($item) use ($client){
+                                return !$item->clients->where('id',$client->id)->isEmpty();
+                            });
+        
+                            $proposalnull = $proposalvalues->filter(function($item){
+                                return !$item->os;
+                            })->first();
+                            
+                            $proposalvalues = $proposalvalues->filter(function($item) use ($obj){
+                                return $item->os == $obj['numero_os'];
+                            })->first();
+        
+        
+        
+                            $proposal['month'] = $obj["data_os"];
+                            $proposal['date_nf'] = $obj["data_emissao_nfse"];
+                            $proposal['nf_nd'] = $obj["numero_nfs_e"];
+                          
+                            $proposal['project_id'] = $project->id;
+        
+                            switch(mb_strtoupper($obj['situacao_titulo'])){
+                                case '':
+                                    $proposal['has_billed'] = ($obj["data_baixa_do_titulo"]!=null)?true:false;
+                                    $proposal['invoice_number'] = $obj["numero_nfs_e"];
+                                    $proposal['date_received'] = $obj["data_baixa_do_titulo"];
+                                    $proposal['value'] = ($obj["valor_nfse"] != null)?$obj["valor_nfse"]:$obj["valor_servico"];
+                                break;
+                                case 'ABERTO':
+                                    $proposal['has_billed'] = ($obj["data_baixa_do_titulo"]!=null)?true:false;
+                                    $proposal['invoice_number'] = $obj["numero_nfs_e"];
+                                    $proposal['date_received'] = $obj["data_baixa_do_titulo"];
+                                    $proposal['value'] = ($obj["valor_nfse"] != null)?$obj["valor_nfse"]:$obj["valor_servico"];
+                                break;
+                                case 'QUITADO':
+                                    $proposal['has_billed'] = ($obj["data_baixa_do_titulo"]!=null)?true:false;
+                                    $proposal['invoice_number'] = $obj["numero_nfs_e"];
+                                    $proposal['date_received'] = $obj["data_baixa_do_titulo"];
+                                    $proposal['value'] = ($obj["valor_nfse"] != null)?$obj["valor_nfse"]:$obj["valor_servico"];
+                                break;
+                                case 'CANCELADO':
+                                    $proposal['has_billed'] = false;
+                                    $proposal['invoice_number'] = '';
+                                    $proposal['date_received'] = '';
+                                    $proposal['value'] = $obj["valor_servico"];
+                                break;
+                            }
+                            
+                            $proposal['description'] = ($obj['observacao_os'])?$obj['observacao_os']:'';
+                            $proposal['notes'] = '';
+                            $proposal['client_id'] = [$client->id];
+                            $result =[];
+                            $proposal['os'] = $obj["numero_os"];
+                            if(!$proposalvalues && !$proposalnull){
+                                $result = $this->createProposalValueImport($proposal);
+                            } else{
+                               
+                                if($proposalvalues){
+                                    $result = $this->updateProposalValueImport($proposal,$proposalvalues->id);
+                                    
+                                } else{
+                                    $result = $this->updateProposalValueImport($proposal,$proposalnull->id);
+                                }                        
+                            }
+        
+                            if(!($result instanceof ProjectProposalValue) ){
+                                TemporaryImport::create([ 
+                                    'project_code' =>$obj['codigo_projeto'] ,
+                                    'os' => $obj['numero_os'],
+                                    'status'=> 'error',
+                                    'description' =>implode('<br> ',$result),
+                                    'date_migration' =>Carbon::now()]);
+                            } else{
+                                TemporaryImport::create([ 
+                                    'project_code' =>$obj['codigo_projeto'] ,
+                                    'os' => $obj['numero_os'],
+                                    'status'=> 'success',
+                                    'description' =>'Importado com sucesso',
+                                    'date_migration' =>Carbon::now()]);
+                            }
+                        } else{
+                            TemporaryImport::create([ 
+                                'project_code' =>$obj['codigo_projeto'] ,
+                                'os' => $obj['numero_os'],
+                                'status'=> 'error',
+                                'description' =>'O projeto não existe',
+                                'date_migration' =>Carbon::now()]);
+                        }
+                }    
+            }
         }
     }

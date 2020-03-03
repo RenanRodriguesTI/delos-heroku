@@ -1,0 +1,26 @@
+<?php
+
+return [
+    'title-of-email-when-members-is-created' => "The user :NAME with email :EMAIL was created in the system and it's ready to be added to its first project :)",
+    'send-email-when-members-is-created-listener' => 'You have just been added to a project',
+    'send-email-when-member-is-deleted-listener' => 'You have just been removed from a project',
+    'send-email-when-project-is-removed' => 'Project was completed',
+    'overtime-approval' => 'There are overtime to approve',
+    'approved-activities' => 'Congratulations - Your activities has been approved',
+    'created-project' => 'Project was created',
+    'created-request' => 'Project Request',
+    'created-user' => 'Created User',
+    'reset-link' => 'Your password reset link',
+    'all-missing-activities' => 'Collaborators with pending activities',
+    'advance-money-summary' => 'Advance Money Summary',
+    'refused-activity' => 'Refused Activity',
+    'approve-request' => 'There is a request to approve',
+    'edited-project' => 'Project has been changed',
+    'refused-request' => 'Refused Request',
+    'missing-activities' => 'Missing Activities',
+    'notifications' => 'Notifications',
+    'absences' => 'Absences',
+    'project-details' => 'Project Details',
+    'request-made-between' => 'Request made between :start and :finish',
+    'request-creation' => 'Request mande in the project: :full_description &nbsp;&nbsp;&nbsp; From: :start &nbsp;&nbsp;&nbsp; To: :finish',
+];

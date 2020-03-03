@@ -1,0 +1,69 @@
+{
+  "name": "dgp",
+  "scripts": {
+    "postdeploy": "php artisan migrate --seed"
+  },
+  "env": {
+    "APP_DEBUG": "true",
+    "APP_ENV": "testing",
+    "APP_KEY": {
+      "required": true
+    },
+    "BROADCAST_DRIVER": {
+      "required": true
+    },
+    "BUILDPACK_URL": {
+      "required": true
+    },
+    "DB_CONNECTION": {
+      "required": true
+    },
+    "MAIL_DRIVER": {
+      "required": true
+    },
+    "MAIL_SENDER_EMAIL": {
+      "required": true
+    },
+    "MAIL_SENDER_NAME": {
+      "required": true
+    },
+    "MAILGUN_DOMAIN": {
+      "required": true
+    },
+    "MAILGUN_SECRET": {
+      "required": true
+    },
+    "DATABASE_URL_VAR" : {
+      "required": true
+    },
+    "FILESYSTEM_DISK": {
+      "required": true
+    },
+    "S3_KEY": {
+      "required": true
+    },
+    "S3_SECRET": {
+      "required": true
+    },
+    "S3_REGION": {
+      "required": true
+    },
+    "S3_BUCKET": {
+      "required": true
+    }
+  },
+  "formation": {
+    "web": {
+      "quantity": 1
+    }
+  },
+  "addons": [
+    "jawsdb",
+    "papertrail"
+  ],
+  "buildpacks": [
+    {
+      "url": "https://github.com/heroku/heroku-buildpack-multi.git"
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+# v2 syntax
+version: '2'
+
+# Named volumes
+volumes:
+  # MySQL Data
+  dgp-mysql-data:
+    driver: local
+
+  # Redis Data
+  dgp-redis-data:
+    driver: local
+
+services:
+  mysql:
+    image: mysql:5.7
+    container_name: dgp-mysql
+    volumes:
+      - dgp-mysql-data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=dgp
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=root
+
+  redis:
+    image: redis:4.0
+    container_name: dgp-redis
+    command: --appendonly yes
+    volumes:
+      - dgp-redis-data:/data
+    ports:
+      - "6379:6379"
+
+  app:
+    image: ambientum/php:7.1-nginx
+    container_name: dgp-app
+    volumes:
+      - .:/var/www/app
+    ports:
+      - "8000:8080"
+    links:
+      - mysql
+      - redis
+
+  node:
+    image: ambientum/node:10
+    container_name: dgp-node
+    command: npm run dev
+    volumes:
+     - .:/var/www/app
+    ports:
+     - "8081:8080"

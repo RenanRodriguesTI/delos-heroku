@@ -1,0 +1,79 @@
+body > div.container.body > div > div.right_col > div:nth-child(5) > div > div > div:nth-child(3) > div > div > div > div > div > div:nth-child(2) > div > div.col-sm-12 > div.left.col-xs-7 > ul > li > p, body > div.container.body > div > div.right_col > div:nth-child(5) > div > div > div:nth-child(3) > div > div > div > div > div > div > div > div.col-sm-12 > div.left.col-xs-7 > ul > li > p {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.profile_view {
+    background-color: white;
+    border: 1px solid #e5e5e5;
+    /*height: 176px;*/
+}
+
+.profile_details .profile_view {
+    display: inline-block;
+    padding: 10px 0 0;
+}
+
+.profile_details .profile_view .divider {
+    border-top: 1px solid #e5e5e5;
+    padding-top: 5px;
+    margin-top: 5px;
+}
+
+.profile_details .profile_view .bottom {
+    background: #F2F5F7;
+    padding: 9px 0;
+    border-top: 1px solid #E6E9ED;
+}
+
+.profile_details .profile_view .left {
+    margin-top: 20px;
+}
+
+.profile_details .profile_view .left p {
+    margin-bottom: 3px;
+}
+
+.profile_details .profile_view .right {
+    margin-top: 0px;
+    padding: 10px;
+}
+
+.profile_details .profile_view .img-circle {
+    border: 1px solid #E6E9ED;
+    padding: 2px;
+    height: 93px;
+}
+
+.profile_details .profile_view h2 {
+    font-size: 18px;
+    font-weight: 400;
+    margin: 5px 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.profile_details .profile_view .brief {
+    margin: 0;
+    font-weight: 300;
+}
+
+.profile_details .profile_left {
+    background: white;
+}
+
+.pagination.pagination-split li {
+    display: inline-block;
+    margin-right: 3px;
+}
+
+.profile_view {
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+}
+
+.profile_view:hover {
+    box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+}

@@ -927,36 +927,3 @@ $('#file').change(function() {
     }
 
 });
-
-$('#search').click(function() {
-    switch ($('#filter').val()) {
-        case '1':
-            $('tr.error').each(function() {
-                $(this).hide();
-            });
-
-            $('tr.success').each(function() {
-                $(this).show();
-            });
-            break;
-        case '2':
-            $('tr.error').each(function() {
-                $(this).show();
-            });
-
-            $('tr.sucesso').each(function() {
-                $(this).hide();
-            });
-            break;
-
-        default:
-            $('tr.error').each(function() {
-                $(this).show();
-            });
-
-            $('tr.sucesso').each(function() {
-                $(this).show();
-            });
-            break;
-    }
-});

@@ -398,27 +398,27 @@
                             }
         
                             if(!($result instanceof ProjectProposalValue) ){
-                                TemporaryImport::create([ 
-                                    'project_code' =>$obj['codigo_projeto'] ,
-                                    'os' => $obj['numero_os'],
-                                    'status'=> 'error',
-                                    'description' =>implode('<br> ',$result),
-                                    'date_migration' =>Carbon::now()]);
+                                // TemporaryImport::create([ 
+                                //     'project_code' =>$obj['codigo_projeto'] ,
+                                //     'os' => $obj['numero_os'],
+                                //     'status'=> 'error',
+                                //     'description' =>implode('<br> ',$result),
+                                //     'date_migration' =>Carbon::now()]);
                             } else{
-                                TemporaryImport::create([ 
-                                    'project_code' =>$obj['codigo_projeto'] ,
-                                    'os' => $obj['numero_os'],
-                                    'status'=> 'success',
-                                    'description' =>'Importado com sucesso',
-                                    'date_migration' =>Carbon::now()]);
+                                // TemporaryImport::create([ 
+                                //     'project_code' =>$obj['codigo_projeto'] ,
+                                //     'os' => $obj['numero_os'],
+                                //     'status'=> 'success',
+                                //     'description' =>'Importado com sucesso',
+                                //     'date_migration' =>Carbon::now()]);
                             }
                         } else{
-                            TemporaryImport::create([ 
-                                'project_code' =>$obj['codigo_projeto'] ,
-                                'os' => $obj['numero_os'],
-                                'status'=> 'error',
-                                'description' =>'O projeto não existe',
-                                'date_migration' =>Carbon::now()]);
+                            // TemporaryImport::create([ 
+                            //     'project_code' =>$obj['codigo_projeto'] ,
+                            //     'os' => $obj['numero_os'],
+                            //     'status'=> 'error',
+                            //     'description' =>'O projeto não existe',
+                            //     'date_migration' =>Carbon::now()]);
                         }
                 }    
             }

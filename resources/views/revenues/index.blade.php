@@ -1,5 +1,10 @@
 @extends('layouts.app')
 @section('content')
+
+@push('head')
+<meta name="csrf-token" content="{{ csrf_token() }}">
+@endpush
+
 <style>
 
     form{

@@ -923,7 +923,30 @@ $('#file').change(function() {
     if ($(this).val() != '') {
         $('#preloader').show();
         $('#status').show();
-        $('#form-import').submit();
+        /// $('#form-import').submit();
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        var form = new FormData();
+        forma.append('files', $('#file').val());
+
+        $.ajax({
+            type: 'POST',
+            dataType: 'JSON',
+            url: '/import/upload',
+            data: form,
+            contentType: 'multipart/form-data',
+            success: function(res) {
+                console.log(res)
+            },
+            error: function(err) {
+                console.log(err);
+            },
+            processData: false
+        });
     }
 
 });

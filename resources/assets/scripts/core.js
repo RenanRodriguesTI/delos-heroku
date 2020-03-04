@@ -937,14 +937,14 @@ $('#file').change(function() {
             dataType: 'JSON',
             url: '/import/upload',
             data: form,
-            contentType: 'multipart/form-data',
             success: function(res) {
                 console.log(res)
             },
             error: function(err) {
                 console.log(err);
             },
-            processData: false
+            processData: false,
+            contentType: false
         });
     }
 

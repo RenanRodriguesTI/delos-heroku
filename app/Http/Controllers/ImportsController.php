@@ -176,11 +176,15 @@ class ImportsController extends AbstractController
     //        }
     //    }
       
-       return redirect()->route('revenues.index');
+       return response()->json([
+           'res'=>'Importado'
+       ],201);
 
         } catch( ValidatorException $e){
             $fileerrors = collect($e->getMessageBag()->messages());
-            return view('revenues.error',compact('fileerrors'));
+            return response()->json([
+                'res'=>$e->getMessageBag()->messages()
+            ],500);
         }
        
     }

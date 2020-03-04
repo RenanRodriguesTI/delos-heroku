@@ -931,7 +931,7 @@ $('#file').change(function() {
         });
 
         var form = new FormData();
-        form.append('files', $('#file').val());
+        form.append('files', $('#file').files[0]);
 
         $.ajax({
             type: 'POST',

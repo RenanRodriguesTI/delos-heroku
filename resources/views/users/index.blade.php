@@ -79,6 +79,12 @@
                                                             </a></li>
                                                         <li class="divider"></li>
                                                     @endcan
+                                                        <li>
+                                                            <a>
+                                                                <span class="glyphicon glyphicon-file"></span>&nbsp;   Contratos
+                                                            </a>
+                                                        </li>
+
 
                                                 @else
                                                     @can('restore-user')

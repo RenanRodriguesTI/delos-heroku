@@ -68,8 +68,8 @@
                             <th style="min-width: 110px;">@lang('headers.value')</th>
                             @endcan
                             <th>@lang('headers.description')</th>
-                            <th>@lang('Data NF')</th>
-                            <th>@lang('headers.invoice_number')</th>
+                            <th>@lang('Data do Documento')</th>
+                            <th>@lang('Título de Documento')</th>
                             <th>@lang('Data Recebimento')</th>
                             <th>@lang('headers.notes')</th>
                             @can('proposal-values-edit-project')

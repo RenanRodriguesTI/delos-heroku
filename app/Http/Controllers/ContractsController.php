@@ -19,20 +19,24 @@ class ContractsController extends AbstractController
         return view('contracts.create',compact('userId','users'));
     }
 
-    public function store(){
+    public function storeContracts(){
         try{
             $this->service->createContracts([]);
-            return $this->response->redirectToRoute('contracts.index', ['id' => $id])->with('success', 'Contrato adicionado com sucesso');
+            return $this->response->redirectToRoute('users.edit', ['id' => 70])->with('success', 'Contrato adicionado com sucesso');
         }
         catch(ValidationException $e){
             return $this->redirector->back()->withErrors($e->getMessageBag())->withInput();
         }
     }
 
-    //deletar contrato
+    public function update(int $id){
+        $contract = $this->service->updateContracts($this->getRequestDataForStoring(),$id);
+        return $this->response->redirectToRoute('users.edit', ['id' => $contract->user_id])->with('success', 'Contrato Atualizado com sucesso');
+    }
+
     public function delete($id){
-        $this->service->deleteContracts($id);
-        return $this->response->redirectToRoute("contracts.index", ["id" => $projectId])->with('success', 'Descrição de Proposta de Valor removida com sucesso');
+      $deleted =  $this->service->deleteContracts($id);
+      return $this->response->redirectToRoute("users.edit", ["id" => $deleted->user_id])->with('success', 'Descrição de Proposta de Valor removida com sucesso');
     }
 
 

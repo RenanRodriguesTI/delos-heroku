@@ -4,9 +4,11 @@ namespace Delos\Dgp\Entities;
 
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Contracts extends Model
 {
+    use SoftDeletes;
     protected $fillable = [
         'start',
         'end',
@@ -15,17 +17,24 @@ class Contracts extends Model
     ];
 
     protected $casts = [
-        'start' => 'datetime',
-        'end' => 'datetime',
+      
         'value' => 'float',
     ];
 
-    public function setAttributeStart($value){
-        $attributes['start'] = Carbon::createFromFormat('d/m/Y',$value);
+    protected $dates =[
+        'start',
+        'end',
+        'created_at',
+        'updated_at',
+        'delete_at'
+    ];
+
+    public function setStartAttribute($value){
+        $this->attributes['start'] = Carbon::createFromFormat('d/m/Y',$value);
     }
 
-    public function setAttributeEnd($value){
-        $attributes['end'] = Carbon::createFromFormat('d/m/Y',$value);
+    public function setEndAttribute($value){
+        $this->attributes['end'] = Carbon::createFromFormat('d/m/Y',$value);
     }
 
     public function user(){

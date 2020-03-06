@@ -116,9 +116,10 @@
             return $this->hasMany(CoastUser::class);
         }
 
-        public function users(){
+        public function contracts(){
             return $this->hasMany(Contracts::class);
         }
+
 
         public function isOwnerOrCoOwner($projectId)
         {

@@ -37,6 +37,15 @@ $(function() {
             }
         });
 
+        if ($('#invoice_number').val()) {
+            $('#invoice_number').attr('readonly', 'readonly');
+            $('#expected_date').attr('readonly', 'readonly');
+            $('#date_nf').attr('readonly', 'readonly');
+            $('#value').attr('readonly', 'readonly');
+            $("#expected_date").data('daterangepicker').remove();
+            $('#date_nf').data('daterangepicker').remove()
+        }
+
         $('.table-responsive').doubleScroll();
         $('body').materialScrollTop();
 
@@ -923,29 +932,40 @@ $('#file').change(function() {
     if ($(this).val() != '') {
         $('#preloader').show();
         $('#status').show();
-        /// $('#form-import').submit();
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
-
-        var form = new FormData($("form[name='form-import']")[0]);
-
-        $.ajax({
-            type: 'POST',
-            dataType: 'JSON',
-            url: '/import/upload',
-            data: form,
-            success: function(res) {
-                console.log(res)
-            },
-            error: function(err) {
-                console.log(err);
-            },
-            processData: false,
-            contentType: false
-        });
+        $('#form-import').submit();
     }
 
+});
+
+$('#search').click(function() {
+    switch ($('#filter').val()) {
+        case '1':
+            $('tr.error').each(function() {
+                $(this).hide();
+            });
+
+            $('tr.success').each(function() {
+                $(this).show();
+            });
+            break;
+        case '2':
+            $('tr.error').each(function() {
+                $(this).show();
+            });
+
+            $('tr.sucesso').each(function() {
+                $(this).hide();
+            });
+            break;
+
+        default:
+            $('tr.error').each(function() {
+                $(this).show();
+            });
+
+            $('tr.sucesso').each(function() {
+                $(this).show();
+            });
+            break;
+    }
 });

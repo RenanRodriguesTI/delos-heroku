@@ -90,6 +90,10 @@
                     Route::post('change-pass', ['as' => 'users.changePassUpdate','uses' => 'UsersController@changePassUpdate']);
                     Route::post('/change/avatar', ['as' => 'users.changeAvatar','uses' => 'UsersController@changeAvatar']);
                     Route::get('{id}/restore', ['as' => 'users.restore', 'uses' => 'UsersController@restore']);
+                    Route::get('{id}/contracts',['as'=>'users.contracts','uses'=>'UsersController@index']);
+                    Route::post('{id}/contracts/create',['as'=>'users.contracts.create','uses' =>'ContractsController@store']);
+                    Route::post('/contracts/edit/{id}',['as'=>'users.contracts.update','uses' =>'ContractsController@update']);
+                    Route::get('/contracts/{id}/destroy',['as'=>'users.contracts.destroy','uses' =>'ContractsController@delete']);
                 });
 
                 Route::group(['prefix' => 'projects'], function () {

@@ -1,10 +1,5 @@
 @extends('layouts.app')
 @section('content')
-
-@push('head')
-<meta name="csrf-token" content="{{ csrf_token() }}">
-@endpush
-
 <style>
 
     form{
@@ -39,9 +34,7 @@
             <div class="row">
                 <div class="col-md-8">
                     <h3 class="panel-title bold">Faturamentos</h3>
-                </div>
-                <div class="col-md-4 text-right">
-                    <span title="Importe seus faturamentos" class="glyphicon glyphicon-question-sign black-tooltip" aria-hidden="true" data-toggle="tooltip" data-placement="left"></span>
+                    <p style="font-size: 16px;">Ultima importação feita em: {{( $date)? $date: 'não há importação' }}</p>
                 </div>
             </div>
         
@@ -73,10 +66,7 @@
             </div>
             </div>
 
-            <div>
-                <br>
-            </div>     
-
+    
             <div class="row">   
                 <form method="get" action="{{route('revenues.index') }}" class="display-flex-start-bottom">
                     <div class="col-xs-5">

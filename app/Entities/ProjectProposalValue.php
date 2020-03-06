@@ -23,6 +23,7 @@ class ProjectProposalValue extends AbstractAudit
         'date_change',
         'nf_nd',
         'expected_date',
+        'import_date',
         'created_at',
         'update_at',
         'deleted_at'
@@ -42,6 +43,7 @@ class ProjectProposalValue extends AbstractAudit
         'date_received',
         'date_change',
         'expected_date',
+        'import_date'
     ];
 
     public function project()
@@ -50,20 +52,20 @@ class ProjectProposalValue extends AbstractAudit
     }
 
     public function setMonthAttribute($value) {
-        $month = Carbon::createFromFormat('d/m/Y', $value);
+        $month = ($value instanceof \Carbon\Carbon)?$value:Carbon::createFromFormat('d/m/Y', $value);
         $this->attributes['month'] = $month;
     }
 
     public function setDateNFAttribute($value){
         if($value){
-            $datenf = Carbon::createFromFormat('d/m/Y', $value);
+            $datenf = ($value instanceof \Carbon\Carbon)?$value:Carbon::createFromFormat('d/m/Y', $value);
             $this->attributes['date_nf'] = $datenf;
         }
     }
 
     public function setDateReceivedAttribute($value){
         if($value){
-            $datereceived =  Carbon::createFromFormat('d/m/Y', $value);
+            $datereceived =  ($value instanceof \Carbon\Carbon)?$value:Carbon::createFromFormat('d/m/Y', $value);
             $this->attributes['date_received'] = $datereceived;
         }
         
@@ -71,15 +73,23 @@ class ProjectProposalValue extends AbstractAudit
 
     public function setDateChangeAttribute($value){
         if($value){
-            $datechange =  Carbon::createFromFormat('d/m/Y', $value);
+
+            $datechange =  ($value instanceof \Carbon\Carbon)?$value:Carbon::createFromFormat('d/m/Y', $value);
             $this->attributes['date_change'] = $datechange;
         }
     }
 
     public function setExpectedDateAttribute($value){
         if($value){
-            $expecteddate =  Carbon::createFromFormat('d/m/Y', $value);
+            $expecteddate = ($value instanceof \Carbon\Carbon)?$value:Carbon::createFromFormat('d/m/Y', $value);
             $this->attributes['expected_date'] = $expecteddate;
+        }
+    }
+
+    public function setImportDateAttribute($value){
+        if($value){
+            $importdate = ($value instanceof \Carbon\Carbon)?$value:Carbon::createFromFormat('d/m/Y', $value);
+            $this->attributes['import_date']  = $importdate;
         }
     }
 

@@ -10,20 +10,53 @@
 </div>
 
 <span class="form-group col-lg-2 col-md-10 col-sm-10 col-xs-12   {{$errors->has('month') ? 'has-error' : ''}}">
-    {!! Form::label('month', 'Data do Evento:') !!}
+    {!! Form::label('month', 'Data de Criação:') !!}
     {!! Form::text('month', isset($proposalValueDescription) ? $proposalValueDescription->month->format('d/m/Y') : null, [
-    'class' => 'form-control month', 'required']) !!}
+    'class' => 'form-control month', 'required','readonly']) !!}
     
-    <span class="help-block"><strong>{{$errors->first('issue_date')}}</strong></span>
+    <span class="help-block"><strong>{{$errors->first('month')}}</strong></span>
+</span>
+
+<span class="form-group col-lg-2 col-md-10 col-sm-10 col-xs-12   {{$errors->has('expected_date') ? 'has-error' : ''}}">
+    {!! Form::label('expected_date', 'Data prevista') !!}
+    {!! Form::text('expected_date', isset($proposalValueDescription)  && ($proposalValueDescription->expected_date) ? $proposalValueDescription->expected_date->format('d/m/Y') : null, [
+    'class' => 'form-control expected_date', '']) !!}
+    
+    <span class="help-block"><strong>{{$errors->first('expected_date')}}</strong></span>
+</span>
+
+<span class="form-group col-lg-2 col-md-10 col-sm-10 col-xs-12   {{$errors->has('date_change') ? 'has-error' : ''}}">
+    {!! Form::label('date_change', 'Data de Alteracao') !!}
+    {!! Form::text('date_change', isset($proposalValueDescription ) && ($proposalValueDescription->date_change) ? $proposalValueDescription->date_change->format('d/m/Y') : null, [
+    'class' => 'form-control date_change', 'readonly']) !!}
+    
+    <span class="help-block"><strong>{{$errors->first('date_change')}}</strong></span>
 </span>
 
 <span class="form-group col-lg-2 col-md-10 col-sm-10 col-xs-12   {{$errors->has('date_nf') ? 'has-error' : ''}}">
     {!! Form::label('date_nf', 'Data da Nota') !!}
     {!! Form::text('date_nf', isset($proposalValueDescription) && ($proposalValueDescription->date_nf) ? $proposalValueDescription->date_nf->format('d/m/Y') : null, [
-    'class' => 'form-control data_nf', '']) !!}
+    'class' => 'form-control date_nf', '']) !!}
     
-    <span class="help-block"><strong>{{$errors->first('issue_date')}}</strong></span>
+    <span class="help-block"><strong>{{$errors->first('date_nf')}}</strong></span>
 </span>
+
+<span class="form-group col-lg-2 col-md-10 col-sm-10 col-xs-12   {{$errors->has('date_received') ? 'has-error' : ''}}">
+    {!! Form::label('date_received', 'Data de Recebimento') !!}
+    {!! Form::text('date_received', isset($proposalValueDescription) && ($proposalValueDescription->date_received) ? $proposalValueDescription->date_received->format('d/m/Y') : null, [
+    'class' => 'form-control date_received',]) !!}
+    
+    <span class="help-block"><strong>{{$errors->first('date_received')}}</strong></span>
+</span>
+
+<span class="form-group col-lg-2 col-md-10 col-sm-10 col-xs-12   {{$errors->has('date_nf') ? 'has-error' : ''}}">
+    {!! Form::label('import_date', 'Data da Importação') !!}
+    {!! Form::text('import_date', isset($proposalValueDescription) && ($proposalValueDescription->import_date) ? $proposalValueDescription->import_date->format('d/m/Y') : null, [
+    'class' => 'form-control import_date', 'readonly']) !!}
+    
+    <span class="help-block"><strong>{{$errors->first('import_date')}}</strong></span>
+</span>
+
 
 @push('scripts')
 <script>
@@ -36,15 +69,31 @@
         'minDate': '{{$project->start->format('d/m/Y')}}'
     });
 
-    $("#date_nf").daterangepicker({
+    $("#month").data('daterangepicker').remove();
+
+    $("#import_date").daterangepicker({
+        autoUpdateInput: false,
         locale: {
             format: 'DD/MM/YYYY'
+        },
+        "singleDatePicker": true,
+        'maxDate': '{{$project->finish->format('d/m/Y')}}',
+        'minDate': '{{$project->start->format('d/m/Y')}}'
+    });
+
+    $("#import_date").data('daterangepicker').remove();
+
+    $("#date_nf").daterangepicker({
+        autoUpdateInput: false,
+        locale: {
+            format: 'DD/MM/YYYY',
         },
         "singleDatePicker": true,
         'minDate': '{{$project->start->format('d/m/Y')}}'
     });
 
     $("#date_received").daterangepicker({
+        autoUpdateInput: false,
         locale: {
             format: 'DD/MM/YYYY'
         },
@@ -53,6 +102,7 @@
     });
 
     $("#date_change").daterangepicker({
+        autoUpdateInput: false,
         locale: {
             format: 'DD/MM/YYYY'
         },
@@ -60,19 +110,23 @@
         'minDate': '{{$project->start->format('d/m/Y')}}'
     });
 
+    $("#date_change").data('daterangepicker').remove();
+
     $("#expected_date").daterangepicker({
+        autoUpdateInput: false,
         locale: {
             format: 'DD/MM/YYYY'
         },
         "singleDatePicker": true,
         'minDate': '{{$project->start->format('d/m/Y')}}'
     });
+   
 </script>
 @endpush
 
 <span class="form-group col-lg-3 col-md-10 col-sm-10 col-xs-12 {{$errors->has('proposalValueDescription') ? 'has-error' : ''}}">
     {!! Form::label('invoice_number', 'Nº Nota Fiscal:') !!}
-    {!! Form::text('invoice_number', isset($proposalValueDescription) ? $proposalValueDescription->invoice_number : null, ['class' => 'form-control','maxlength' => '15']) !!}
+    {!! Form::text('invoice_number', isset($proposalValueDescription) ? $proposalValueDescription->invoice_number : null, ['class' => 'form-control','maxlength' => '15',]) !!}
     <span class="help-block"><strong>{{$errors->first('invoice_number')}}</strong></span>
 </span>
 
@@ -86,37 +140,12 @@
     <span class="help-block"><strong>{{$errors->first('value')}}</strong></span>
 </span>
 
-{{--  <div class="form-group col-lg-2 col-md-2 col-sm-2 col-xs-12 {{$errors->has('proposalValueDescription') ? 'has-error' : ''}}">
-    {!! Form::label('has_billed', 'Recebido:') !!}
-    <span aria-hidden="true" data-toggle="tooltip" data-placement="top"></span>
-    <br>
-    {!! Form::checkbox('has_billed', '1', isset($proposalValueDescription) ? $proposalValueDescription->has_billed : false, ["class" => "toggle-tf", "data-onstyle" => "dct", "data-toggle" => "toggle", "data-on" => "Sim", "data-off" => "Não", "id" => 'has_billed']) !!}
-</div>  --}}
 
 
-<span class="form-group col-lg-2 col-md-10 col-sm-10 col-xs-12   {{$errors->has('date_received') ? 'has-error' : ''}}">
-    {!! Form::label('date_received', 'Data de Recebimento') !!}
-    {!! Form::text('date_received', isset($proposalValueDescription) && ($proposalValueDescription->date_received) ? $proposalValueDescription->date_received->format('d/m/Y') : null, [
-    'class' => 'form-control date_received', '']) !!}
-    
-    <span class="help-block"><strong>{{$errors->first('issue_date')}}</strong></span>
-</span>
 
-<span class="form-group col-lg-2 col-md-10 col-sm-10 col-xs-12   {{$errors->has('date_change') ? 'has-error' : ''}}">
-    {!! Form::label('date_change', 'Data de Alteracao') !!}
-    {!! Form::text('date_change', isset($proposalValueDescription ) && ($proposalValueDescription->date_change) ? $proposalValueDescription->date_change->format('d/m/Y') : null, [
-    'class' => 'form-control date_change', '']) !!}
-    
-    <span class="help-block"><strong>{{$errors->first('issue_date')}}</strong></span>
-</span>
 
-<span class="form-group col-lg-2 col-md-10 col-sm-10 col-xs-12   {{$errors->has('expected_date') ? 'has-error' : ''}}">
-    {!! Form::label('expected_date', 'Data prevista') !!}
-    {!! Form::text('expected_date', isset($proposalValueDescription)  && ($proposalValueDescription->expected_date) ? $proposalValueDescription->expected_date->format('d/m/Y') : null, [
-    'class' => 'form-control expected_date', '']) !!}
-    
-    <span class="help-block"><strong>{{$errors->first('issue_date')}}</strong></span>
-</span>
+
+
 
 
 <div class="form-group col-lg-3 col-md-10 col-sm-10 col-xs-12 {{$errors->has('os') ? 'has-error' : ''}}">

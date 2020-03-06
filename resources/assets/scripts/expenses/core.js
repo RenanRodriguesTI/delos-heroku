@@ -246,9 +246,9 @@ if ($('#form-expenses').length) {
 
 
 $('.toview').click(function() {
-    var url = new URL($(this).attr('data-href'));
-    var path = url.pathname.split('/');
-    var urlSecond = url.origin + '/images/invoices/' + path[(path.length - 1)];
+    let url = new URL($(this).attr('data-href'));
+    let path = url.pathname.split('/');
+    let urlSecond = url.origin + '/images/invoices/' + path[(path.length - 1)];
     console.log('url', url.href);
     console.log('urlSecond', urlSecond);
     $.ajax({

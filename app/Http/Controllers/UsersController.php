@@ -10,6 +10,7 @@ use Delos\Dgp\Repositories\Contracts\RoleRepository;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Http\Request;
 use Prettus\Validator\Exceptions\ValidatorException;
+use Carbon\Carbon;
 
 class UsersController extends AbstractController
 {

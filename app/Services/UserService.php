@@ -76,20 +76,24 @@ class UserService extends AbstractService
 
     public function createContracts(array $data){
         $this->updateRulesToContracts();
-        $this->validator->with($data)->passesOrFail(ValidatorInterface::RULE_UPDATE);
-        $contracts = Contracts::save($data);
+     $this->validator->with($data)->passesOrFail(ValidatorInterface::RULE_CREATE);
+       unset($data['_token']);
+       $contracts = Contracts::create($data);
         return $contracts;
     }
 
     public function updateContracts(array $data, $id){
         $this->updateRulesToContracts();
-        $this->validator->with($data)->passesOrFail(ValidatorInterface::RULE_UPDATE);
+       // $this->validator->with($data)->passesOrFail(ValidatorInterface::RULE_UPDATE);
         $contracts =  Contracts::find($id);
         $contracts->update($data);
         return $contracts;
     }
 
     public function deleteContracts($id){
-        Contracts::delete($id);
+        $contract =Contracts::find($id);
+        $contract->delete();
+
+        return $contract;
     }
 }

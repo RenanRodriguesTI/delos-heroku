@@ -50,10 +50,6 @@ class AuthServiceProvider extends ServiceProvider
                         return true;
                      });
 
-                    //  Gate::define('change-hours-ps-project', function ($user) use ($permission) {
-                    //     return true;
-                    //  });
-
                     Gate::define('index-revenues', function ($user) use ($permission) {
                         return true;
                      });
@@ -66,11 +62,12 @@ class AuthServiceProvider extends ServiceProvider
                         return true;
                     });
 
-                    Gate::define('delete-contracts', function($user){
+                    Gate::define('update-contract',function($user) use ($permission){
                         return true;
                     });
 
-                    Gate::define('show-contracts', function($user){
+
+                    Gate::define('delete-contract', function($user) {
                         return true;
                     });
 

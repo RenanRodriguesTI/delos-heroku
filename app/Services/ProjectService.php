@@ -199,7 +199,7 @@
             $data = $this->convertValue($data);
 
             $this->validator->with($data)->passesOrFail(ValidatorInterface::RULE_UPDATE);
-
+            $data['date_change'] = Carbon::now()->format('d/m/Y');
             $descritionValue =  ProjectProposalValue::find($id);
             $descritionValue->update($data);
             $descritionValue->clients()->sync($data['client_id']);
@@ -228,8 +228,8 @@
             $rules['update']['client_id']      = 'array|exists:clients,id';
             $rules['update']['notes']          = 'string|max:255';
             $rules['update']['invoice_number'] = 'string|max:15';
-            $rules['update']['description']    = 'string|max:255';
-            $rules['update']['os'] ='unique:project_proposal_values,os';
+            $rules['update']['description']    = 'string';
+            $rules['update']['os'] ='unique:project_proposal_values,os,'.$projectProposalValuesDescriptionId;
 
             $this->validator->setRules($rules);
         }
@@ -298,7 +298,15 @@
 
 
             foreach($data() as $rows){
+                   usort( $rows,function($a,$b){
+        
+            if ($a['data_os']->equalTo($b['data_os'])) {
+            return 0;
+            }
+                return ($a['data_os']->lessThan($b['data_os'])) ? -1 : 1;
+            });
                 foreach($rows as $value){
+                    $update = false;
                     $obj =  [
                                'data_os' =>($value->data_os)?$value->data_os->format('d/m/Y'):null,
                                'numero_os' =>($value->numero_os)?$value->numero_os:'',
@@ -348,9 +356,6 @@
         
         
                             $proposal['month'] = $obj["data_os"];
-                            $proposal['date_nf'] = $obj["data_emissao_nfse"];
-                            $proposal['nf_nd'] = $obj["numero_nfs_e"];
-                          
                             $proposal['project_id'] = $project->id;
         
                             switch(mb_strtoupper($obj['situacao_titulo'])){
@@ -359,40 +364,59 @@
                                     $proposal['invoice_number'] = $obj["numero_nfs_e"];
                                     $proposal['date_received'] = $obj["data_baixa_do_titulo"];
                                     $proposal['value'] = ($obj["valor_nfse"] != null)?$obj["valor_nfse"]:$obj["valor_servico"];
+                                    $proposal['expected_date'] = $obj["data_emissao_nfse"];
+                                    $proposal['date_nf'] = $obj["data_emissao_nfse"];
+                                    $proposal['nf_nd'] = $obj["numero_nfs_e"];
                                 break;
                                 case 'ABERTO':
                                     $proposal['has_billed'] = ($obj["data_baixa_do_titulo"]!=null)?true:false;
                                     $proposal['invoice_number'] = $obj["numero_nfs_e"];
                                     $proposal['date_received'] = $obj["data_baixa_do_titulo"];
                                     $proposal['value'] = ($obj["valor_nfse"] != null)?$obj["valor_nfse"]:$obj["valor_servico"];
+                                    $proposal['date_nf'] = $obj["data_emissao_nfse"];
+                                    $proposal['nf_nd'] = $obj["numero_nfs_e"];
+                          
+                                    $proposal['expected_date'] =  $obj["data_emissao_nfse"];
                                 break;
                                 case 'QUITADO':
                                     $proposal['has_billed'] = ($obj["data_baixa_do_titulo"]!=null)?true:false;
                                     $proposal['invoice_number'] = $obj["numero_nfs_e"];
                                     $proposal['date_received'] = $obj["data_baixa_do_titulo"];
                                     $proposal['value'] = ($obj["valor_nfse"] != null)?$obj["valor_nfse"]:$obj["valor_servico"];
+                                    $proposal['date_nf'] = $obj["data_emissao_nfse"];
+                                    $proposal['nf_nd'] = $obj["numero_nfs_e"];
+                                    $proposal['expected_date'] =  $obj["data_emissao_nfse"];
                                 break;
                                 case 'CANCELADO':
                                     $proposal['has_billed'] = false;
                                     $proposal['invoice_number'] = '';
                                     $proposal['date_received'] = '';
                                     $proposal['value'] = $obj["valor_servico"];
+                                    $proposal['expected_date'] = null;
+                                    $proposal['date_nf'] = null;
+                                    $proposal['nf_nd'] = null;
                                 break;
                             }
                             
                             $proposal['description'] = ($obj['observacao_os'])?$obj['observacao_os']:'';
                             $proposal['notes'] = '';
                             $proposal['client_id'] = [$client->id];
+                            $proposal['import_date'] = Carbon::now()->format('d/m/Y');
                             $result =[];
                             $proposal['os'] = $obj["numero_os"];
                             if(!$proposalvalues && !$proposalnull){
+                                $update = false;
                                 $result = $this->createProposalValueImport($proposal);
                             } else{
                                
                                 if($proposalvalues){
+                                    $update = true;
+                                    $proposal['date_change'] = Carbon::now()->format('d/m/Y');
                                     $result = $this->updateProposalValueImport($proposal,$proposalvalues->id);
                                     
                                 } else{
+                                    $update = true;
+                                    $proposal['date_change'] = Carbon::now()->format('d/m/Y');
                                     $result = $this->updateProposalValueImport($proposal,$proposalnull->id);
                                 }                        
                             }
@@ -409,7 +433,7 @@
                                     'project_code' =>$obj['codigo_projeto'] ,
                                     'os' => $obj['numero_os'],
                                     'status'=> 'success',
-                                    'description' =>'Importado com sucesso',
+                                    'description' => ($update)?'Atualizado com sucesso':'Importado com sucesso',
                                     'date_migration' =>Carbon::now()]);
                             }
                         } else{

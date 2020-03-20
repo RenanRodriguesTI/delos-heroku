@@ -141,6 +141,11 @@
             'start'              => 'Data de início',
             'finish'             => 'Data de término',
             'hours'              => 'Quantidade de horas',
-            'client_id'          => 'Cliente(s)'
+            'client_id'          => 'Cliente(s)',
+            'end' => 'Data de encerramento',
+            'startfilter' =>'Inicio',
+            'endfilter' =>'Fim',
+            'projects' =>'Projeto',
+            'telephone' =>'Telefone'
         ],
     ];

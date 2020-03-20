@@ -18,6 +18,7 @@
     use Delos\Dgp\Entities\Group;
     use Carbon\Carbon;
     use Delos\Dgp\Entities\Client;
+    use \stdClass;
 
     class ProjectService extends AbstractService
     {
@@ -286,41 +287,56 @@
 
         public function importAllProposalValues(){
             TemporaryImport::query()->forceDelete();
-            $data = function(){
-                try{
-                    yield Excel::load('storage/app/file.xlsx')->get()->all();
-                   
-                } catch(Exception $erro){
-                    yield [];
-                }
-               
-            };
+            $data =Excel::load('storage/app/file.xlsx')->get()->all();
 
+            $arr = [];
 
-            foreach($data() as $rows){
-                   usort( $rows,function($a,$b){
-        
-            if ($a['data_os']->equalTo($b['data_os'])) {
-            return 0;
+            foreach($data as $value){
+                $arr[] = [
+                    'data_os' =>($value->data_os)?$value->data_os->format('d/m/Y'):null,
+                    'numero_os' =>($value->numero_os)?$value->numero_os:'',
+                    'nome_do_cliente' => ($value->nome_do_cliente)? $value->nome_do_cliente:'',
+                    'valor_servico' => ($value->valor_servico)?number_format($value->valor_servico,2,",","."):"",
+                    'codigo_do_cliente'=>($value->codigo_do_cliente)?$value->codigo_do_cliente:'',
+                    'valor_nfse'=>($value->valor_nfse)?number_format($value->valor_nfse,2,",","."):null,
+                    'data_emissao_nfse' => ($value->data_emissao_nfse)?$value->data_emissao_nfse->format('d/m/Y'):null,
+                    'numero_nfs_e' => ($value->numero_nfs_e)?"".$value->numero_nfs_e:"",
+                    'codigo_projeto' => ($value->codigo_projeto)?$value->codigo_projeto:null,
+                    'data_baixa_do_titulo' => ($value->data_baixa_do_titulo)?$value->data_baixa_do_titulo->format('d/m/Y'):null,
+                    'observacao_os' => $value->observacao_os,
+                    'situacao_titulo' =>$value->situacao_titulo,
+                ];
             }
-                return ($a['data_os']->lessThan($b['data_os'])) ? -1 : 1;
-            });
-                foreach($rows as $value){
-                    $update = false;
-                    $obj =  [
-                               'data_os' =>($value->data_os)?$value->data_os->format('d/m/Y'):null,
-                               'numero_os' =>($value->numero_os)?$value->numero_os:'',
-                               'nome_do_cliente' => ($value->nome_do_cliente)? $value->nome_do_cliente:'',
-                               'valor_servico' => ($value->valor_servico)?number_format($value->valor_servico,2,",","."):"",
-                               'codigo_do_cliente'=>($value->codigo_do_cliente)?$value->codigo_do_cliente:'',
-                               'valor_nfse'=>($value->valor_nfse)?number_format($value->valor_nfse,2,",","."):null,
-                               'data_emissao_nfse' => ($value->data_emissao_nfse)?$value->data_emissao_nfse->format('d/m/Y'):null,
-                               'numero_nfs_e' => ($value->numero_nfs_e)?"".$value->numero_nfs_e:"",
-                               'codigo_projeto' => ($value->codigo_projeto)?$value->codigo_projeto:null,
-                               'data_baixa_do_titulo' => ($value->data_baixa_do_titulo)?$value->data_baixa_do_titulo->format('d/m/Y'):null,
-                               'observacao_os' => $value->observacao_os,
-                               'situacao_titulo' =>$value->situacao_titulo,
-                           ];
+            usort( $arr,function($a,$b){
+
+                try{
+                    if (Carbon::createFromFormat('d/m/Y',$a['data_os'])->equalTo(Carbon::createFromFormat('d/m/Y',$b['data_os']))) {
+                        return 0;
+                        }
+                            return (Carbon::createFromFormat('d/m/Y',$a['data_os'])->lessThan(Carbon::createFromFormat('d/m/Y',$b['data_os']))) ? -1 : 1;
+                } catch(Exception $err){
+                    return 0;
+                }
+                
+                });
+
+            foreach($arr as $obj){
+                
+                $update = false;
+                    // $obj =  [
+                    //            'data_os' =>($value->data_os)?$value->data_os->format('d/m/Y'):null,
+                    //            'numero_os' =>($value->numero_os)?$value->numero_os:'',
+                    //            'nome_do_cliente' => ($value->nome_do_cliente)? $value->nome_do_cliente:'',
+                    //            'valor_servico' => ($value->valor_servico)?number_format($value->valor_servico,2,",","."):"",
+                    //            'codigo_do_cliente'=>($value->codigo_do_cliente)?$value->codigo_do_cliente:'',
+                    //            'valor_nfse'=>($value->valor_nfse)?number_format($value->valor_nfse,2,",","."):null,
+                    //            'data_emissao_nfse' => ($value->data_emissao_nfse)?$value->data_emissao_nfse->format('d/m/Y'):null,
+                    //            'numero_nfs_e' => ($value->numero_nfs_e)?"".$value->numero_nfs_e:"",
+                    //            'codigo_projeto' => ($value->codigo_projeto)?$value->codigo_projeto:null,
+                    //            'data_baixa_do_titulo' => ($value->data_baixa_do_titulo)?$value->data_baixa_do_titulo->format('d/m/Y'):null,
+                    //            'observacao_os' => $value->observacao_os,
+                    //            'situacao_titulo' =>$value->situacao_titulo,
+                    //        ];
 
                            $project = Project::withTrashed()->where('compiled_cod',$obj['codigo_projeto'])->first(['id']);
                            if($project !=null){
@@ -444,7 +460,23 @@
                                 'description' =>'O projeto não existe',
                                 'date_migration' =>Carbon::now()]);
                         }
-                }    
             }
+        }
+
+
+        function ToObject($Array) { 
+      
+            // Create new stdClass object 
+            $object = new stdClass(); 
+              
+            // Use loop to convert array into 
+            // stdClass object 
+            foreach ($Array as $key => $value) { 
+                if (is_array($value)) { 
+                    $value = ToObject($value); 
+                } 
+                $object->$key = $value; 
+            } 
+            return $object; 
         }
     }

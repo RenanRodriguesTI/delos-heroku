@@ -57,7 +57,7 @@
         <div class="panel-body">
             <div class="pull-right" style="display:none">
                 <div class="btn-group">
-                      @can('proposal-values-create-project')
+                    @can('proposal-values-create-project')
                         <a href="{{route('projects.descriptionValues.create', ['id' => 0])}}" class="btn btn-dct">
                             <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                             Importar 

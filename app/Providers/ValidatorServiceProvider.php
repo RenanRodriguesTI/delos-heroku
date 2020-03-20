@@ -130,5 +130,13 @@ class ValidatorServiceProvider extends ServiceProvider
                   ->needs(ValidatorInterface::class)
                   ->give(\Delos\Dgp\Validators\CoastUserValidator::class);
 
+        $this->app->when(\Delos\Dgp\Services\ContractsService::class)
+                  ->needs(ValidatorInterface::class)
+                  ->give(\Delos\Dgp\Validators\ContractsValidator::class);
+        
+        $this->app->when(\Delos\Dgp\Services\ProviderService::class)
+                  ->needs(ValidatorInterface::class)
+                  ->give(\Delos\Dgp\Validators\ProviderValidator::class);
+
     }
 }

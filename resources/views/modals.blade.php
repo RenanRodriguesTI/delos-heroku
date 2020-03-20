@@ -90,6 +90,7 @@
 
                         mywindow.print();
                         mywindow.close();
+                        
 
                         return true;
                     }

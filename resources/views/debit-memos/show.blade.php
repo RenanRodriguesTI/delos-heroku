@@ -119,11 +119,11 @@
                                 <tr>
                                     <td>{{$expense->compiled_invoice}}</td>
                                     <td>{{$expense->issue_date->format('d/m/Y')}}</td>
-                                    <td class="has-btn-group"><a href="{{$expense->url_file}}" target="_blank">Link para o comprovante</a></td>
+                                    <td class="has-btn-group"><a class="url" href="javascript:void(0);" data-href="{{$expense->url_file}}">Link para o comprovante</a></td>
                                     <td>{{$expense->description}}</td>
-                                    <td>{{$expense->note}}</td>
+                                    <td>{{($expense->note != 'null') ? $expense->note : ''}}</td>
                                     <td>{{$expense->user->name}}</td>
-                                    <td>@lang('entries.'.$expense->paymentType->name)</td>
+                                    <td>{{ $expense->paymentType->name }}</td>
                                     <td>R$ {{$expense->value}}</td>
                                     <td class="table-details-title">
                                         Detalhes da nota: {{$expense->compiled_invoice}}

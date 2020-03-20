@@ -5,10 +5,10 @@ namespace Delos\Dgp\Http\Controllers;
 use Illuminate\Http\Request;
 use Delos\Dgp\Entities\TemporaryImport;
 use Carbon\Carbon;
-class RevenuesController extends Controller
+class RevenuesController extends  AbstractController
 {
-    public function index(Request $request){
-        $filter = ($request->input('status'))?$request->input('status'):'0';
+    public function index(){
+        $filter = ($this->request->input('status'))?$this->request->input('status'):'0';
         $last = TemporaryImport::orderBy('created_at','desc')->first();
         $date =null;
         if($last){

@@ -79,12 +79,17 @@
                                                             </a></li>
                                                         <li class="divider"></li>
                                                     @endcan
-                                                        <li>
-                                                            <a>
-                                                                <span class="glyphicon glyphicon-file"></span>&nbsp;   Contratos
-                                                            </a>
-                                                        </li>
-
+                                                    @if(strrpos(mb_strtoupper($user->name),'PS')>-1)
+                                                            @can('index-contract')
+                                                            <li>
+                                                                <a href="{{route('users.edit', ['id' => $user->id,'contracts'=>'1'])}}">
+                                                                    <span class="glyphicon glyphicon-file"></span>&nbsp;   Contratos
+                                                                </a>
+                                                            </li>
+                                                            <li class="divider"></li>
+                                                            @endcan
+                                                    
+                                                    @endif     
 
                                                 @else
                                                     @can('restore-user')
@@ -130,6 +135,17 @@
                                                             </a></li>
                                                         <li class="divider"></li>
                                                     @endcan
+                                                    @if(strrpos(mb_strtoupper($user->name),'PS')>-1)
+                                                            @can('index-contract')
+                                                            <li>
+                                                                <a href="{{route('users.edit', ['id' => $user->id,'contracts'=>'1'])}}">
+                                                                    <span class="glyphicon glyphicon-file"></span>&nbsp;   Contratos
+                                                                </a>
+                                                            </li>
+                                                            <li class="divider"></li>
+                                                            @endcan
+                                                    
+                                                    @endif  
                                                 @else
                                                     @can('restore-user')
                                                         <li>

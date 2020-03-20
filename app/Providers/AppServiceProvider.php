@@ -31,8 +31,11 @@ class AppServiceProvider extends ServiceProvider
         $this->callObservers();
         $this->callCustomBladeDirective();
 
-
-        
+        Validator::extend('value', 'StartPeriodRule@validate');
+        Validator::extend('value', 'NumberFormatRule@validate');
+        Validator::extend('value', 'MinValueRule@validate');
+        Validator::extend('value', 'CNPJRule@validate');
+        Validator::extend('value','TelephoneRule@validate');
 
         if (env('APP_ENV') && env('APP_ENV') == 'local') {
             $this->app->register(DuskServiceProvider::class);

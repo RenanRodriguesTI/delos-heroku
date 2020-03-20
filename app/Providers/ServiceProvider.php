@@ -144,13 +144,21 @@ class ServiceProvider extends SupportServiceProvider
                   ->needs(ServiceInterface::class)
                   ->give(\Delos\Dgp\Services\ProjectService::class);
         
+        $this->app->when(\Delos\Dgp\Http\Controllers\RevenuesController::class)
+                  ->needs(ServiceInterface::class)
+                  ->give(\Delos\Dgp\Services\ProjectService::class);
+                  
         $this->app->when(\Delos\Dgp\Http\Controllers\ContractsController::class)
                   ->needs(ServiceInterface::class)
-                  ->give(\Delos\Dgp\Services\UserService::class);
+                  ->give(\Delos\Dgp\Services\ContractsService::class);
+        
+        $this->app->when(\Delos\Dgp\Http\Controllers\ProvidersController::class)
+                  ->needs(ServiceInterface::class)
+                  ->give(\Delos\Dgp\Services\ProviderService::class);
 
                   
         $this->app->when(\Delos\Dgp\Http\Controllers\Api\ExpensesApiController::class)
-                    ->needs(ServiceInterface::class)
-                    ->give(\Delos\Dgp\Services\ExpenseService::class);
+        ->needs(ServiceInterface::class)
+        ->give(\Delos\Dgp\Services\ExpenseService::class);
     }
 }

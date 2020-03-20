@@ -1,13 +1,14 @@
 @extends('layouts.app')
 
 @section('content')
-
+        
     <div class="container">
         <ul class="nav nav-tabs">
-            <li class="active"><a data-toggle="tab" href="#usuario">Usuário</a></li>
-            <li><a data-toggle="tab" href="#contratos">Contratos</a></li>
+            <li id='link-usuario' class="active"><a data-toggle="tab" href="#usuario">Usuário</a></li>
+            @if(strrpos(mb_strtoupper($user->name),'PS')>-1)
+            <li id='link-contratos'><a data-toggle="tab" href="#contratos">Contratos</a></li>
+            @endif
         </ul>
-
         <div class="tab-content">
             <div id="usuario" class="panel panel-dct  tab-pane fade in active">
                 <div class="panel-heading">

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class DropAttributeHoursInTableUsers extends Migration
+class AddAttributeNoteTableContracts extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class DropAttributeHoursInTableUsers extends Migration
      */
     public function up()
     {
-        Schema::table('users',function(Blueprint $table){
-            $table->dropColumn('hours');
+        Schema::table('contracts',function(Blueprint $table){
+            $table->string('note')->nullable(true);
         });
     }
 
@@ -25,8 +25,8 @@ class DropAttributeHoursInTableUsers extends Migration
      */
     public function down()
     {
-        Schema::table('users',function(Blueprint $table){
-            $table->boolean('hours');
+        Schema::table('contracts',function(Blueprint $table){
+            $table->dropColumn('note');
         });
     }
 }

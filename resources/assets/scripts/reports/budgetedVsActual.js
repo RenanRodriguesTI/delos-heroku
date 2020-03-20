@@ -1,6 +1,6 @@
 var cookieName = 'tab-budgeted-vs-actual-index';
 
-$(document).ready(function () {
+$(document).ready(function() {
 
     if ($('#budgeted-vs-actual').length) {
         tabSingleton();
@@ -26,7 +26,7 @@ function triggerToast(response) {
         timeout: 9990
     });
 
-    setTimeout(function () {
+    setTimeout(function() {
         location.reload();
     }, 10000);
 }
@@ -41,18 +41,18 @@ function formExtraExpenseOptions(elem) {
         url: $(elem).attr('data-route'),
         data: data,
         type: 'PUT',
-        success: function (response) {
+        success: function(response) {
             $(elem).parent().children('form.form-update-extra-expenses').css('display', 'none');
             $(elem).parent().children('span:nth-child(2)').css('display', 'inline-block');
 
-            $('.extra-expenses-' + id).each(function (key, item) {
+            $('.extra-expenses-' + id).each(function(key, item) {
                 $(item).empty();
                 $(item).html(data.extra_expenses);
             });
 
             triggerToast(response);
         },
-        error: function (response) {
+        error: function(response) {
             alert("Valor incorreto, tente novamente");
         }
     });
@@ -72,14 +72,14 @@ function formUserValueOptions(event) {
         url: $(this).attr('data-route'),
         data: data,
         type: 'PUT',
-        success: function (response) {
+        success: function(response) {
 
             $('a#user-' + id + ' .price').html(data.value);
             $('#modal-user-' + id).modal('toggle');
 
             triggerToast(response);
         },
-        error: function (response) {
+        error: function(response) {
             alert("Valor incorreto, tente novamente");
         }
     });
@@ -98,8 +98,8 @@ function tabSingleton() {
 
     $(linksTab[index]).tab('show');
 
-    linksTab.on('shown.bs.tab', function () {
-        $(this).parent().parent().children().each(function (key, elem) {
+    linksTab.on('shown.bs.tab', function() {
+        $(this).parent().parent().children().each(function(key, elem) {
             if ($(elem).hasClass('active')) {
                 Cookies.set(cookieName, key);
             }
@@ -118,7 +118,7 @@ function getTableDetailsOptions() {
     var html = "<ul class=\"list-group\">";
     var title = 'Detalhes de ';
 
-    $.each(row[0].cells, function (key, item) {
+    $.each(row[0].cells, function(key, item) {
         var thead = $(item).parent().parent().parent().children('thead').children('tr');
 
         if (!$(thead[0].cells[key]).html()) {
@@ -128,7 +128,7 @@ function getTableDetailsOptions() {
 
         var divDescription = $(item).children('div');
         if (divDescription.hasClass('description')) {
-            $.each(divDescription.children('div'), function (key, item) {
+            $.each(divDescription.children('div'), function(key, item) {
                 html += "<li class=\"list-group-item\"><span style='color: #1f8128;'>" + $(item).children('span.name').html() + ": </span>" + $(item).children('span.value').html() + "</li>";
             });
 
@@ -152,6 +152,38 @@ function getTableDetailsOptions() {
 
     modalBody.append(html);
     modalTitle.append(title);
+
+    $('a[data-href]').bind('click', function() {
+        var url = new URL($(this).attr('data-href'));
+        var path = url.pathname.split('/');
+        var urlSecond = url.origin + '/images/invoices/' + path[(path.length - 1)];
+        console.log('url', url.href);
+        console.log('urlSecond', urlSecond);
+        $.ajax({
+            async: false,
+            type: 'GET',
+            url: url.href,
+            dataType: 'json',
+            error: function(err) {
+                console.log(err);
+                if (err.status == 200) {
+                    window.open(url.href);
+                } else {
+                    $.ajax({
+                        async: false,
+                        type: 'GET',
+                        url: urlSecond,
+                        dataType: 'json',
+                        error: function() {
+                            window.open(urlSecond);
+                        }
+                    });
+                }
+
+
+            }
+        });
+    });
 
     $('#modal-table-details').modal('show')
 }

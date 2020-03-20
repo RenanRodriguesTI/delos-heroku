@@ -90,7 +90,7 @@
                     Route::post('change-pass', ['as' => 'users.changePassUpdate','uses' => 'UsersController@changePassUpdate']);
                     Route::post('/change/avatar', ['as' => 'users.changeAvatar','uses' => 'UsersController@changeAvatar']);
                     Route::get('{id}/restore', ['as' => 'users.restore', 'uses' => 'UsersController@restore']);
-                    Route::get('{id}/contracts',['as'=>'users.contracts','uses'=>'UsersController@index']);
+                    Route::get('{id}/contracts',['as'=>'users.contracts','uses'=>'ContractsController@contracts']);
                     Route::post('{id}/contracts/create',['as'=>'users.contracts.create','uses' =>'ContractsController@store']);
                     Route::post('/contracts/edit/{id}',['as'=>'users.contracts.update','uses' =>'ContractsController@update']);
                     Route::get('/contracts/{id}/destroy',['as'=>'users.contracts.destroy','uses' =>'ContractsController@delete']);
@@ -411,13 +411,13 @@
             Route::get('/importar',['as'=>'importar','uses' => 'ImportsController@importar']);
         });
 
-        Route::group(['prefix'=>'contracts','as'=>'contracts.'],function(){
-            Route::get('/',["as"=>'index',"uses" => "ContractsController@index"]);
-            Route::get('/create',['as'=>'create',"uses" => "ContractsController@create"]);
-            Route::post('/store',['as'=>'store',"uses" => "ContractsController@store"]);
-            Route::delete('/delete',['as' => 'delete',"uses" =>"ContractController@delete"]);
-            Route::get('/show',['as'=>'delete',"uses" =>"ContractsController@show"]);
-            Route::get('/edit',['as' =>'edit',"uses" =>"ContractsController@edit"]);    
+        Route::group(['prefix'=>'providers','as'=>'providers.'],function(){
+            Route::get('/',['as' =>'index','uses'=>'ProvidersController@index']);
+            Route::get('/create',['as'=>'create',"uses" => "ProvidersController@create"]);
+            Route::post('/create',['as'=>'create',"uses" => "ProvidersController@store"]);
+            Route::get('{id}/edit',['as' =>'edit',"uses" =>"ProvidersController@edit"]);    
+            Route::post('{id}/edit',['as'=>'update','uses'=>'ProvidersController@update']);
+            Route::get('{id}/destroy',['as'=>'destroy','uses' =>'ProvidersController@destroy']);
         });
 
         

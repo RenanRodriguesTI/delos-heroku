@@ -225,10 +225,14 @@
                                                 </li>
                                             @endcan
 
-                                            @can('index-revenues')
+                                            <li>
+                                                <a href="{{route('providers.index') }}">Fornecedores</a>
+                                            </li>
+
+                                            @can('index-project')	    
                                                 <li>
-                                                    <a href="{{route('revenues.index')}}">Faturamentos</a>
-                                                </li>
+                                                    <a href="{{route('revenues.index')}}">Importar Faturamentos</a>	      
+                                                </li>                                
                                             @endcan
                                         </ul>
                                     </li>

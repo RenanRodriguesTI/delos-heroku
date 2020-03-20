@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class ChangeAttributeValueDefaultInTableProjectUser extends Migration
+class ChangeNameCollumnCpfCnpjTableProviders extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,9 @@ class ChangeAttributeValueDefaultInTableProjectUser extends Migration
      */
     public function up()
     {
-    
-    Schema::table('project_user', function (Blueprint $table) {
-        $table->boolean('hours')->default('1')->change();
-    });
+        Schema::table('providers', function(Blueprint $table){
+            $table->renameColumn('cpf_cnpj','cnpj');
+        });
     }
 
     /**
@@ -26,8 +25,8 @@ class ChangeAttributeValueDefaultInTableProjectUser extends Migration
      */
     public function down()
     {
-        Schema::table('project_user', function (Blueprint $table) {
-            $table->boolean('hours')->default('0')->change();
+        Schema::table('providers',function(Blueprint $table){
+            $table->renameColumn('cnpj','cpf_cnpj');
         });
     }
 }

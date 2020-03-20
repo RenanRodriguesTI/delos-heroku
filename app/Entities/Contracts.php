@@ -13,7 +13,8 @@ class Contracts extends Model
         'start',
         'end',
         'value',
-        'user_id'
+        'user_id',
+        'note'
     ];
 
     protected $casts = [
@@ -35,6 +36,10 @@ class Contracts extends Model
 
     public function setEndAttribute($value){
         $this->attributes['end'] = Carbon::createFromFormat('d/m/Y',$value);
+    }
+
+    public function projects(){
+        return $this->belongsToMany(Project::class,'contract_project');
     }
 
     public function user(){

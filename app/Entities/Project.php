@@ -154,6 +154,10 @@
             return $this->hasMany(Allocation::class);
         }
 
+        public function contracts(){
+            return $this->belongsToMany(Contracts::class,'contract_project');
+        }
+
         public function getHoursPercentage()
         {
             try {

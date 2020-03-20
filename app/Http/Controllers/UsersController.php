@@ -11,18 +11,48 @@ use Illuminate\Auth\AuthManager;
 use Illuminate\Http\Request;
 use Prettus\Validator\Exceptions\ValidatorException;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
+use Delos\Dgp\Entities\User;
 
 class UsersController extends AbstractController
 {
     protected $repository;
     protected $service;
 
+
+    public function edit(int $id)
+        {
+            $data = [
+                $this->getEntityName() => $this->repository->find($id)
+            ];
+
+   
+
+            $variables = $this->getVariablesForEdit($id);
+
+            return $this->response->view("{$this->getViewNamespace()}.edit", array_merge($data, $variables));
+        }
+
+    public function getVariablesForEdit($id){
+        return $this->getVariablesForPersistence($id);
+    }
+
+    protected function getVariablesForPersistence($id): array
+    {
+        return [
+            'roles' => app(RoleRepository::class)->findWhereNotIn('slug', ['root'])->pluck('name', 'id'),
+            'companies' => app(CompanyRepository::class)->pluck('name', 'id'),
+            'groupCompanies' => app(GroupCompanyRepository::class)->pluck('name', 'id'),
+            'projects' => User::where('id',$id)->with('projects')->first()->projects->pluck('description','id'),   
+        ];
+    }
+
     protected function getVariablesForPersistenceView(): array
     {
         return [
             'roles' => app(RoleRepository::class)->findWhereNotIn('slug', ['root'])->pluck('name', 'id'),
             'companies' => app(CompanyRepository::class)->pluck('name', 'id'),
-            'groupCompanies' => app(GroupCompanyRepository::class)->pluck('name', 'id')
+            'groupCompanies' => app(GroupCompanyRepository::class)->pluck('name', 'id'),  
         ];
     }
 

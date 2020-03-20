@@ -31,46 +31,14 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
 
         try {
-            $val = '';
             DB::table('permissions')
                 ->get(['id', 'slug'])
                 ->each(function($permission) {
-                   $val= ($permission->slug == "index-import")?$permission->slug:'';
                     Gate::define($permission->slug, function ($user) use ($permission) {
                         return $user->role
                             ->permissions
                             ->contains($permission->id);
                     });
-
-                    Gate::define('index-import', function ($user) use ($permission) {
-                       return true;
-                    });
-
-                    Gate::define('upload-import', function ($user) use ($permission) {
-                        return true;
-                     });
-
-                    Gate::define('index-revenues', function ($user) use ($permission) {
-                        return true;
-                     });
-
-                    Gate::define('index-contracts',function($user) use ($permission){
-                        return true;
-                    });
-
-                    Gate::define('create-contract',function($user) use ($permission){
-                        return true;
-                    });
-
-                    Gate::define('update-contract',function($user) use ($permission){
-                        return true;
-                    });
-
-
-                    Gate::define('delete-contract', function($user) {
-                        return true;
-                    });
-
             });
 
             Passport::routes();

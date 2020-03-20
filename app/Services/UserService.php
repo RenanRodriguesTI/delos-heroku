@@ -61,39 +61,4 @@ class UserService extends AbstractService
         return $user;
     }
 
-    private function updateRulesToContracts(){
-        $rules['create']['start']='required|date';
-        $rules['create']['end'] = 'required|date';
-        $rules['create']['value'] = 'required|numeric';
-        $rules['create']['user_id'] = 'required|exists:users,id';
-
-        $rules['update']['start'] = 'required|date';
-        $rules['update']['end'] = 'required|date';
-        $rules['update']['value'] = 'required|numeric';
-        $rules['update']['user_id'] = 'exists:users,id';
-        $this->validator->setRules($rules);
-    }
-
-    public function createContracts(array $data){
-        $this->updateRulesToContracts();
-     $this->validator->with($data)->passesOrFail(ValidatorInterface::RULE_CREATE);
-       unset($data['_token']);
-       $contracts = Contracts::create($data);
-        return $contracts;
-    }
-
-    public function updateContracts(array $data, $id){
-        $this->updateRulesToContracts();
-       // $this->validator->with($data)->passesOrFail(ValidatorInterface::RULE_UPDATE);
-        $contracts =  Contracts::find($id);
-        $contracts->update($data);
-        return $contracts;
-    }
-
-    public function deleteContracts($id){
-        $contract =Contracts::find($id);
-        $contract->delete();
-
-        return $contract;
-    }
 }

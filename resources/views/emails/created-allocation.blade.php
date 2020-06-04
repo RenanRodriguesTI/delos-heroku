@@ -56,7 +56,7 @@
                                 </tr>
                                 <tr>
                                     <td class="bold" style="font-weight: bold;padding: 8px;vertical-align: middle;">Tarefa:</td>
-                                    <td style="padding: 8px;vertical-align: middle;">{{$allocation->task->name}}</td>
+                                    <td style="padding: 8px;vertical-align: middle;">{{($allocation->task)?$allocation->task->name:'Não espeficado'}}</td>
                                 </tr>
                                 <tr>
                                     <td class="bold" style="font-weight: bold;padding: 8px;vertical-align: middle;">Início:</td>
@@ -67,8 +67,18 @@
                                     <td style="padding: 8px;vertical-align: middle;">{{$allocation->finish->format('d/m/Y')}}</td>
                                 </tr>
                                 <tr>
-                                    <td class="bold" style="font-weight: bold;padding: 8px;vertical-align: middle;">Quantidade de horas:</td>
+                                    <td class="bold" style="font-weight: bold;padding: 8px;vertical-align: middle;">Quantidade total de horas:</td>
                                     <td style="padding: 8px;vertical-align: middle;">{{$allocation->hours}}</td>
+                                </tr>
+
+                                <tr>
+                                    <td class="bold" style="font-weight: bold;padding: 8px;vertical-align: middle;">Quantidade de horas por dia:</td>
+                                    <td style="padding: 8px;vertical-align: middle;">{{$allocation->hourDay}}</td>
+                                </tr>
+
+                                <tr>
+                                    <td class="bold" style="font-weight: bold;padding: 8px;vertical-align: middle;">Trabalhar final de semana ou feriado:</td>
+                                    <td style="padding: 8px;vertical-align: middle;">{{$allocation->jobWeekEnd ? 'Sim' : 'Não'}}</td>
                                 </tr>
                             </tbody>
                         </table>

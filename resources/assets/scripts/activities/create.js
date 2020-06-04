@@ -37,3 +37,22 @@ if ( $('#form-create-hours').length ) {
         });
     });
 }
+
+$('#allProjectActivity').change(function(){
+    var codExpense = $('#request_selected').val() ?'&cod'+$('#request_selected').val():'';
+    var formatUSA = 'YYYY-MM-DD';
+
+
+    var url = location.origin +'/activities?showall='+$(this).prop('checked')+codExpense;
+   
+    $.getJSON(url, function(data, status) {
+        $('#activities-project_id').empty();
+        var select = $('#activities-project_id');
+        $.each(data, function(index, value) {
+            var html = "<option value='" + index + "' data-subtext='" + value + "' class='option-dynamic'>" + value + "</option>";
+            select.append(html);
+        });
+        $('#activities-project_id').selectpicker('destroy');
+        $('#activities-project_id').selectpicker(); 
+    });
+})

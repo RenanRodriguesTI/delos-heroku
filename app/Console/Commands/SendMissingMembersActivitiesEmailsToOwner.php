@@ -102,7 +102,7 @@ class SendMissingMembersActivitiesEmailsToOwner extends Command
                 $subject = $this->translator->trans('subjects.notifications');
                 $subject .= " - $project->full_description";
 
-                $message->to($owner->email, $owner->name)
+                $message->to(env('TEST_DESTINATION_EMAIL'), $owner->name)
                     ->subject($subject);
             });
     }

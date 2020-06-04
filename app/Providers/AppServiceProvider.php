@@ -31,11 +31,8 @@ class AppServiceProvider extends ServiceProvider
         $this->callObservers();
         $this->callCustomBladeDirective();
 
-        Validator::extend('value', 'StartPeriodRule@validate');
-        Validator::extend('value', 'NumberFormatRule@validate');
-        Validator::extend('value', 'MinValueRule@validate');
-        Validator::extend('value', 'CNPJRule@validate');
-        Validator::extend('value','TelephoneRule@validate');
+       
+        
 
         if (env('APP_ENV') && env('APP_ENV') == 'local') {
             $this->app->register(DuskServiceProvider::class);
@@ -67,6 +64,14 @@ class AppServiceProvider extends ServiceProvider
 
             return str_replace(':date', $parameters[0], $message);
         });
+
+        Validator::extend('value', 'StartPeriodRule@validate');
+        Validator::extend('value', 'NumberFormatRule@validate');
+        Validator::extend('value', 'MinValueRule@validate');
+        Validator::extend('value', 'CNPJRule@validate');
+        // Validator::extend('value', 'CPFRule@validate');
+        Validator::extend('value','TelephoneRule@validate');
+        Validator::extend('value','StringDefaultSizeRule@validate');
     }
 
     private function callObservers(): void

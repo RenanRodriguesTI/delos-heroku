@@ -13,8 +13,7 @@
             <div class="projects col-lg-12 col-md-12 col-xs-12">
               {!! Form::label('projects', 'Projetos:') !!}
               {!! Form::select('projects', $projects, isset($projects) ? null : null, ['title' => 'Selecione um ou mais projetos', 
-              'class' => 'form-control', 
-              'required', 'data-actions-box' => "true", 
+              'class' => 'form-control', 'data-actions-box' => "true", 
               'multiple']) !!}
               <span class="help-block">
                   <strong></strong>

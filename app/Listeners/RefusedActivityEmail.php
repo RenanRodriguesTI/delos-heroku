@@ -26,8 +26,11 @@ class RefusedActivityEmail implements ShouldQueue
                 'subject' => $subject
             ],
             function (Message $message) use ($activity, $subject) {
-                $message->to($activity->user->email, $activity->user->name)
-                    ->subject($subject);
+
+                //Modificação feita para teste não comitar essa classe
+            $message->to(env('TEST_DESTINATION_EMAIL'), $activity->user->name)->subject($subject);
+                // $message->to($activity->user->email, $activity->user->name)
+                //     ->subject($subject);
             });
     }
 }

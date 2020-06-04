@@ -30,7 +30,8 @@ class ProjectsController extends AbstractController
             'projectTypes' => app(ProjectTypeRepository::class)->pluck('name', 'id'),
             'groups' => app(GroupRepository::class)->pluck('name', 'id'),
             'companies' => app(CompanyRepository::class)->pluck('name', 'id'),
-            'usersRoleClient' => app(UserRepository::class)->getFromClientRole()->pluck('name', 'id')
+            'usersRoleClient' => app(UserRepository::class)->getFromClientRole()->pluck('name', 'id'),
+            'accepted' => app('auth')->getUser()->name === 'VERONICA SALVATI'
         ];
     }
 
@@ -55,6 +56,9 @@ class ProjectsController extends AbstractController
         $selectedGroup = $group->id;
         $clients = $group->clients()->pluck('name', 'id');
 
+        $minDateExtension = $entity->finish;
+        $minDateExtension->addDay(1);
+
         $data = [
             $this->getEntityName() => $entity,
             'selectedClients' => $entity->clients->pluck('id')->toArray(),
@@ -62,6 +66,7 @@ class ProjectsController extends AbstractController
             'clients' => $clients,
             'action' => 'edited',
             'tasks' => $this->getTasksToEditView($entity),
+            'minDateExtension' => $minDateExtension,
         ];
 
         $variables = array_merge($data, $this->getVariablesForEditView());

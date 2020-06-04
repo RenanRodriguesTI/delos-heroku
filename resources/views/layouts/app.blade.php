@@ -122,18 +122,31 @@
                                 @endcan
 
                                 @can('expense-menu')
-                                    <li><a><i class="fa fa-money"></i> @lang('menu.expenses') <span
-                                                    class="fa fa-chevron-down"></span></a>
+                                    <li>
+                                        <a><i class="fa fa-money"></i> @lang('menu.expenses') <span
+                                                    class="fa fa-chevron-down"></span>
+                                        </a>
                                         <ul class="nav child_menu">
                                             @can('index-expense')
                                                 <li>
-                                                    <a href="{{route('expenses.index')}}?deleted_at=whereNull">@lang('menu.invoices')</a>
+                                                    <a> @lang('menu.invoices')</a>
+                                                    <ul class="nav child_menu">
+                                                        <li><a href="{{route('supplierExpense.index')}}">Fornecedores</a></li>
+                                                        <li> <a href="{{route('expenses.index')}}?deleted_at=whereNull">Usuários</a></li>
+                                                    </ul>
                                                 </li>
                                             @endcan
 
                                             @can('index-debit-memo')
                                                 <li>
                                                     <a href="{{route('debitMemos.index')}}?status=1">@lang('menu.debit-memos')</a>
+                                                </li>
+                                            @endcan
+                                                
+
+                                            @can('index-supplier-expenses-import')
+                                            <li>
+                                                    <a href="{{route('supplierExpensesImport.index')}}">Importar Despesas por Fornecedor</a>
                                                 </li>
                                             @endcan
                                         </ul>
@@ -234,6 +247,18 @@
                                                     <a href="{{route('revenues.index')}}">Importar Faturamentos</a>	      
                                                 </li>                                
                                             @endcan
+
+                                            @can('index-app-version')
+                                                <li>
+                                                    <a href="{{route('appVersions.index')}}">Versões do Aplicativo</a>
+                                                </li>
+                                            @endcan
+                                                <li>
+                                                    <a href='{{route("paymentProvider.index")}}'> Tipos de Pagamento para Fornecedores</a>
+                                                </li>
+                                                <li>
+                                                    <a href='{{route("payment.index")}}'>Tipos de Pagamento para Usuário</a>
+                                                </li>
                                         </ul>
                                     </li>
                                 @endcan
@@ -281,6 +306,7 @@
                                                     </a>
                                                 </li>
                                             @endcan
+                                               
                                         </ul>
                                     </li>
                                 @endcan

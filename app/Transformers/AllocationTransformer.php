@@ -29,7 +29,7 @@
                 'compiled_name' => $allocation->compiled_name,
                 'project'       => $allocation->project->full_description,
                 'user'          => $allocation->user->name,
-                'task'          => $allocation->task->name,
+                'task'          => ($allocation->task)? $allocation->task->name : 'Não Especificado',
                 'start'         => $allocation->start->format('Y-m-d'),
                 'finish'        => $allocation->finish->format('Y-m-d'),
                 'description'   => $allocation->description

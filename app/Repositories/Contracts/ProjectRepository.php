@@ -18,6 +18,8 @@
          */
         public function getPairs($applyWithTrashed = true): array;
 
+        public function getPairsByExtension($applyWithTrashed = true): array;
+
         /**
          * @return array
          */

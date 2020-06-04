@@ -21,13 +21,17 @@ class ProviderValidator extends LaravelValidator
             'email' =>['required','email:rfc'],
             'social_reason' =>'required',
             'cnpj' => ['required'],
-            'telephone' => ['required']
+            'telephone' => ['required'],
+            'name' => ['required'],
+            'accountnumber' => ['required']
         ],
         ValidatorInterface::RULE_UPDATE => [
             'email' =>['required','email:rfc'],
             'social_reason' =>'required',
             'cnpj' => ['required'],
-            'telephone' => ['required']
+            'telephone' => ['required'],
+            'name' => ['required'],
+            'accountnumber' => ['required']
         ],
     ];
 }

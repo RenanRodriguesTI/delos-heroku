@@ -4,7 +4,7 @@ namespace Delos\Dgp\Providers;
 
 use Illuminate\Support\ServiceProvider as SupportServiceProvider;
 use Delos\Dgp\Services\ServiceInterface;
-
+use Laravel\Passport\Passport;
 class ServiceProvider extends SupportServiceProvider
 {
     /**
@@ -14,7 +14,6 @@ class ServiceProvider extends SupportServiceProvider
      */
     public function boot()
     {
-        //
     }
 
     /**
@@ -156,9 +155,36 @@ class ServiceProvider extends SupportServiceProvider
                   ->needs(ServiceInterface::class)
                   ->give(\Delos\Dgp\Services\ProviderService::class);
 
+
+        $this->app->when(\Delos\Dgp\Http\Controllers\SupplierExpensesController::class)
+                  ->needs(ServiceInterface::class)
+                  ->give(\Delos\Dgp\Services\ExpenseService::class);
+
+
+        $this->app->when(\Delos\Dgp\Http\Controllers\SupplierExpensesImportsController::class)
+                  ->needs(ServiceInterface::class)
+                  ->give(\Delos\Dgp\Services\SupplierExpensesService::class);
+
                   
         $this->app->when(\Delos\Dgp\Http\Controllers\Api\ExpensesApiController::class)
-        ->needs(ServiceInterface::class)
-        ->give(\Delos\Dgp\Services\ExpenseService::class);
+                    ->needs(ServiceInterface::class)
+                    ->give(\Delos\Dgp\Services\ExpenseService::class);
+
+        $this->app->when(\Delos\Dgp\Http\Controllers\Api\ActivitiesApiController::class)
+                    ->needs(ServiceInterface::class)
+                    ->give(\Delos\Dgp\Services\Api\ActivityApiService::class);
+
+        $this->app->when(\Delos\Dgp\Http\Controllers\AppVersionsController::class)
+                    ->needs(ServiceInterface::class)
+                    ->give(\Delos\Dgp\Services\AppVersionService::class);
+                    
+        $this->app->when(\Delos\Dgp\Http\Controllers\PaymentController::class)
+                    ->needs(ServiceInterface::class)
+                    ->give(\Delos\Dgp\Services\PaymentService::class);
+        
+                    $this->app->when(\Delos\Dgp\Http\Controllers\PaymentTypeProvidersController::class)
+                    ->needs(ServiceInterface::class)
+                    ->give(\Delos\Dgp\Services\PaymentProviderService::class);
+
     }
 }

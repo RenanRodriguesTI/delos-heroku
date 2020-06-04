@@ -31,7 +31,8 @@
          * @var array
          */
         protected $fieldSearchable = [
-            'project.full_description' => 'like',
+            'project.compiled_cod' => 'like',
+            'project.description' =>'like',
             'user.name'                => 'like',
             'task.name'                => 'like',
             'hours',
@@ -79,9 +80,10 @@
             $possibles = collect();
             $days      = $this->getDateRange($data['start'], $data['finish']);
             $workDays  = 0;
+            $exceptionWorkDays = isset($data['jobWeekEnd']) && $data['jobWeekEnd'] == 'true';
 
             foreach ( $days as $day ) {
-                if ( $this->isWorkingDay($day) ) {
+                if ( $this->isWorkingDay($day,$exceptionWorkDays) ) {
                     $hours = $this->findWhere([
                                                   ['start', '>=', $day->format('Y-m-d')],
                                                   ['finish', '<=', $day->format('Y-m-d')],
@@ -103,6 +105,24 @@
 
             return $possibles;
 
+        }
+
+
+        public function calcToHoursfromPeriod($data){
+            $days      = $this->getDateRange($data['start'], $data['finish']);
+            $workDays  = 0;
+            $hour = $data['hourDay'];
+            $hours =0;
+            $exceptionWorkDays = isset($data['jobWeekEnd']) && $data['jobWeekEnd'] == 'true';
+
+            foreach ( $days as $day ) {
+                if ( $this->isWorkingDay($day,$exceptionWorkDays) ) {
+                    $hours+= $hour;
+                    $workDays++;
+                }
+            }
+
+            return  $hours;
         }
 
         /**

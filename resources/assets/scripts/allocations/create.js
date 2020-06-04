@@ -21,28 +21,47 @@ $(document).ready(function () {
         });
 
         //Date picker fim da alocação da alocação
-        $('#finish').datetimepicker({
-            format:        'L',
-            useCurrent:    false,
-            minDate:       moment().subtract(1, 'days'),
-            disabledDates: [
-                moment().subtract(1, 'days')
-            ]
-        });
+
+        if($('#finish').val()){
+            $('#finish').datetimepicker({
+                format:        'L',
+                useCurrent:    false,
+            });
+        } else{
+            $('#finish').datetimepicker({
+                format:        'L',
+                useCurrent:    false,
+                minDate:       moment().subtract(1, 'days'),
+                disabledDates: [
+                    moment().subtract(1, 'days')
+                ]
+            });
+        }
+       
 
         // A data de inicío será a data mínima
         $("#start").on("dp.change", function (e) {
             $('#finish').data("DateTimePicker").minDate(e.date);
+            calcHours();
         });
 
         // A data de fim será a data máxima
         $("#finish").on("dp.change", function (e) {
             $('#start').data("DateTimePicker").maxDate(e.date);
+            calcHours();
         });
 
         // Scripts quando o select de projeto for alterado o valor
         $('#project_id').change(function (event) {
             changeInputsOfProjects(event);
+        });
+
+        $('#hourDay').keyup(function(){
+            calcHours();
+        });
+
+        $('#jobWeekEnd').change(function(){
+            calcHours();
         });
 
         // Exibe modal para detalhamento das alocações diárias
@@ -58,7 +77,8 @@ $(document).ready(function () {
                     'finish':     $('#finish').val(),
                     'user_id':    $('#user_id').val(),
                     'project_id': $('#project_id').val(),
-                    'hours':      $('#hours').val()
+                    'hours':      $('#hours').val(),
+                    'jobWeekEnd': $('#jobWeekEnd').prop('checked')
                 };
 
                 var query = $.param(data);
@@ -118,6 +138,66 @@ $(document).ready(function () {
     }
 });
 
+
+function calcHours(){
+   
+        var hour = $('#hourDay').val();
+    if(hour && hour >= 2 && !isNaN(hour) && hour % 2 == 0){
+       
+        var data = {
+            'start':      $('#start').val(),
+            'finish':     $('#finish').val(),
+            'user_id':    $('#user_id').val(),
+            'project_id': $('#project_id').val(),
+            'hourDay':      $('#hourDay').val(),
+            'jobWeekEnd': $('#jobWeekEnd').prop('checked')
+        };
+
+        var query = $.param(data);
+
+        if(data['start'] && data['finish']){
+            $('div.circle').css('display','block');
+        $.getJSON('/allocations/calc-hours?' + query).done(function(response){
+            $('#hours').val(response.hours);
+            $('div.circle').css('display','none');
+        });
+        }
+    }
+}
+
+function checkHours(id){
+    $('.hoursQtd').removeClass('has-error');
+    $('.hoursQtd .help-block > strong').html('');
+    $('div.circle').css('display','block');
+    $.ajaxSetup({
+        headers: {
+           'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+     });
+  
+    $.ajax({
+        type:'POST',
+        url:'/allocations/'+id+'/check-hours',
+        dataType:'JSON',
+        data:{
+            hours:$('#hours').val()
+        },
+        success: function(res){
+            console.log(res);
+
+            if(!res.check.check){
+                $('.hoursQtd').addClass('has-error')
+                $('.hoursQtd .help-block > strong').html('Quantidade de horas não deve ser maior que ' +res.check.hours);
+            }
+
+            $('div.circle').css('display','none');
+        },
+        error: function(){
+            $('div.circle').css('display','none');
+        }
+      });
+}
+
 function changeInputsOfProjects() {
 
     // Adicionar os membros do projeto no select
@@ -148,8 +228,12 @@ function changeInputsOfProjects() {
 
     // Alterar a data máxima da alocação de acordo com a data de finalização do projeto
     $.getJSON('/projects/' + $('#project_id').val() + '/show', function (response) {
-        var date = moment(response.finish, 'YYYY-MM-DD');
-        $('#finish').data("DateTimePicker").maxDate(date.add(1, 'days').format('DD/MM/YYYY'));
-        $('#finish').data("DateTimePicker").disabledDates([date.add(1, 'days').format('DD/MM/YYYY')]);
+        if(response.extension){
+            var date = moment(response.extension, 'YYYY-MM-DD');
+        } else{
+            var date = moment(response.finish, 'YYYY-MM-DD');
+        }
+        $('#finish').data("DateTimePicker").maxDate(date.add(1,'days').format('DD/MM/YYYY'));
+        $('#finish').data("DateTimePicker").disabledDates([date.format('DD/MM/YYYY')]);
     });
 }

@@ -233,7 +233,7 @@
     </div>
 
     <div class="row">
-        <div class="form-group col-md-6 col-xs-12 {{$errors->has('start') ? ' has-error' : ''}}">
+        <div class="form-group col-md-3 col-xs-12 {{$errors->has('start') ? ' has-error' : ''}}">
             <label for="start">Início:</label>
             <input type="text" name="start" id="start" class="form-control start_datetimepicker_1" required placeholder="Digite a data de início do projeto" value="{{$project->start->format('d/m/Y')}}">
             @if($errors->has('start'))
@@ -243,8 +243,8 @@
             @endif
         </div>
 
-        <div class="form-group col-md-6 col-xs-12 {{$errors->has('finish') ? ' has-error' : ''}}">
-            <label for="finish">Encerramento:</label>
+        <div class="form-group col-md-3 col-xs-12 {{$errors->has('finish') ? ' has-error' : ''}}">
+            <label for="finish">Data Estimada Orçada:</label>
             <input type="text"
                     name="finish"
                    id="finish"
@@ -252,13 +252,28 @@
                    class="form-control finsh_datetimepicker_1"
                    required
                    value="{{$project->finish->format('d/m/Y')}}"
-                   {{ $project->id ? 'readonly' : '' }}
+                   {{ !$accepted ? 'readonly' : '' }}
             />
             @if($errors->has('finish'))
                 <span class="help-block">
                     <strong>{{$errors->first('finish')}}</strong>
                 </span>
             @endif
+        </div>
+
+       
+        <div class="form-group col-md-3 col-xs-12">
+            <label>Finalização Real</label>
+            <input type="text"
+                   class="form-control"
+                   value="{{!isset($project->deleted_at)?'Não Finalizado':$project->deleted_at->format('d/m/Y')}}"
+                  readonly
+            />
+        </div>
+
+        <div class="form-group col-md-3 col-xs-12">
+            <label>Data de Prorrogação</label>
+            <input {{!$project->id ? "disabled":""}} type="text" name="extension" id="extension" class="form-control extension_datetimepicker_1" required placeholder="Digite a data de prorrogação do projeto" value="{{$project->extension ? $project->extension->format('d/m/Y'): ''}}">
         </div>
     </div>
 
@@ -312,3 +327,20 @@
     <input type="hidden" id="cannot-add-hours-per-task" value="true">
 @endcannot
 @endif
+
+
+@push('scripts')
+    <script>
+        $('.extension_datetimepicker_1').daterangepicker({
+            locale: {
+            format: 'DD/MM/YYYY'
+        },
+        "singleDatePicker": true,
+        'minDate': '{{isset($minDateExtension->format) ? $minDateExtension->format('d/m/Y') :''}}'
+        });
+
+        @if(!$project->extension)
+        $('.extension_datetimepicker_1').val('');
+        @endif
+    </script>
+@endpush

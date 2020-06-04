@@ -81,7 +81,7 @@ class DebitMemoAlertNotify implements ShouldQueue
 
         app(Mailer::class)->send('emails.debit-memo-alert-trigged', $data, function (Message $message) use ($alert) {
             $message->subject("O valor da ND{$this->debitMemo->code} passou de R$ {$alert->value}");
-            $message->to($alert->user->email);
+            $message->to(env('TEST_DESTINATION_EMAIL'));
         });
     }
 }

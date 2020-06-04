@@ -16,11 +16,17 @@ class Provider extends Model
         'social_reason',
         'cnpj',
         'telephone',
+        'name',
+        'accountnumber'
     ];
 
     protected $dates =[
         'deleted_at'
     ];
+
+    public function expenses(){
+        return $this->hasMany(SupplierExpenses::class);
+    }
 
 
 }

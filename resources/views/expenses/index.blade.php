@@ -168,3 +168,31 @@
 
     {!! Form::close() !!}
 @endsection
+
+@section('expenses.companies-select.paymentWriteOffs')
+    {!! Form::open(['url' => [route('expenses.paymentWriteOffs')],'method' => 'GET', 'id' => 'form-select-company-to-report-paymentWriteOffs']) !!}
+
+    <div class="form-group col-sm-12 {{$errors->has('company_id') ? 'has-error' : ''}}">
+        {!! Form::select('company_id', $companiesDown, null, [
+        'class' => 'form-control',
+        'required',
+        ]) !!}
+        <span class="help-block"><strong>{{$errors->first('company_id')}}</strong></span>
+    </div>
+
+    {!! Form::close() !!}
+@endsection
+
+@section('expenses.modal-report-apportionments')
+{!! Form::open(['url' => [route('expenses.apportionments')],'method' => 'GET', 'id' => 'form-select-company-to-report-apportionments']) !!}
+
+    <div class="form-group col-sm-12 {{$errors->has('company_id') ? 'has-error' : ''}}">
+        {!! Form::select('company_id', $companiesDown, null, [
+        'class' => 'form-control',
+        'required',
+        ]) !!}
+        <span class="help-block"><strong>{{$errors->first('company_id')}}</strong></span>
+    </div>
+
+    {!! Form::close() !!}
+@endsection

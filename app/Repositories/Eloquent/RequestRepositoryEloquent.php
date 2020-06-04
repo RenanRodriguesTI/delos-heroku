@@ -83,4 +83,23 @@ class RequestRepositoryEloquent extends BaseRepository implements RequestReposit
 
         return $transformed->pluck('description', 'id');
     }
+
+    public function getPairsRequests() : iterable
+    {
+        $this->applyCriteria();
+        $this->applyScope();
+
+        $requests = $this->model->with('project')
+            ->get();
+
+        $transformed = $requests->transform(function ($request) {
+
+            return [
+                'id' => $request->id,
+                'description' => "Nº: $request->id - De: {$request->start->format('d/m/Y')} - Até: {$request->finish->format('d/m/Y')} * Descrição do projeto: {$request->project->description}"
+            ];
+        });
+
+        return $transformed->pluck('description', 'id');
+    }
 }

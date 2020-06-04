@@ -7,15 +7,15 @@ use Delos\Dgp\Repositories\Contracts\HolidayRepository;
 
 trait WorkingDay
 {
-    protected function isWorkingDay(Carbon $date)
+    protected function isWorkingDay(Carbon $date,$exception=false)
     {
-        if($date->isWeekend()) {
+        if($date->isWeekend() && !$exception) {
             return false;
         }
 
         $holiday = app(HolidayRepository::class)->getByDate($date);
 
-        return is_null($holiday);
+        return is_null($holiday) || $exception;
     }
 
     protected function isNonWorkingDay(Carbon $date)

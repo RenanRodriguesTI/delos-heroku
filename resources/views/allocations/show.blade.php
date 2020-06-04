@@ -23,7 +23,7 @@
                     <tr>
                         <td><b>Tarefa</b></td>
                         <td style="vertical-align:middle;">
-                            <span class="task-allocation"> {{$allocation->task->name}}</span>
+                            <span class="task-allocation"> {{$allocation->task ? $allocation->task->name :"Não Especificado"}}</span>
                             {{--<form class="form-task-allocation" style="display:none;">--}}
                             {{--<select name="status[]" class="value-task-allocation">--}}
                             {{--@foreach ($allocation->project->tasks as $task)--}}
@@ -80,15 +80,24 @@
                     {{--</tr>--}}
 
                     <tr>
-                        <td><b>Quantidade de Horas</b></td>
+                        <td><b>Quantidade total de horas</b></td>
                         <td class="">
                             {{$allocation->hours}}
                         </td>
                     </tr>
 
                     <tr>
+                        <td><b>Quantidade de horas por dia</b></td>
+                        <td>{{$allocation->hourDay}}</td>
+                    </tr>
+
+                    <tr>
                         <td><b>Descrição</b></td>
                         <td>{!! $allocation->description !!}</td>
+                    </tr>
+                    <tr>
+                            <td>Trabalhar final de semana ou feriado:</td>
+                            <td>{{$allocation->jobWeekEnd ? 'Sim' : 'Não'}}</td>
                     </tr>
 
                     </tbody>
@@ -97,7 +106,7 @@
             <div class="panel-footer">
                 <div class="row">
                     <div class="col-sm-12 col-md-12 col-lg-12 col-xs-12">
-                        <a href="{{url()->previous() == url()->current() ? route('allocations.index') . '?deleted_at=whereNull' : url()->previous()}}"
+                        <a href="{{ route('allocations.index') . '?deleted_at=whereNull' }}"
                            class="btn btn-default pull-right btn-align-allocations hidden-print" id="btn-back-page"
                            style="margin-right: 15px;">
                             <span class="glyphicon glyphicon-arrow-left"></span>
@@ -109,6 +118,8 @@
             > Imprimir
                         </a>
 
+                       
+
                         @can('destroy-allocation')
                             <a class="btn btn-danger pull-right btn-align-allocations destroy-allocation hidden-print"
                                id="{{ route('allocations.destroy', ['id' => $allocation->id]) }}"
@@ -117,6 +128,12 @@
                                 Excluir
                             </a>
                         @endcan
+
+
+                        <a class='btn btn-default pull-right'   style="margin-right: 3px;" id='btn-edit-allocation' href='{{route("allocations.edit",["id"=>$allocation->id])}}'>
+                        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                            Editar
+                        </a>
                     </div>
                 </div>
             </div>

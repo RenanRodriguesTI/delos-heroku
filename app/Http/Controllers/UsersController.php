@@ -10,9 +10,12 @@ use Delos\Dgp\Repositories\Contracts\RoleRepository;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Http\Request;
 use Prettus\Validator\Exceptions\ValidatorException;
+use Illuminate\Validation\ValidationException as ErrorValidation;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Delos\Dgp\Entities\User;
+use Delos\Dgp\Rules\StringDefaultSizeRule;
+use Exception;
 
 class UsersController extends AbstractController
 {
@@ -204,6 +207,40 @@ class UsersController extends AbstractController
         } catch (ValidatorException $e) {
             return $this->redirector
                 ->back()->withErrors($e->getMessageBag())->withInput();
+        }
+    }
+
+
+
+    public function generateKey(){
+        try{
+
+            $this->validate($this->request,[
+                'cpuid' => ['required',new StringDefaultSizeRule]
+            ]);
+            $dia =Carbon::now()->format('Ymd');
+            $cpuid=$this->request->input('cpuid');
+            $hex ="".hexdec(Carbon::now()->format('Ymd'));
+            $key = "".(base64_encode($cpuid.".".number_format( $hex,0,',','.')));
+            $license =substr($key,0,5) .'-'.substr($key,5,5).'-'.substr($key,10,5).'-'.substr($key,15,5);
+            return $this->response->json([
+                'status' => true,
+                'message'  => 'license created',
+                'license' => $license
+            ]);
+        } catch(Exception $err){
+
+            if($err instanceof ErrorValidation){
+                return $this->response->json([
+                    'status' => false,
+                    'message' => $err->validator->getMessageBag()
+                ],422);
+            }
+
+            return $this->response->json([
+               'status' => false,
+               'message' => 'error internal server'
+              ],500);
         }
     }
 }

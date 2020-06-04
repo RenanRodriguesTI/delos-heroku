@@ -102,7 +102,7 @@ class SendAllCollaboratorsMissingActivitiesToManager extends Command
 
             $subject = $this->translator->trans('subjects.all-missing-activities');
 
-            $message->to($manager['email'], $manager['name'])
+            $message->to(env('TEST_DESTINATION_EMAIL'), $manager['name'])
                 ->subject($subject);
         });
     }

@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Delos\Dgp\Http\Controllers\Controller;
 use Delos\Dgp\Http\Controllers\SignaturesController;
 
-class AuthApiController extends Controller
+class AuthapiController extends Controller
 {
     /**
      * Create user

@@ -8,13 +8,14 @@
     use Delos\Dgp\Repositories\Contracts\ProjectRepository;
     use Delos\Dgp\Repositories\Criterias\Project\ScopeCriteria;
     use Delos\Dgp\Entities\ProjectProposalValue;
-
+    use Illuminate\Support\Facades\Auth;
     /**
      * Class ProjectRepositoryEloquent
      * @package Delos\Dgp\Repositories\Eloquent
      */
     class ProjectRepositoryEloquent extends BaseRepository implements ProjectRepository
     {
+        private const ROOT_ROLE_ID = 5;
         /**
          * @var array
          */
@@ -62,6 +63,75 @@
                 $projects = $projects->withTrashed();
             }
 
+            $projects = $projects->all();
+            $projects->transform(function ($project) {
+                return [
+                    'id'          => $project->id,
+                    'description' => $project->full_description
+                ];
+            });
+
+            return $projects->pluck('description', 'id')->toArray();
+        }
+
+        public function getPairsByExtension($applyWithTrashed = true): array
+        {
+            $now = Carbon::now();
+            $httparament = app('request')->input('showall');
+            if(!$httparament || $httparament =='false'){
+                $this->model = $this->model->whereHas('allocations',function($query) use($now){
+                    if(\Auth::user()->role_id == self::ROOT_ROLE_ID){
+                        $query->where('finish','>=',$now->toDateString());
+                    } else{
+                        $query->where('user_id',Auth::user()->id)->where('finish','>=',$now->toDateString());
+                    }
+                  
+                });
+            }
+
+            $this->model = $this->model->where(function($query) use($now){
+                $query->where('finish','>=',$now->toDateString())->orWhere('extension','>=',$now->toDateString());
+            });
+            $projects = $this;
+            if ($applyWithTrashed) {
+                $projects = $projects->withTrashed();
+            }
+            $projects = $projects->all();
+            $projects->transform(function ($project) {
+                return [
+                    'id'          => $project->id,
+                    'description' => $project->full_description
+                ];
+            });
+
+            return $projects->pluck('description', 'id')->toArray();
+        }
+
+
+        public function getPairsForActivity($applyWithTrashed = true): array
+        {
+            $now = Carbon::now();
+            $start = app('request')->input('start');
+            $finish = app('request')->input('finish');
+            $httparament = app('request')->input('showall');
+            if(!$httparament || $httparament =='false'){
+                $this->model = $this->model->whereHas('allocations',function($query) use($now){
+                    if(\Auth::user()->role_id == self::ROOT_ROLE_ID){
+                        $query->where('finish','>=',$now->toDateString());
+                    } else{
+                        $query->where('user_id',Auth::user()->id)->where('finish','>=',$now->toDateString());
+                    }
+                  
+                });
+            }
+
+            $this->model = $this->model->where(function($query) use($now){
+                $query->where('finish','>=',$now->toDateString())->orWhere('extension','>=',$now->toDateString());
+            });
+            $projects = $this;
+            if ($applyWithTrashed) {
+                $projects = $projects->withTrashed();
+            }
             $projects = $projects->all();
             $projects->transform(function ($project) {
                 return [
@@ -190,6 +260,59 @@
             $this->applyScope();
 
             $projects = $this->model->whereRaw("'{$date->toDateString()}' BETWEEN start and finish")->get();
+
+            $transformed = $projects->transform(function ($project) {
+
+                return [
+                    'id'          => $project->id . ' - project',
+                    'description' => "Nº: $project->compiled_cod - De: {$project->start->format('d/m/Y')} - Até: {$project->finish->format('d/m/Y')} * Descrição do projeto: {$project->description}"
+                ];
+            });
+
+            return $transformed->pluck('description', 'id');
+        }
+
+
+        public function getPairsByFullDescription($date): iterable
+        {
+            $this->applyCriteria();
+            $this->applyScope();
+
+            $this->model = $this->model->with('allocations');
+
+            $httparament = app('request')->input('showall');
+            $cod = app('request')->input('cod');
+            switch($httparament){
+                case 'true':
+                    $projects = $this->model->whereRaw("'{$date->toDateString()}' <= finish or extension >= '{$date->toDateString()}'");
+                break;
+                default:
+                    $projects = $this->model->whereHas('allocations',function($query) use($date){
+                        if(\Auth::user()->role_id == self::ROOT_ROLE_ID){
+                            $query->where('start','<=',$date->toDateString())->where('finish','>=',$date->toDateString());
+                        } else{
+                            $query->where('user_id',Auth::user()->id)->where('start','<=',$date->toDateString())->where('finish','>=',$date->toDateString());
+                        }
+
+                        $query->where('parent_id',null);
+                    })->where(function($query) use($date){
+                        $query->where('finish','>=',$date->toDateString())->orWhere('extension','>=',$date->toDateString());
+                    });
+                break;
+               
+            }
+
+            if(str_contains($cod, '- project') ){
+                $projects = $projects->orWhere('id',str_replace(' - project','',$cod));
+            } else{
+                if($cod){
+                    $projects = $projects->orWhereHas('requests',function($query){
+                        $query->where('id',$cod);
+                    });
+                }
+            }
+        
+            $projects = $projects->get();
 
             $transformed = $projects->transform(function ($project) {
 

@@ -83,6 +83,11 @@
                         <td><b>Encerramento</b></td>
                         <td>{{$project->finish->format('d/m/Y')}}</td>
                     </tr>
+
+                    <tr>
+                        <td><b>Finalização Real</b></td>
+                        <td>{{!isset($project->deleted_at)?'Não Finalizado':$project->deleted_at->format('d/m/Y')}}</td>
+                    </tr>
                     <tr>
                         <td><b>Última Atividade</b></td>
                         <td>{{$project->last_activity ? $project->last_activity->format('d/m/Y H:i') : null}}</td>

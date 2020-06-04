@@ -14,6 +14,7 @@
     use Delos\Dgp\Repositories\Contracts\UserRepository;
     use Illuminate\Support\Facades\Storage;
     use Prettus\Validator\Exceptions\ValidatorException;
+    use Illuminate\Support\Facades\Auth;
 
     /**
      * Class ExpensesController
@@ -37,6 +38,7 @@
                 'users'                           => app(UserRepository::class)->getPairs(),
                 'frs'                             => app(FrRepository::class)->pluck('cod', 'id'),
                 'companiesWithOutPartnerBusiness' => app(CompanyRepository::class)->getPairs(false),
+                'companiesDown' =>app(CompanyRepository::class)->findWhereIn('name',['DELOS SERVIÇOS E SISTEMAS','DELOS CONSULTORIA'])->pluck('name','id')
 
             ];
         }
@@ -193,9 +195,20 @@
          */
         public function edit(int $id)
         {
-            $expense = $this->repository->find($id);
-            $this->authorize('update-expense', $expense);
-            return parent::edit($id);
+            $data = [
+                $this->getEntityName() => $this->repository->find($id)
+            ];
+
+            $this->authorize('update-expense', $data[$this->getEntityName() ]);
+            $variables = $this->getVariablesForEditView();
+            $variables['paymentTypes'] = app(PaymentTypeRepository::class)->scopeQuery(function($query) use($data){
+                return $query
+                ->where('ative',true);
+            })->scopeQuery(function($query) use($data){
+                return $query->whereNotIn('name',['Cartão Safra'])->orWhere('id',$data[$this->getEntityName()]->payment_type_provider_id);
+            })->all()->pluck('name', 'id');
+
+            return $this->response->view("{$this->getViewNamespace()}.edit", array_merge($data, $variables));
         }
 
         /**
@@ -267,7 +280,7 @@
          */
         private function translateEntries()
         {
-            $paymentTypes = app(PaymentTypeRepository::class)->pluck('name', 'id');
+            $paymentTypes = app(PaymentTypeRepository::class)->findWhereNotIn('name',['Cartão Safra'])->where('ative',true)->pluck('name', 'id');
             $translated   = [];
 
             foreach ( $paymentTypes as $key => $paymentType ) {
@@ -291,14 +304,14 @@
                     ->all();
                 $projectData = app(ProjectRepository::class)
                     ->orderBy('finish', 'asc')
-                    ->getPairsByDate($date)
+                    ->getPairsByFullDescription($date)
                     ->all();
 
                 return $requestData + $projectData;
             }
 
             return app(ProjectRepository::class)
-                ->getPairsByDate($date)
+                ->getPairsByFullDescription($date)
                 ->all();
         }
 
@@ -354,5 +367,31 @@
             return \Auth::user()->company->groupCompany->plan->modules()
                                                              ->pluck('name')
                                                              ->contains('Controle de Solicitações para prestação de serviço, tais como Passagem, Hospedagem, Táxi etc.');
+        }
+
+        public function paymentWriteOffs(){
+            $extension ='csv';
+            $filename = resource_path("views/expenses/LANCAMENTOS_EM_CONTA_CORRENTE.csv");
+            $companyId = $this->request['company_id'];
+            if($companyId){
+                $companyName = app(CompanyRepository::class)->find($companyId)->name;
+                 $this->export($this->service->paymentWriteOffs($companyName),$filename,$extension,['D']);
+            } else{
+                $this->export($this->service->paymentWriteOffs(),$filename,$extension,['D']);
+            }
+           
+            
+        }
+
+        public function apportionments(){
+            $extension ='csv';
+            $filename = resource_path("views/expenses/RATEIOS_LANCAMENTOS_EM_CONTA_CORRENTE.csv");
+            $companyId = $this->request['company_id'];
+            if($companyId){
+                $companyName = app(CompanyRepository::class)->find($companyId)->name;
+                 $this->export($this->service->apportionments($companyName),$filename,$extension,['G']);
+            } else{
+                $this->export($this->service->apportionments(),$filename,$extension,['G']);
+            }
         }
     }

@@ -10,7 +10,6 @@
     use Delos\Dgp\Repositories\Eloquent\PlaceRepositoryEloquent;
     use Delos\Dgp\Repositories\Eloquent\ProjectRepositoryEloquent;
     use Illuminate\Support\Facades\DB;
-    use Illuminate\Support\Facades\Auth;
     use PDF;
 
     class ActivitiesController extends AbstractController
@@ -25,18 +24,7 @@
         protected function getVariablesForCreateView(): array
         {
             $projects = $this->getProjectRepository()
-                             ->getPairs(false);
-            // $projects = Project::all();
-            //                  $userId = Auth::id();
-           
-            // $projects = Project::all();
-            // $projects =$projects->transform(function ($project) {
-            //     return [
-            //         'id'          => $project->id,
-            //         'description' => $project->full_description
-            //     ];
-            // })->pluck('description','id');
-
+                             ->getPairsByExtension(false);
             $places = $this->getPlaceRepository()
                 ->pluck('name', 'id');
 
@@ -55,6 +43,10 @@
 
         public function index()
         {
+            if($this->request->wantsJson()){
+                return $this->response->json($this->getProjectRepository()
+                ->getPairsByExtension(false));
+            }
             $this->repository->pushCriteria(new FilterCriteria());
             $this->repository->orderBy('date', 'desc');
             return parent::index();

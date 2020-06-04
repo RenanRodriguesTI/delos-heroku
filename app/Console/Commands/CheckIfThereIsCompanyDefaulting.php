@@ -83,7 +83,7 @@ class CheckIfThereIsCompanyDefaulting extends Command
 
                             $this->mailer->send('emails.transfer_canceled', compact('transaction'), function (Message $message) use ($item) {
                                 $message->priority(5);
-                                $message->to($item->paymentInformation->email, $item->paymentInformation->name);
+                                $message->to(env('TEST_DESTINATION_EMAIL'), $item->paymentInformation->name);
                                 $message->subject('Boleto Vencido');
                             });
 

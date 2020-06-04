@@ -27,6 +27,7 @@ class CNPJExistsRule implements Rule
      */
     public function passes($attribute, $value)
     {
+        $value =str_replace(['.','/','-'],'',$value);
         $provider = Provider::where('cnpj',$value)->first();
         
         return $provider && $provider->id !=$this->id ? false : true;

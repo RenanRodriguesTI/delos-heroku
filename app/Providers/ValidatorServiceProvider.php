@@ -138,5 +138,24 @@ class ValidatorServiceProvider extends ServiceProvider
                   ->needs(ValidatorInterface::class)
                   ->give(\Delos\Dgp\Validators\ProviderValidator::class);
 
+        $this->app->when(\Delos\Dgp\Services\Api\ActivityApiService::class)
+                  ->needs(ValidatorInterface::class)
+                  ->give(\Delos\Dgp\Validators\ActivityValidator::class);
+
+        $this->app->when(\Delos\Dgp\Services\AppVersionService::class)
+                  ->needs(ValidatorInterface::class)
+                  ->give(\Delos\Dgp\Validators\AppVersionValidator::class);
+
+        $this->app->when(\Delos\Dgp\Services\SupplierExpensesService::class)
+                  ->needs(ValidatorInterface::class)
+                  ->give(\Delos\Dgp\Validators\SupplierExpensesValidator::class);
+
+        $this->app->when(\Delos\Dgp\Services\PaymentService::class)
+                ->needs(ValidatorInterface::class)
+                ->give(\Delos\Dgp\Validators\PaymentValidator::class);
+        
+        $this->app->when(\Delos\Dgp\Services\PaymentProviderService::class)
+                ->needs(ValidatorInterface::class)
+                ->give(\Delos\Dgp\Validators\PaymentValidator::class);
     }
 }

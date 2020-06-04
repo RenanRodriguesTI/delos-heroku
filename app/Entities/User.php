@@ -31,6 +31,7 @@
             'account_number',
             'is_partner_business',
             'avatar',
+            'office',
             'group_company_id',
             'notes',
         ];

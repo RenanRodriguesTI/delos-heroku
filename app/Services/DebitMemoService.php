@@ -10,6 +10,7 @@ namespace Delos\Dgp\Services;
 
 use Carbon\Carbon;
 use Delos\Dgp\Repositories\Contracts\DebitMemoRepository;
+use Delos\Dgp\Entities\DebitMemo;
 
 class DebitMemoService extends AbstractService
 {
@@ -27,7 +28,7 @@ class DebitMemoService extends AbstractService
     {
         $today = Carbon::now();
 
-        $debitMemo = $this->repository->find($id);
+        $debitMemo = DebitMemo::find($id);
         $debitMemo->update(['finish_at' => $today]);
 
         return $debitMemo;

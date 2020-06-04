@@ -147,6 +147,25 @@ $(function() {
         });
     }
 
+
+    if ($('#office').length) {
+        if ($(window).width() <= 768) {
+            $('#office').attr('rows', 4);
+        }
+
+        var text_max = 255;
+
+        var textarea_lenght = $('#office').val().length;
+
+        $('.count_message2').html(textarea_lenght + ' / ' + text_max);
+
+        $('#office').keyup(function() {
+            var text_length = $('#office').val().length;
+
+            $('.count_message2').html(text_length + ' / ' + text_max);
+        });
+    }
+
     if ($('#description').length) {
         if ($(window).width() <= 768) {
             $('#description').attr('rows', 4);

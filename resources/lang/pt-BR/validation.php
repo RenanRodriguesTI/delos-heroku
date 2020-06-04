@@ -146,6 +146,12 @@
             'startfilter' =>'Inicio',
             'endfilter' =>'Fim',
             'projects' =>'Projeto',
-            'telephone' =>'Telefone'
+            'telephone' =>'Telefone',
+            'establishment_id' =>'Estabelecimento',
+            'payment_type_provider_id' => 'Tipo de Pagamento',
+            'description_id' => 'Descrição',
+            'provider_id' =>'Fornecedor',
+            'voucher_type_id' => 'Tipo de Comprovante',
+            'version'=>'Versão'
         ],
     ];

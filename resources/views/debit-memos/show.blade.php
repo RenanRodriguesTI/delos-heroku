@@ -33,7 +33,11 @@
                 <br>
                 <div class="col-md-10 col-lg-10 col-sm-12 col-xs-12">
                     <h4 class="bold"
-                        style="display: inline-block;">{{$debitMemo->expenses->first()->project->full_description}}</h4>
+                        style="display: inline-block;">{{
+                            ($debitMemo->expenses->first()) ?
+                            $debitMemo->expenses->first()->project->full_description : 
+                            $debitMemo->supplierExpenses->first()->project->full_description
+                            }}</h4>
 
                     @if($debitMemo->alerts->pluck('user_id')->contains(\Auth::id()))
                         <br><br>
@@ -106,10 +110,10 @@
                             <tr>
                                 <th>Número</th>
                                 <th>@lang('debitMemos.show.issue-date')</th>
-                                <th>@lang('debitMemos.show.invoice')</th>
+                                <th>Comprovante</th>
                                 <th>@lang('debitMemos.show.description')</th>
                                 <th>@lang('debitMemos.show.note')</th>
-                                <th>@lang('headers.collaborator')</th>
+                                <th>Recurso</th>
                                 <th>@lang('debitMemos.show.payment-type')</th>
                                 <th style="min-width: 90px;">@lang('debitMemos.show.value')</th>
                             </tr>
@@ -127,6 +131,20 @@
                                     <td>R$ {{$expense->value}}</td>
                                     <td class="table-details-title">
                                         Detalhes da nota: {{$expense->compiled_invoice}}
+                                    </td>
+                                </tr>
+                            @endforeach
+                            @foreach($debitMemo->supplierExpenses as $expense)
+                                <tr>
+                                    <td></td>
+                                    <td>{{$expense->issue_date->format('d/m/Y')}}</td>
+                                    <td class="has-btn-group"><a class="url" href="javascript:void(0);" data-href="{{$expense->url_file}}">Link para o comprovante</a></td>
+                                    <td>{{$expense->description_id}}</td>
+                                    <td>{{($expense->note != 'null') ? $expense->note : ''}}</td>
+                                    <td>{{$expense->provider->social_reason}}</td>
+                                    <td>{{ $expense->paymentTypeProvider->name }}</td>
+                                    <td>R$ {{$expense->value}}</td>
+                                    <td class="table-details-title">
                                     </td>
                                 </tr>
                             @endforeach

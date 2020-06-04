@@ -68,7 +68,7 @@
          */
         public function show(int $id)
         {
-            $debitMemo = $this->repository->find($id);
+            $debitMemo = DebitMemo::find($id);
 
             $urlToZip = null;
 
@@ -111,7 +111,10 @@
          */
         private function existsZip($debitMemo): bool
         {
-            $projectCod = $debitMemo->expenses->first()->project_full_description;
+            $projectCod = ($debitMemo->expenses->first())
+            ? $debitMemo->expenses->first()->project_full_description :
+            $debitMemo->supplierExpenses->first()->project_full_description;
+            
             return $this->filesystem()->exists(self::AWS_PATH . $projectCod . '/ND' . str_pad($debitMemo->number, 4, 0, STR_PAD_LEFT) . '.zip');
         }
 
@@ -188,7 +191,7 @@
          */
         private function getExpensesToReport(DebitMemo $debitMemo): array
         {
-            return $debitMemo->expenses->map(function ($item) {
+            $expensesDebit = $debitMemo->expenses->map(function ($item) {
                 return [
                     'request_id'   => $item->request_id ?? $item->project->compiled_cod,
                     'issue_date'   => $item->issue_date->format('d/m/Y'),
@@ -197,9 +200,135 @@
                     'description'  => $item->description,
                     'note'         => $item->note,
                     'collaborator' => $item->user->name,
-                    'payment_type' => trans('entries.' . $item->paymentType->name),
+                    'payment_type' => $item->paymentType->name,
                     'value'        => (double)(str_replace(',', '.', $item->value))
                 ];
             })->toArray();
+
+            $supplierExpenseDebit = $debitMemo->supplierExpenses->map(function($item){
+                return [
+                    'request_id'   => $item->request_id ?? $item->project->compiled_cod,
+                    'issue_date'   => $item->issue_date->format('d/m/Y'),
+                    'invoice'      => '',
+                    'url_invoice'  => $item->url_file,
+                    'description'  => $item->description->name,
+                    'note'         => $item->note,
+                    'collaborator' => $item->provider->social_reason,
+                    'payment_type' => $item->paymentTypeProvider->name,
+                    'value'        => (double)(str_replace(',', '.', $item->value))
+                ];
+            })->toArray();
+
+            return array_merge($expensesDebit,$supplierExpenseDebit);
         }
+
+        public function index(){
+            $model =null;
+            $search = $this->request->input('search');
+            $projectsIds = $this->request->input('projects');
+
+         
+
+            if($this->isEligibleInput($projectsIds)){
+                $model = DebitMemo::whereHas('expenses',function ($query) use ($projectsIds) {
+                    $query->whereIn('project_id', $projectsIds);
+                })
+                ->orWhereHas('supplierExpenses',function ($query) use ($projectsIds) {
+                    $query->whereIn('project_id', $projectsIds);
+                });
+            }
+
+            if($search){
+                $model = ($model)?  
+                $model->where('number','like','%'.ltrim(rtrim($this->request->input('search'))).'%'):
+                DebitMemo::where('number','like','%'.ltrim(rtrim($this->request->input('search'))).'%');
+            }
+            
+
+            $status = $this->request->input('status');
+
+                if (is_numeric($status)) {
+            switch ($status) {
+                case 0:
+                    $model = ($model)?$model->whereNotNull('finish_at'):DebitMemo::whereNotNull('finish_at');
+                    break;
+                case 1:
+                    $model = ($model)?$model->whereNull('finish_at'): DebitMemo::whereNull('finish_at');
+                    break;
+            }
+        }
+
+        if ($this->getAuthenticatedUser()->role->name == 'Client') {
+            $model->where(function ($query) {
+                $query->whereHas('expenses.project', function ($query) {
+                    $query->Where('client_id', $this->getAuthenticatedUser()->id);
+                })->orWhereHas('supplierExpenses.project', function ($query) {
+                    $query->Where('client_id', $this->getAuthenticatedUser()->id);
+                });
+            });
+        }
+
+
+            $variables = [
+                'projects' => app(ProjectRepository::class)->getPairs(),
+                'debitMemos' =>$model->orderBy('number','desc')->paginate(10)
+            ];
+
+           
+
+            if ( $this->isFileDownload() ) {
+                $data = $model->get()->map(function($item){
+                    return [
+                        'id' => $item->id,
+                        'number' => $item->number,
+                        'project'=> $item->project->compiled_cod,
+                        'status' => trans('debitMemos.index.status.' . $item->status),
+                        'value_total' => $item->value_total
+                    ];
+                })->toArray();
+
+                usort($data, function($a,$b){
+                    if($a['id'] == $b['id']){
+                        return 0;
+                    }else{
+                        if($a['id'] > $b['id']){
+                            return 1;
+                        } else
+                        return -1;
+                    }
+                });
+                $filename = $this->getReportFilename();
+                $this->download($data, $filename);
+            }
+
+            return view('debit-memos.index',$variables);
+        }
+
+
+        private function isEligibleInput($input)
+        {
+            return is_array($input) && !empty($input);
+        }
+
+
+        protected function isFileDownload()
+        {
+            $queryStringReport = $this->request->input('report');
+            return $queryStringReport === 'xlsx';
+        }
+
+        protected function getReportFilename(): string
+        {
+            $view     = $this->getViewNamespace();
+            $filename = resource_path("views/$view/$view.xlsx");
+
+            return $filename;
+        }
+
+        private function getAuthenticatedUser()
+        {
+            return app('auth')->getUser();
+        }
+
+
     }

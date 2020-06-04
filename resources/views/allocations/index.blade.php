@@ -38,13 +38,27 @@
         <div id="user-information"></div>
     </div>
 </div>
-
 <script>
     $('.fc-time').css({display:"none"});
     var datestart = '{{ app('request')->input('start') }}';
     var datefinish = '{{ app('request')->input('finish') }}';
-    
     $(function() {
+        var events =[];
+        var color = 0;
+        @foreach($allocations as $allocation)
+            @if($allocation->parent)
+                events.push({
+                    title  : '{{$allocation->compiled_name}}',
+                        start  : '{{$allocation->start}}',
+                        end    : '{{$allocation->finish}}',
+                        allDay : 'false',
+                        color  : color,
+                        url    : '/allocations/' + '{{$allocation->parent->id}}' + '/show'
+                });
+            @else
+                color = '{{$allocation->color }}';
+            @endif
+        @endforeach
         
         $('.fc-time').hide();
         $('#calendar-allocations').fullCalendar({
@@ -68,21 +82,7 @@
             @else
                 defaultDate: moment(datestart, 'DD/MM/YYYY'),
             @endif
-
-            events: [
-                @foreach($allocations as $allocation)
-                {
-                    @if($allocation->parent)
-                        title  : '{{$allocation->compiled_name}}',
-                        start  : '{{$allocation->start}}',
-                        end    : '{{$allocation->finish}}',
-                        allDay : 'false',
-                        color  : '#009E35',
-                        url    : '/allocations/' + '{{$allocation->parent->id}}' + '/show'
-                    @endif
-                },
-                @endforeach
-            ]
+            events: events
         })
     });
 </script>

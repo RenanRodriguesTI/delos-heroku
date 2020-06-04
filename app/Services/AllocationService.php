@@ -32,6 +32,14 @@
          */
         public function create(array $data)
         {
+            $data['jobWeekEnd'] =isset($data['jobWeekEnd']);
+           if(app('auth')->getUser()->name === 'ANA CAROLINA CALVETI' || app('auth')->getUser()->name === "VERONICA SALVATI"){
+               if(!$data['task_id']){
+                unset($data['task_id']);
+               }
+                
+                $this->changevalidation();
+           }
             $this->addValidationToDates($data);
             $this->addValidationToHours($data);
 
@@ -40,20 +48,24 @@
             $this->validator->with($data)
                             ->passesOrFail(ValidatorInterface::RULE_CREATE);
 
+      
             $allocationFather  = $this->repository->create($data);
             $allocations       = collect();
             $data['parent_id'] = $allocationFather->id;
 
             \DB::transaction(function () use ($data, $allocations) {
                 $diffInDays    = $this->getDateRange($data['start'], $data['finish']);
-                $data['hours'] = $data['hours'] / $this->countWorkDays($data);
+                if($this->countWorkDays($data) >0){
+                    $data['hours'] = $data['hours'] / $this->countWorkDays($data);
+                }
+                $exceptionWorkDays = $data['jobWeekEnd'];
 
 
                 foreach ( $diffInDays as $day ) {
                     $data['start']  = $day->format('d/m/Y');
                     $data['finish'] = $day->format('d/m/Y');
 
-                    if ( $this->isWorkingDay($day) ) {
+                    if ( $this->isWorkingDay($day,$exceptionWorkDays) ) {
                         $allocation = $this->repository->create($data);
                         $allocations->push($allocation);
                     }
@@ -63,6 +75,56 @@
 
             return $allocations;
         }
+
+        public function update(array $data, $id){
+            $data['jobWeekEnd'] =isset($data['jobWeekEnd']);
+            $this->validator->setId($id);       
+            $allocations = collect();
+
+            if(app('auth')->getUser()->name === 'ANA CAROLINA CALVETI' || app('auth')->getUser()->name === "VERONICA SALVATI"){
+                if(!$data['task_id']){
+                 unset($data['task_id']);
+                }
+                 
+                 $this->changevalidation();
+               
+            } else{
+                $this->addHoursLimitValidate($id);
+            }
+           $this->validator->with($data)->passesOrFail(ValidatorInterface::RULE_UPDATE);
+
+           $faterAllocation = $this->repository->update($data, $id);
+           $data['parent_id'] = $faterAllocation->id;
+           if($faterAllocation){
+                $childAllocations = $this->repository->findWhere(['parent_id' => $id]);
+                \DB::transaction(function() use($childAllocations, $data,$allocations){
+                    foreach( $childAllocations as $allocation){
+                        $allocation->forceDelete();
+                    }
+                    $diffInDays    = $this->getDateRange($data['start'], $data['finish']);
+
+                    if($this->countWorkDays($data) >0){
+                        $data['hours'] = $data['hours'] / $this->countWorkDays($data);
+                    }
+                    
+                    
+                    $exceptionWorkDays = $data['jobWeekEnd'];
+
+                    foreach ( $diffInDays as $day ){
+                        $data['start']  = $day->format('d/m/Y');
+                        $data['finish'] = $day->format('d/m/Y');
+    
+                        if ( $this->isWorkingDay($day,$exceptionWorkDays) ) {
+                            $allocation = $this->repository->create($data);
+                            $allocations->push($allocation);
+                        }
+                    }
+                });
+           }
+           $this->fireEvent($data);
+           return $allocations;
+        }
+
 
         /**
          * @param array $data
@@ -97,6 +159,24 @@
             $this->validator->setRules($rules);
         }
 
+        public function checkHours($hours,$id){
+            if(app('auth')->getUser()->name === 'ANA CAROLINA CALVETI' || app('auth')->getUser()->name === "VERONICA SALVATI"){
+                return ['check'=>true,'hours' => $hours];
+            }
+            $allocation = $this->repository->find($id);
+            $check= $allocation->hours  >= $hours;
+
+            return ['check'=>$check,'hours' =>$allocation->hours];
+        }
+    
+        private function changevalidation(){
+            $rules       = $this->validator->getRules();
+            $rules['create']['task_id'] = 'integer|exists:tasks,id';
+            $rules['update']['task_id'] = 'integer|exists:tasks,id';
+
+            $this->validator->setRules($rules);
+        }
+
         /**
          * @param $data
          *
@@ -125,13 +205,22 @@
         {
             $quantity   = 0;
             $diffInDays = $this->getDateRange($data['start'], $data['finish']);
-
+            $exceptionWorkDays = $data['jobWeekEnd'];
             foreach ( $diffInDays as $day ) {
-                if ( $this->isWorkingDay($day) ) {
+                if ( $this->isWorkingDay($day,$exceptionWorkDays) ) {
                     $quantity++;
                 }
             }
             return $quantity;
+        }
+
+        public function addHoursLimitValidate($id){
+            $rules = $this->validator->getRules();
+            $max = $this->repository->find($id)->hours;
+            $rules['create']['hours'] .= '|max:' . $max;
+            $rules['update']['hours'] .= '|max:' . $max;
+
+            $this->validator->setRules($rules);
         }
 
         /**

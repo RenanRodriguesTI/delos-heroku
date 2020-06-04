@@ -91,6 +91,24 @@
                                     </a>
                                 </li>
                             @endcan
+
+                            @can('payment-write-offs-expense')
+                                <li>
+                                    <a data-toggle='modal' data-target='#modal-report-paymentWriteOffs'>
+                                    <span class="glyphicon glyphicon-cloud-download"></span>
+                                      Baixa de Pagamentos  
+                                    </a>
+                                </li>
+                            @endcan
+
+                            @can('apportionments-expense')
+                                <li>
+                                    <a data-toggle='modal' data-target='#modal-report-apportionments'>
+                                    <span class="glyphicon glyphicon-cloud-download"></span>
+                                      Rateios Lançamentos  
+                                    </a>
+                                </li>
+                            @endcan
                         </ul>
                     </div>
                 </div>

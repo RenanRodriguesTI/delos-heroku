@@ -131,7 +131,8 @@ if ($('#form-expenses').length) {
     }
 
     function iniciateFormsWhenAccessPage(day) {
-        var url = currentBaseUrl + '/expenses/' + day + '/date';
+        var codparam = $('#request_selected').val() ? '?cod='+$('#request_selected').val():'';
+        var url = currentBaseUrl + '/expenses/' + day + '/date'+codparam;
         var requestSelected = $('#request_selected').val();
         var ExistsError = $('#_old_input_requestable_id').val();
 
@@ -276,3 +277,60 @@ $('.toview').click(function() {
         }
     });
 });
+
+$('#all').change(function(){
+    var codExpense = $('#request_selected').val() ?'&cod='+$('#request_selected').val():'';
+    var formatUSA = 'YYYY-MM-DD';
+
+
+    var url = currentBaseUrl + '/expenses/' + moment(date, 'DD/MM/YYYY').format(formatUSA) + '/date?showall='+$(this).prop('checked')+codExpense;
+    var requestSelected = $('#request_selected').val();
+    var ExistsError = $('#_old_input_requestable_id').val();
+   
+    $.get(url, function(data, status) {
+        $("#requestable_id optgroup[label='Projetos']").empty();
+        $("#requestable_id optgroup[label='Solicitações']").empty();
+        $.each(data, function(index, value) {
+            var description = value.split('*');
+
+            if (index == requestSelected || index == ExistsError) {
+                if (index.indexOf('- project') >= 0) {
+                    var html = "<option value='" + index + "' data-subtext='" + description[1] + "' class='option-dynamic' selected>" + description[0] + "</option>";
+                    var select = $("#requestable_id optgroup[label='Projetos']");
+
+                } else {
+                    var html = "<option value='" + index + "' data-subtext='" + description[1] + "' class='option-dynamic' selected>" + description[0] + "</option>";
+                    var select = $("#requestable_id optgroup[label='Solicitações']");
+                }
+
+                if (index == ExistsError) {
+                    startColaborator(index);
+                }
+
+            } else {
+                if (index.indexOf('- project') >= 0) {
+                    var html = "<option value='" + index + "' data-subtext='" + description[1] + "' class='option-dynamic'>" + description[0] + "</option>";
+                    var select = $("#requestable_id optgroup[label='Projetos']");
+
+                } else {
+                    var html = "<option value='" + index + "' data-subtext='" + description[1] + "' class='option-dynamic'>" + description[0] + "</option>";
+                    var select = $("#requestable_id optgroup[label='Solicitações']");
+                }
+
+            }
+            select.append(html);
+           
+        });
+
+        $('#requestable_id').selectpicker('destroy');
+        $('#requestable_id').selectpicker();
+
+        $.each(data[1], function(index, value) {
+            var hiddenInput = $('<input/>', { type: 'hidden', class: 'requests-owner-or-co-owner', value: value });
+
+            $('div.user').append(hiddenInput);
+        });
+
+        
+    });
+})

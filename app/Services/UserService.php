@@ -7,7 +7,6 @@ use Delos\Dgp\Repositories\Eloquent\UserRepositoryEloquent;
 use Delos\Dgp\Events\CreatedUserEvent;
 use Delos\Dgp\Exceptions\CannotRemoveUserException;
 use Prettus\Validator\Contracts\ValidatorInterface;
-use Delos\Dgp\Entities\Contracts;
 
 class UserService extends AbstractService
 {
@@ -60,5 +59,4 @@ class UserService extends AbstractService
         $user = $this->repository->find($id);
         return $user;
     }
-
 }

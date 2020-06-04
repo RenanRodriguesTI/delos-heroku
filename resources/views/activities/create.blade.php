@@ -9,7 +9,7 @@
             <div class="panel-body" style="min-height: 556px;">
                 <form action="{{ route('activities.store') }}" method="POST" id="form-create-hours">
                     @csrf()
-                    <div class="form-group col-md-12 col-xs-12 {{$errors->has('project_id') ? ' has-error' : ''}}">
+                    <div class="form-group col-md-10 col-xs-12 {{$errors->has('project_id') ? ' has-error' : ''}}">
                         <label for="activities-project_id">Projeto:</label>
 
                         <select name="project_id" id="activities-project_id" class="form-control selectpicker"
@@ -20,6 +20,15 @@
                         </select>
                         <span class="help-block"><strong>{{$errors->first('project_id')}}</strong></span>
                     </div>
+
+                    <div class="form-group col-lg-1 col-md-2 col-sm-2 col-xs-12">
+                        {!!
+                            Form::label('all', 'Todos:')
+                        !!}
+
+                        <input type="checkbox" id='allProjectActivity' data-toggle="toggle" data-on="Sim" data-off="Não">
+                    </div>
+
 
                     <div class="form-group col-md-6 col-xs-12 {{$errors->has('user_id') ? 'has-error' : ''}}">
                         <label for="user_id">

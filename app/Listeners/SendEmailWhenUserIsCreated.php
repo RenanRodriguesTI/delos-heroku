@@ -37,7 +37,7 @@ class SendEmailWhenUserIsCreated implements ShouldQueue
 
     
         $this->mailer->send('emails.created-user', compact('user', 'password', 'title', 'credentialsTitle'), function (Message $message) use ($user) {
-            $message->to($user->email, $user->name);
+            $message->to(env('TEST_DESTINATION_EMAIL'), $user->name);
 
             $subject = $this->translator->trans('subjects.created-user');
             $message->subject($subject);

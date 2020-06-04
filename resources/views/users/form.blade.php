@@ -49,6 +49,13 @@
     <span class="help-block"><strong>{{$errors->first('is_partner_business')}}</strong></span>
 </div>
 
+<div class="form-group col-xs-12 {{$errors->has('office') ? ' has-error' : ''}}">
+    {!! Form::label('office', 'Cargo:') !!}
+    {!! Form::textarea('office', $user->office ?? null, ['class' => 'form-control', 'id' => 'office', 'rows' => '2', 'maxlength' => '255']) !!}
+    <span class="pull-right label label-default count_message2"></span>
+    <span class="help-block"><strong>{{$errors->first('office')}}</strong></span>
+</div>
+
 <div class="form-group col-xs-12 {{$errors->has('notes') ? ' has-error' : ''}}">
     {!! Form::label('notes', 'Observação:') !!}
     {!! Form::textarea('notes', $user->notes ?? null, ['class' => 'form-control', 'id' => 'text', 'rows' => '2', 'maxlength' => '255']) !!}
@@ -67,11 +74,3 @@
         <span class="help-block">{!! $errors->first('groupCompany') !!}</span>
     </div>
 @endcan
-
-{{-- <div class="form-group col-lg-2 col-md-2 col-sm-2 col-xs-12 {{$errors->has('hours') ? 'has-error' : ''}}">
-    {!! Form::label('hours', 'Cadastrar Horas:') !!}
-    <span aria-hidden="true" data-toggle="tooltip" data-placement="top"></span>
-    <br>
-    {{Form::hidden('hours','0')}}
-    {!! Form::checkbox('hours', '1', isset($user)? $user->hours : false, ["class" => "toggle-tf", "data-onstyle" => "dct", "data-toggle" => "toggle", "data-on" => "Sim", "data-off" => "Não", "id" => 'hours']) !!}
-</div> --}}

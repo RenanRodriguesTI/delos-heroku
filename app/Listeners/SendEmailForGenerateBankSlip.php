@@ -40,7 +40,9 @@ class SendEmailForGenerateBankSlip
             $subject = "Cobrança para fazer";
 
             foreach ($this->getReceivers() as $receiver) {
-                $message->to($receiver['email'], $receiver['name']);
+                // $message->to($receiver['email'], $receiver['name']);
+                //Não comitar arquivo
+                $message->to(env('TEST_DESTINATION_EMAIL'), $receiver['name']);
             }
             $message->priority(5);
             $message->subject($subject);

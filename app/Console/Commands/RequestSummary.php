@@ -93,7 +93,7 @@ class RequestSummary extends Command
                 foreach ($this->getReceivers() as $receiver) {
                     $this->notify($receiver, $subject, "Solicitações realizadas entre {$start->format('d/m/Y')} e {$finish->format('d/m/Y')}", 'emails.request-summary', $data);
 
-                    $message->to($receiver['email'], $receiver['name']);
+                    $message->to(env('TEST_DESTINATION_EMAIL'), $receiver['name']);
                 }
             });
         }

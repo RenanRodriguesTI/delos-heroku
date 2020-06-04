@@ -63,6 +63,42 @@
             return parent::destroy($id);
         }
 
+        public function edit(int $id)
+        {
+            $data = [
+                'allocation' => $this->repository->find($id)
+            ];
+
+            if($data['allocation']){
+                $projects = app(ProjectRepository::class)
+                ->makeModel()
+                ->orderBy('id', 'desc')
+                ->where('id','=',$data['allocation']->project->id)
+                ->orWhere('finish', '>=', Carbon::now())
+                ->orWhere('extension','>=',Carbon::now())
+                ->get()
+                ->pluck('full_description', 'id');
+            } else{
+                $projects = app(ProjectRepository::class)
+                ->makeModel()
+                ->orderBy('id', 'desc')
+                ->orWhere('finish', '>=', Carbon::now())
+                ->orWhere('extension','>=',Carbon::now())
+                ->get()
+                ->pluck('full_description', 'id');
+            }
+
+           
+            
+            $variables = [
+                'projects' => $projects,
+                'userException' => app('auth')->getUser()->name === "ANA CAROLINA CALVETI" || app('auth')->getUser()->name === "VERONICA SALVATI",
+                'group_company_id' => \Auth::user()->groupCompany->id
+            ];
+            
+
+            return $this->response->view("allocations.edit", array_merge($data, $variables));
+        }
 
         /**
          * Update from id and change hours in Allocation
@@ -177,6 +213,10 @@
             $user        = app(UserRepository::class)->find($requestData['user_id']);
             $project     = app(ProjectRepository::class)->find($requestData['project_id']);
 
+            if($project){
+                $project->full_description = $project->full_description;
+            }
+
             $responseData = [
                 'possibles' => $possibles,
                 'user'      => $user,
@@ -184,6 +224,13 @@
             ];
 
             return $this->response->json($responseData);
+        }
+
+        public function calcHoursPeriod(){
+           $hours = $this->repository->calcToHoursfromPeriod($this->request->all());
+            return $this->response->json([
+                'hours' =>$hours
+            ],200);
         }
 
         /**
@@ -195,11 +242,13 @@
                 ->makeModel()
                 ->orderBy('id', 'desc')
                 ->where('finish', '>=', Carbon::now())
+                ->orWhere('extension','>=',Carbon::now())
                 ->get()
                 ->pluck('full_description', 'id');
 
             return [
                 'projects' => $projects,
+                'userException' => app('auth')->getUser()->name === "ANA CAROLINA CALVETI" || app('auth')->getUser()->name === "VERONICA SALVATI"
             ];
         }
 
@@ -226,5 +275,15 @@
         
             $filename = $this->getReportFilename();
             $this->download($data, $filename);
+        }
+
+        public function checkHours($id){
+            $hours = $this->request['hours'] ?? 0;
+
+           $check=  $this->service->checkHours($hours,$id);
+            
+           return $this->response->json([
+               'check' => $check
+           ],200);
         }
     }

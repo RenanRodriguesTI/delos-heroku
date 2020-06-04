@@ -40,11 +40,13 @@ class ApproveRequestEmail implements ShouldQueue
 
                 $responsible = $receiver;
 
-                $message->to($responsible['email'], $responsible['name']);
+                //Modificação feita para teste não comitar essa class
+
+                $message->to(env('TEST_DESTINATION_EMAIL'), $responsible['name']);
 
                 if($responsible['email'] !== $requester->email) {
-                    $message->cc($requester->email, $requester->name);
-                }
+                     $message->cc(env('TEST_DESTINATION_EMAIL'), $requester->name);
+                 }
             });
         }
     }

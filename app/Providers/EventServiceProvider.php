@@ -73,6 +73,13 @@
             'Delos\Dgp\Events\DeletedAllocation' => [
                 'Delos\Dgp\Listeners\SendEmailWhenAllocationIsDeleted'
             ],
+            'Delos\Dgp\Events\SavedSupplierExpense' =>[
+                'Delos\Dgp\Listeners\InvoiceFileProviderUpload',
+                'Delos\Dgp\Listeners\AttachDebitMemoListener'
+            ],
+            'Delos\Dgp\Events\SavedSupplierExpenseImport' =>[
+                'Delos\Dgp\Listeners\AttachDebitMemoListener'
+            ]
         ];
 
         /**

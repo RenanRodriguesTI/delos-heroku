@@ -20,11 +20,12 @@ class ExpensesApiController extends AbstractController
     {
         try {
 
+            
+
+            $data = $this->getDataToStore();
             $this->request->validate([
                 "issue_date"=>'required|date'
             ]);
-
-            $data = $this->getDataToStore();
             
             $data["issue_date"] = \Carbon\Carbon::parse($data["issue_date"])->format('d/m/Y');
 
@@ -161,7 +162,7 @@ class ExpensesApiController extends AbstractController
         try {
            
             $data = $this->getDataToStore();
-            $data["issue_date"] = \Carbon\Carbon::parse($data["issue_date"])->format('d/m/Y');
+            // $data["issue_date"] = \Carbon\Carbon::parse($data["issue_date"])->format('d/m/Y');
             $before = Expense::find($id);
             if(!$before) {
                 return $this->response->json([

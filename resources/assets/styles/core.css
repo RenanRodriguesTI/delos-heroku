@@ -1150,3 +1150,91 @@ select, select.form-control {
     border-radius: 7px;
     color: #FFF;
 }
+
+
+    .display-flex-center-wh-100{
+      display: flex;
+      -webkit-justify-content:center;
+      -webkit-align-items:center;
+      justify-content: center;
+      align-items: center;
+      flex-direction: row;
+      flex-wrap: wrap;
+      width: 100%
+  }
+
+  .display-flex-space-between-wh-100{
+    display: flex;
+    -webkit-justify-content:space-between;
+    -webkit-align-items:center;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%
+}
+
+.license{
+    font-size: 27px;
+    font-weight: 200;
+}
+
+.development-page{
+    flex-direction: column !important;
+}
+
+
+.development-page h3{
+    margin: 0px;
+    padding: 24px 0px;
+    font-size: 30px;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-family: sans-serif;
+}
+
+.development-page p{
+    font-size: 16px;
+    margin: 0px;
+    font-weight: 400;
+    padding: 10px 0px;
+}
+
+.development-page a{
+    margin-top: 15px;
+}
+
+.circle{
+    width: 16px;
+    height: 16px;
+    border-left: 1px solid #2E7D32;
+    border-right: 1px solid #2E7D32;
+    position: absolute;
+    top: 0px;
+    right: 18px;
+    border-radius: 50%;
+    animation: loading linear .4s infinite;
+}
+
+.count_message2 {
+    background-color: smoke;
+    margin-top: -20px;
+    margin-right: 5px;
+}
+
+#office{
+    resize: none;
+}
+
+
+@keyframes loading{
+    0%{
+        transform: rotate(0deg);
+    }
+    100%{
+        transform: rotate(360deg);
+    }
+}
+.col-buttons{
+    width: 140px !important;
+}

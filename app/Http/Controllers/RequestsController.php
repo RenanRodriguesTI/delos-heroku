@@ -31,6 +31,14 @@
             ];
         }
 
+
+        public function index(){
+            if($this->request->wantsJson()){
+                $this->response->json([app(ProjectRepository::class)]);
+            }
+            return parent::index();
+        }
+
         /**
          * @return array
          */

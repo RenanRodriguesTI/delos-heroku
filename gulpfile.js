@@ -67,7 +67,8 @@ var scripts = [
     './resources/assets/scripts/activities/create.js',
     './resources/assets/scripts/coast-users/index.js',
     './resources/assets/scripts/expenses/core.js',
-    './resources/assets/scripts/core.js'
+    './resources/assets/scripts/core.js',
+    './resources/assets/scripts/jquery.mask.js'
 ];
 
 var styles = [
@@ -95,7 +96,7 @@ var styles = [
     './resources/assets/styles/core.css'
 ];
 
-elixir(function (mix) {
+elixir(function(mix) {
 
     mix.scripts(scripts);
 

@@ -31,11 +31,15 @@
             'start',
             'finish',
             'hours',
+            'hourDay',
             'description',
             'reason',
             'status',
-            'parent_id'
+            'parent_id',
+            'jobWeekEnd'
         ];
+
+        private $color ='';
 
         /**
          * @var array
@@ -128,6 +132,16 @@
 
         public function getCompiledNameAttribute()
         {
+            if(!$this->task){
+                return "{$this->project->compiled_cod} - {$this->user->name} - Não Especificado";
+            }
             return "{$this->project->compiled_cod} - {$this->user->name} - {$this->task->name}";
+        }
+
+        public function getColorAttribute(){
+        $colors = explode(' ','#c8d769 #20c7ef #d4ed54 #3c8c40 #316320 #0eb2b0 #ea8e37 #16aa46 #448899 #e4d41d #3ed505 #41a73f #310a99 #6eb50c #0dc4fa #FFC312 #F79F1F #009432 #33d9b2 #218c74 #474787 #f9ca24 #6ab04c #f19066 #546de5 #3dc1d3');
+            $this->color= $colors[random_int(0,count($colors) - 1)];
+            
+           return  $this->color;
         }
     }

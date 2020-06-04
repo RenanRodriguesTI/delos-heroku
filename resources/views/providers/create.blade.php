@@ -28,3 +28,8 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+    <script>
+    </script>
+@endpush

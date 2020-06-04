@@ -66,7 +66,6 @@ class ContractsController extends AbstractController
             'start' =>  ['required','date_format:"d/m/Y"','before:'.$this->request["end"],new StartPeriodRule($this->request['user_id'])],
             'end' =>    ['required','date_format:"d/m/Y"','after:'.$this->request["start"],new StartPeriodRule($this->request['user_id'])],
             'value' =>  ['required',new NumberFormatRule,new MinValueRule],
-            'projects' =>'required',
             'user_id' =>'required'
         ]);
          $contract = $this->service->createContracts($this->request->all());
@@ -88,7 +87,6 @@ class ContractsController extends AbstractController
                 'end' =>    ['required','date_format:"d/m/Y"','after:'.$this->request["start"],new StartPeriodRule($this->request['user_id'],$id)],
                 'value' =>  ['required',new NumberFormatRule, new MinValueRule],
                 'user_id' =>'required',
-                'projects' =>'required'
             ]); 
             $contract = $this->service->updateContracts($this->getRequestDataForStoring(),$id);
             return $this->response->json([

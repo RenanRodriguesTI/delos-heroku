@@ -19,6 +19,10 @@ class DebitMemo extends AbstractAudit
         return $this->hasMany(Expense::class)->withTrashed();
     }
 
+    public function supplierExpenses(){
+        return $this->hasMany(SupplierExpenses::class)->withTrashed();
+    }
+
     public function alerts() {
         return $this->hasMany(DebitMemoAlert::class);
     }
@@ -41,6 +45,19 @@ class DebitMemo extends AbstractAudit
                 return ['value' => str_replace(',', '.', $value)];
             })->sum('value');
 
+
+            $value += $this->supplierExpenses
+            ->map(function ($item) {
+                $value = $item->value;
+
+                if (strpos($value, '.') !== false) {
+                    $value = str_replace('.', '', $value);
+                }
+
+                return ['value' => str_replace(',', '.', $value)];
+            })->sum('value');
+
+
         return number_format($value, 2, ',', '.');
     }
 
@@ -57,12 +74,27 @@ class DebitMemo extends AbstractAudit
                 return ['value' => str_replace(',', '.', $value)];
             })->sum('value');
 
+            $value += $this->supplierExpenses
+            ->map(function ($item) {
+                $value = $item->value;
+
+                if (strpos($value, '.') !== false) {
+                    $value = str_replace('.', '', $value);
+                }
+
+                return ['value' => str_replace(',', '.', $value)];
+            })->sum('value');
+
         return $value;
     }
 
     public function getProjectAttribute()
     {
-        return $this->expenses->first()->project;
+        if($this->expenses->first()){
+            return $this->expenses->first()->project;
+        }
+        return $this->supplierExpenses->first()->project;
+        
     }
 
     public function getStatusAttribute(): string

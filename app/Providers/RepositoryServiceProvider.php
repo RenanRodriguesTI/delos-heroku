@@ -56,5 +56,12 @@ class RepositoryServiceProvider extends SP
         $this->app->bind(Contracts\ModuleRepository::class, Eloquent\ModuleRepositoryEloquent::class);
         $this->app->bind(Contracts\AllocationRepository::class, Eloquent\AllocationRepositoryEloquent::class);
         $this->app->bind(Contracts\CoastUserRepository::class, Eloquent\CoastUserRepositoryEloquent::class);
+
+        $this->app->bind(Contracts\ActivityApiRepository::class, Eloquent\ActivityApiRepositoryEloquent::class);
+        $this->app->bind(Contracts\HolidayApiRepository::class, Eloquent\HolidayApiRepositoryEloquent::class);
+        $this->app->bind(Contracts\SupplierExpensesRepository::class, Eloquent\SupplierExpensesRepositoryEloquent::class);
+        $this->app->bind(Contracts\AppVersionRepository::class, Eloquent\AppVersionRepositoryEloquent::class);
+        $this->app->bind(Contracts\AppVersionApiRepository::class, Eloquent\AppVersionApiRepositoryEloquent::class);
+        $this->app->bind(Contracts\PaymentTypeProviderRepository::class,Eloquent\PaymentTypeProviderRepositoryEloquent::class);
     }
 }

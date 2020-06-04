@@ -17,7 +17,7 @@
                 'invoice'      => $model->invoice,
                 'issue_date'   => $model->issue_date->format('d/m/Y'),
                 'value'        => $model->value,
-                'payment_type' => trans('entries.' . $model->paymentType->name),
+                'payment_type' => $model->paymentType->name,
                 'description'  => $model->description,
                 'note'         => $model->note,
                 'collaborator' => $model->user->name,

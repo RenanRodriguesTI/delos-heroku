@@ -13,7 +13,7 @@
         <span class="help-block"><strong>{{$errors->first('issue_date')}}</strong></span>
     </div>
 
-    <div class="form-group col-lg-10 col-md-12 col-sm-12 col-xs-12 {{$errors->has('requestable_id') ? 'has-error' : ''}}">
+    <div class="form-group col-lg-11 col-md-10 col-sm-10 col-xs-12 {{$errors->has('requestable_id') ? 'has-error' : ''}}">
         {!! Form::label('requestable_id', 'Número') !!}
 
         {!! Form::select('requestable_id', ['' => 'Selecione uma opção', 'Solicitações' => [], 'Projetos' => []], null, [
@@ -31,6 +31,14 @@
         <span class="help-block"><strong>{{$errors->first('requestable_id')}}</strong></span>
 
     </div>
+
+    <div class="form-group col-lg-1 col-md-2 col-sm-2 col-xs-12">
+                {!!
+                    Form::label('all', 'Todos:')
+                 !!}
+
+                 <input type="checkbox" id='all' data-toggle="toggle" data-on="Sim" data-off="Não">
+        </div>
 
     <div class="form-group col-xs-12 user {{$errors->has('user_id') ? 'has-error' : ''}}">
         {!! Form::label('user_id', 'Colaborador:') !!}

@@ -14,13 +14,14 @@ class UserTransformer extends TransformerAbstract
             'id' => $model->id,
             'name' => $model->name,
             'email' => $model->email,
+            'office' =>$model->office,
             'admission' => $model->admission->format('d/m/Y'),
             'role' => $model->role->name,
             'overtime' => $model->overtime,
             'supplier_number' => $model->supplier_number,
             'account_number' => $model->account_number,
             'company' => $model->company->name ?? '',
-            'is_partner_business' => !$model->is_partner_business ? 'NÃO' : 'SIM'
+            'is_partner_business' => !$model->is_partner_business ? 'NÃO' : 'SIM',
         ];
 
         if(!is_null($model->deleted_at)) {

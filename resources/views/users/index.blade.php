@@ -37,6 +37,7 @@
                             <th>@lang('headers.name')</th>
                             <th>@lang('headers.email')</th>
                             <th>@lang('headers.company')</th>
+                            <th>Cargo</th>
                             <th>@lang('headers.admission')</th>
                             <th>@lang('headers.role')</th>
                             <th>@lang('headers.action')</th>
@@ -48,6 +49,7 @@
                                 <td>{{$user->name}}</td>
                                 <td>{{$user->email}}</td>
                                 <td>{{$user->company->name ?? null}}</td>
+                                <td>{{$user->office}}</td>
                                 <td>{{$user->admission->format('d/m/Y')}}</td>
                                 <td>{{$user->role->name}}</td>
                                 @if ($key <= 3)
@@ -63,6 +65,15 @@
                                             <ul class="dropdown-menu dropdown-menu-right">
                                                 <li class="divider"></li>
                                                 @if(!$user->deleted_at)
+                                                    @can('generate-key-user')
+                                                    <li>
+                                                        <a data-toggle='modal' data-target='#create-license'>
+                                                            <i class="fa fa-key" aria-hidden="true"></i>
+                                                            Gerar Licença
+                                                        </a>
+                                                    </li>
+                                                    <li class="divider"></li>
+                                                    @endcan
                                                     @can('update-user')
                                                         <li><a href="{{route('users.edit', ['id' => $user->id])}}"
                                                                id="btn-edit-users-{{$key}}">
@@ -119,6 +130,15 @@
                                             <ul class="dropdown-menu dropdown-menu-right">
                                                 <li class="divider"></li>
                                                 @if(!$user->deleted_at)
+                                                @can('generate-key-user')
+                                                    <li>
+                                                        <a data-toggle='modal' data-target='#create-license'>
+                                                            <i class="fa fa-key" aria-hidden="true"></i>
+                                                            Gerar Licença
+                                                        </a>
+                                                    </li>
+                                                    <li class="divider"></li>
+                                                    @endcan
                                                     @can('update-user')
                                                         <li><a href="{{route('users.edit', ['id' => $user->id])}}"
                                                                id="btn-edit-users-{{$key}}">
@@ -126,7 +146,7 @@
                                                             </a></li>
                                                         <li class="divider"></li>
                                                     @endcan
-
+                                                    <li class="divider"></li>
                                                     @can('destroy-user')
                                                         <li><a id="{{route('users.destroy', ['id' => $user->id])}}"
                                                                class="delete" style="cursor: pointer"
@@ -175,4 +195,6 @@
         </div>
     </div>
     </div>
+
+    @include('users.modal-license')
 @endsection

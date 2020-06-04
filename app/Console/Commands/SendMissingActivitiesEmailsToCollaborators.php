@@ -101,7 +101,7 @@ class SendMissingActivitiesEmailsToCollaborators extends Command
                 $subject = $this->translator
                     ->trans('subjects.missing-activities');
 
-                $message->to($collaborator->email, $collaborator->name)->subject($subject);
+                $message->to(env('TEST_DESTINATION_EMAIL'), $collaborator->name)->subject($subject);
             });
     }
 }

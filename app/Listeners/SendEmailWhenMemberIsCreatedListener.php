@@ -40,7 +40,7 @@ class SendEmailWhenMemberIsCreatedListener implements ShouldQueue
 
         $this->mailer->send('emails.added-member', $data, function (Message $message) use ($member) {
             $subject = $this->translator->trans('subjects.send-email-when-members-is-created-listener');
-            $message->to($member->email, $member->name)
+            $message->to(env('TEST_DESTINATION_EMAIL'), $member->name)
                 ->subject($subject);
         });
     }

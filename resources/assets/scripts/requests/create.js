@@ -49,8 +49,6 @@ function datePickerForRequestDates() {
 
     start.datetimepicker({
         format: 'DD/MM/YYYY',
-        minDate: moment().subtract(1, 'd'),
-        disabledDates: [moment().subtract(1, 'd')]
     });
 
     finish.datetimepicker({
@@ -68,17 +66,19 @@ function datePickerForRequestDates() {
             ];
 
         $.each(datePickerToUpdate, function (key, item) {
+
             updateDatePicker(item, date, 'maxDate');
         });
     });
 }
 
+
 function startLinkedDatePicker(dateStart, dateFinish) {
+    console.log('Carrega no Inicio')
     var dateStart  = $(dateStart),
         dateFinish = $(dateFinish);
 
     dateStart.datetimepicker({
-        minDate: moment(),
         format: 'DD/MM/YYYY',
         useCurrent: false
     });
@@ -125,7 +125,10 @@ function startTimePicker(hour, minutes, seconds) {
 }
 
 function updateProjectSelect() {
+    console.log('Carrega quando o projeto é selecionado')
     var data = {};
+
+    data.requests = true;
 
     if ( $('#start').val() !== '' ) {
         data.start = moment($('#start').val(), 'DD/MM/YYYY').format('YYYY-MM-DD');
@@ -135,21 +138,25 @@ function updateProjectSelect() {
         data.finish = moment($('#finish').val(), 'DD/MM/YYYY').format('YYYY-MM-DD');
     }
 
-    $.ajax({
-        dataType: "json",
-        url: location.origin + '/projects',
-        data: data,
-        success: function (response) {
-            $('#project_id').empty();
+    if($('#start').val() !== '' && $('#finish').val() !== '' ){
+        $.ajax({
+            dataType: "json",
+            url: location.origin + '/projects?showall='+$('#allRequest').prop("checked"),
+            data: data,
+            success: function (response) {
+                $('#project_id').empty();
+    
+                $.each(response.data, function (key, item) {
+                    var html = "<option value=\"" + item.id + "\"\n data-subtext=\"" + item.description + "\">" + item.compiled_cod + "</option>";
+                    $('#project_id').append(html);
+                });
+    
+                $('#project_id').selectpicker('refresh');
+            }
+        });
+    }
 
-            $.each(response.data, function (key, item) {
-                var html = "<option value=\"" + item.id + "\"\n data-subtext=\"" + item.description + "\">" + item.compiled_cod + "</option>";
-                $('#project_id').append(html);
-            });
-
-            $('#project_id').selectpicker('refresh');
-        }
-    });
+    
 }
 
 function getCollaboratorsFromProject() {
@@ -241,6 +248,7 @@ function enableAndShow(el) {
 }
 
 function updateDatePicker(input, date, method) {
+    console.log('input'+input+' date '+date.format('DD/MM/YYYY')+' method ',method);
     if ( $(input).length ) {
         switch ( method ) {
             case 'minDate':
@@ -269,3 +277,7 @@ function validateExtraExpensesOthersBeforeSubmit() {
         }
     });
 }
+
+$('#allRequest').change(function(){
+    updateProjectSelect();
+});

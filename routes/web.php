@@ -57,6 +57,11 @@
                     Route::post('/{id}/update-hours', ['as' => 'updateHours', 'uses' => 'AllocationsController@updateHours']);
                     Route::post('/{id}/update-tasks', ['as' => 'updateTasks', 'uses' => 'AllocationsController@updateTasks']);
                     Route::post('/{id}/update-status', ['as' => 'updateStatus', 'uses' => 'AllocationsController@updateStatus']);
+                    Route::get('/{id}/edit',['as'=>'edit', 'uses' => 'AllocationsController@edit']);
+                    Route::post('/{id}/edit',['as'=>'update','uses' => 'AllocationsController@update']);
+
+                    Route::get('/calc-hours',['as'=>'calcHoursPeriod','uses' =>'AllocationsController@calcHoursPeriod']);
+                    Route::post('/{id}/check-hours',['as'=>'checkHours','uses' => 'AllocationsController@checkHours']);
                 });
 
                 Route::group(['prefix' => 'clients'], function () {
@@ -94,6 +99,7 @@
                     Route::post('{id}/contracts/create',['as'=>'users.contracts.create','uses' =>'ContractsController@store']);
                     Route::post('/contracts/edit/{id}',['as'=>'users.contracts.update','uses' =>'ContractsController@update']);
                     Route::get('/contracts/{id}/destroy',['as'=>'users.contracts.destroy','uses' =>'ContractsController@delete']);
+                    Route::post('{id}/generate/key',['as'=>'users.generate.key','uses'=> 'UsersController@generateKey']);
                 });
 
                 Route::group(['prefix' => 'projects'], function () {
@@ -187,6 +193,8 @@
                     Route::get('users/{requestId}', ['as' => 'usersByRequestId','uses' => 'ExpensesController@getUsersById']);
                     Route::get('/{date}/date', ['as' => 'dates', 'uses' => 'ExpensesController@getPairsByDate']);
                     Route::get('/report/txt', ['as' => 'report.txt', 'uses' => 'ExpensesController@reportTxt']);
+                    Route::get('paymentWriteOffs',['as'=>'paymentWriteOffs','uses' =>'ExpensesController@paymentWriteOffs']);
+                    Route::get('apportionments',['as'=>'apportionments','uses' =>'ExpensesController@apportionments']);
                 });
 
                 Route::group(['prefix' => 'expense-types'], function () {
@@ -420,5 +428,45 @@
             Route::get('{id}/destroy',['as'=>'destroy','uses' =>'ProvidersController@destroy']);
         });
 
-        
+       Route::get('/development',function(){
+           return view('development');
+       });
+
+       Route::group(['prefix' => 'supplier-expenses','as' => 'supplierExpense.'], function () {
+           Route::get('',['as'=>'index','uses'=>'SupplierExpensesController@index']);
+           Route::get('/create',['as'=>'create','uses'=>'SupplierExpensesController@create']);
+           Route::post('/store',['as'=>'store','uses'=>'SupplierExpensesController@store']);
+           Route::get('{id}/edit',['as'=>'edit','uses'=>'SupplierExpensesController@edit']);
+           Route::put('{id}', ['as' => 'update', 'uses' => 'SupplierExpensesController@update']);
+           Route::get('{id}/destroy',['as' => 'destroy', 'uses' => 'SupplierExpensesController@destroy']);
+           Route::get('{id}/providers',['as'=>'providers', 'uses' =>'SupplierExpensesController@providers']);
+           Route::get('paymentWriteOffs',['as'=>'paymentWriteOffs','uses' =>'SupplierExpensesController@paymentWriteOffs']);
+           Route::get('apportionments',['as'=>'apportionments','uses' =>'ExpensesController@apportionments']);
+       });
+
+       Route::group(['prefix' => 'supplier-expenses-imports', 'as' => 'supplierExpensesImport.'], function () {
+        Route::get('', ['as' => 'index', 'uses' => 'SupplierExpensesImportsController@index']);
+        Route::post('/store', ['as' => 'store', 'uses' => 'SupplierExpensesImportsController@store']);
+        });
+
+       Route::group(['prefix'=>'app-versions','as' => 'appVersions.'],function(){
+            Route::get('',['as'=>'index','uses' =>'AppVersionsController@index']);
+            Route::post('',['as'=>'store','uses' => 'AppVersionsController@store']);
+       });
+
+       Route::group(['prefix' =>'payment-user','as'=>'payment.'],function(){
+            Route::get('',['as' =>'index','uses' =>'PaymentController@index']);
+            Route::post('',['as'=>'store','uses'=>'PaymentController@store']);
+            Route::get('{id}/destroy',['as'=>'destroy','uses' =>'PaymentController@destroy']);
+            Route::get('{id}/edit',['as'=>'edit','uses' =>'PaymentController@edit']);
+            Route::post('{id}',['as'=>'update','uses' =>'PaymentController@update']);
+       });
+
+       Route::group(['prefix' =>'payment-provider','as'=>'paymentProvider.'],function(){
+        Route::get('',['as' =>'index','uses' =>'PaymentTypeProvidersController@index']);
+        Route::post('',['as'=>'store','uses'=>'PaymentTypeProvidersController@store']);
+        Route::get('{id}/destroy',['as'=>'destroy','uses' =>'PaymentTypeProvidersController@destroy']);
+        Route::get('{id}/edit',['as'=>'edit','uses' =>'PaymentTypeProvidersController@edit']);
+        Route::post('{id}',['as'=>'update','uses' =>'PaymentTypeProvidersController@update']);
+        });
     });

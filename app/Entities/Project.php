@@ -35,6 +35,7 @@
             'date_change',
             'nf_nd',
             'expected_date',
+            'extension'
         ];
 
         protected $casts = [
@@ -53,6 +54,7 @@
             'date_received',
             'date_change',
             'expected_date',
+            'extension'
         ];
 
         public function getSpentHours()
@@ -149,6 +151,10 @@
                         ->withTrashed();
         }
 
+        public function providerExpenses(){
+            return $this->hasMany(SupplierExpenses::class);
+        }
+
         public function allocations()
         {
             return $this->hasMany(Allocation::class);
@@ -177,6 +183,10 @@
         {
             $this->attributes['finish'] = Carbon::createFromFormat('d/m/Y', $value)
                                                 ->toDateString();
+        }
+
+        public function setExtensionAttribute($value){
+            $this->attributes['extension'] = Carbon::createFromFormat('d/m/Y', $value);
         }
 
         public function setSellerIdAttribute($value)

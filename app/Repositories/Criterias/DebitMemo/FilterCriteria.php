@@ -12,14 +12,15 @@ class FilterCriteria implements CriteriaInterface
 
     public function apply($model, RepositoryInterface $repository)
     {
-        $model = $model->with('expenses', 'expenses.paymentType', 'expenses.project', 'expenses.user', 'expenses.request', 'expenses.project');
+        //$model = $model->with('expenses', 'expenses.paymentType', 'expenses.project', 'expenses.user', 'expenses.request', 'expenses.project');
+        //$model = $model->with('supplierExpenses', 'supplierExpenses.paymentTypeProvider', 'supplierExpenses.project', 'supplierExpenses.provider');
         $httpRequest = app('request');
         $projectsIds = $httpRequest->input('projects');
 
         if ($this->isEligibleInput($projectsIds)) {
             $model = $model->whereHas('expenses', function ($query) use ($projectsIds) {
                 $query->whereIn('project_id', $projectsIds);
-            });
+            });  
         }
 
         $status = $httpRequest->input('status');
@@ -33,7 +34,6 @@ class FilterCriteria implements CriteriaInterface
                     break;
             }
         }
-
         return $model;
     }
 

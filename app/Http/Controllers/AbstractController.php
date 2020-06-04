@@ -162,7 +162,13 @@
          */
         protected function getMessage($type)
         {
-            $resource = ucfirst(trans("resources.{$this->getEntityName()}"));
+            $classexpection =['supplierExpense'];
+            if(array_search($this->getEntityName(),$classexpection) === false){
+                $resource = ucfirst(trans("resources.{$this->getEntityName()}"));
+            } else{
+                $resource = 'Despesa';
+            }
+           
             return trans("messages.{$type}", ['resource' => $resource]);
         }
 

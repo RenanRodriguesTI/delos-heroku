@@ -11,8 +11,8 @@
         </ul>
         <div class="tab-content">
             <div id="usuario" class="panel panel-dct  tab-pane fade in active">
-                <div class="panel-heading">
-                    <h3 class="panel-title bold">Editar Usuário: {{$user->name}}</h3>
+                <div class="panel-heading display-flex-space-between-wh-100">
+                    <h3 class="panel-title bold">Editar Usuário: {{$user->name}}</h3>    
                 </div>
                 {!! Form::open(['route' => ['users.update', 'id' => $user->id], 'method' => 'PUT', 'id' => 'form-users']) !!}
                 <div class="panel-body">

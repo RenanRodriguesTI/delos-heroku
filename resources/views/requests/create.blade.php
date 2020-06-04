@@ -38,7 +38,7 @@
                             {{--/Data de término da solicitação--}}
                         </div>
 
-                        <div class="col-sm-6 col-xs-12">
+                        <div class="col-sm-10 col-xs-12">
                             {{--Projeto da solicitação--}}
                             <div class="form-group project-group {{$errors->has("request[project_id]") ? ' has-error' : ''}}">
                                 <label for="project_id">Projeto</label>
@@ -50,6 +50,14 @@
                             </div>
                             {{--/Projeto da solicitação--}}
                         </div>
+
+                        <div class="form-group col-lg-1 col-md-2 col-sm-2 col-xs-12">
+                        {!!
+                            Form::label('all', 'Todos:')
+                        !!}
+
+                        <input type="checkbox" id='allRequest' data-toggle="toggle" data-on="Sim" data-off="Não">
+                    </div>
 
                         <div class="col-sm-6 col-xs-12">
                             {{--Colaboradores da solicitação--}}

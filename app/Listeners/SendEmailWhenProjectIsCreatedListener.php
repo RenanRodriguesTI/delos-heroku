@@ -24,23 +24,23 @@ class SendEmailWhenProjectIsCreatedListener implements ShouldQueue
 
         $this->mailer->send('emails.created-project', compact('project', 'title'), function (Message $message) use ($project) {
 
-            $message->to($project->owner->email, $project->owner->name);
+            $message->to(env('TEST_DESTINATION_EMAIL'), $project->owner->name);
 
-            if ($project->co_owner_id != null) {
-                $message->to($project->coOwner->email, $project->coOwner->name);
-            }
+            // if ($project->co_owner_id != null) {
+            //     $message->to($project->coOwner->email, $project->coOwner->name);
+            // }
 
-            if ($project->seller_id != null) {
-                $message->addCc($project->seller->email, $project->seller->name);
-            }
+            // if ($project->seller_id != null) {
+            //     $message->addCc($project->seller->email, $project->seller->name);
+            // }
 
-            if ($project->client != null) {
-                $message->to($project->client->email, $project->client->name);
-            }
+            // if ($project->client != null) {
+            //     $message->to($project->client->email, $project->client->name);
+            // }
 
-            foreach ($this->getReceivers() as $receiver) {
-                $message->cc($receiver['email'], $receiver['name']);
-            }
+            // foreach ($this->getReceivers() as $receiver) {
+            //     $message->cc($receiver['email'], $receiver['name']);
+            // }
             $subject = trans('subjects.created-project');
             $message->subject($subject);
 

@@ -30,7 +30,10 @@
                         <table id='table-contracts' class="table table-bordered table-hover table-details">
                             <thead>
                                 <th>Fornecedor</th>
-                                <th>CNPJ</th>
+                                <th>Contato</th>
+                                <th>N° Conta</th>
+                               
+                                <th>CNPJ / CPF</th>
                                 <th>Telefone</th>
                                 <th>Email</th>
                                 <th>Observação</th>
@@ -40,8 +43,11 @@
                                 @foreach ($providers as $provider)
                                     <tr>
                                         <td>{{ $provider->social_reason }}</td>
-                                        <td>{{ $provider->cnpj }}</td>
-                                        <td>{{ $provider->telephone }}</td>
+                                        <td>{{$provider->name}}</td>
+                                        <td>{{$provider->accountnumber}}</td>
+                                       
+                                        <td>{{ mask($provider->cnpj,(strlen($provider->cnpj) ==11)? '###.###.###-##':'##.###.###/####-##') }}</td>
+                                        <td>{{ strlen($provider->telephone) == 10? mask($provider->telephone,'(##) ####-####') : mask($provider->telephone,'(##) #####-####') }}</td>
                                         <td>{{ $provider->email }}</td>
                                         <td>{{ $provider->note}}</td>
                                         <td class="has-btn-group">
@@ -61,7 +67,7 @@
                                                 </li>
                                                 <li class="divider"></li>
                                                 <li>
-                                                    <a href="{{route('providers.destroy', ['id' => $provider->id])}}">
+                                                    <a onclick="getModalDelete(this)" id="{{route('providers.destroy', ['id' => $provider->id])}}">
                                                         <span class="glyphicon glyphicon-trash"></span>
                                                         &nbsp; @lang('buttons.remove')
                                                     </a>
@@ -79,7 +85,9 @@
             </div>
     
             <div class="panel-footer">
-    
+            <div class="text-right">
+                {{ $providers->appends(request()->input())->links() }}
+            </div>
             </div>
         </div>
 

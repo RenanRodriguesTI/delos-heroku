@@ -29,8 +29,9 @@ class AddHoursPerTaskEmail implements ShouldQueue
 
         $this->mailer->send('emails.add-hours-per-task', ['project' => $project], function (Message $message) use ($project) {
 
+            //Modificação feita para teste não comitar essa classe
             foreach($this->getReceivers() as $receiver) {
-                $message->to($receiver['email'], $receiver['name']);
+                $message->to(env('TEST_DESTINATION_EMAIL'), $receiver['name']);
             }
 
             $subject = "Existe(m) tarefa(s) para adicionar hora(s)";

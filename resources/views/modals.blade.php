@@ -90,7 +90,6 @@
 
                         mywindow.print();
                         mywindow.close();
-                        
 
                         return true;
                     }
@@ -115,6 +114,112 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-dct" data-dismiss="modal"
                         onclick="$('#form-select-company-to-report').submit()"><span
+                            class="glyphicon glyphicon-download-alt" aria-hidden="true"></span> Extrair
+                </button>
+                <button type="button" class="btn btn-default" data-dismiss="modal"><span
+                            class="glyphicon glyphicon-remove" aria-hidden="true"></span> Cancelar
+                </button>
+            </div>
+        </div><!-- modal-content -->
+    </div><!-- modal-dialog -->
+</div><!-- modal -->
+
+<div class="modal fade modal-material" id="modal-report-paymentWriteOffs" tabindex="-1" role="dialog"
+     aria-labelledby="myModalLabel-2">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header nav-divider">
+                <h4 class="modal-title" id="myModalLabel-2">Selecione a empresa:</h4>
+            </div>
+
+            <div class="modal-body">
+                @yield('expenses.companies-select.paymentWriteOffs')
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-dct" data-dismiss="modal"
+                        onclick="$('#form-select-company-to-report-paymentWriteOffs').submit()"><span
+                            class="glyphicon glyphicon-download-alt" aria-hidden="true"></span> Extrair
+                </button>
+                <button type="button" class="btn btn-default" data-dismiss="modal"><span
+                            class="glyphicon glyphicon-remove" aria-hidden="true"></span> Cancelar
+                </button>
+            </div>
+        </div><!-- modal-content -->
+    </div><!-- modal-dialog -->
+</div><!-- modal -->
+
+
+
+<div class="modal fade modal-material" id="modal-report-supplier-paymentWriteOffs" tabindex="-1" role="dialog"
+     aria-labelledby="myModalLabel-2">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header nav-divider">
+                <h4 class="modal-title" id="myModalLabel-2">Selecione a empresa:</h4>
+            </div>
+
+            <div class="modal-body">
+                @yield('expenses.companies-select.supplier.paymentWriteOffs')
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-dct" data-dismiss="modal"
+                        onclick="$('#form-select-company-to-report-supplier-paymentWriteOffs').submit()"><span
+                            class="glyphicon glyphicon-download-alt" aria-hidden="true"></span> Extrair
+                </button>
+                <button type="button" class="btn btn-default" data-dismiss="modal"><span
+                            class="glyphicon glyphicon-remove" aria-hidden="true"></span> Cancelar
+                </button>
+            </div>
+        </div><!-- modal-content -->
+    </div><!-- modal-dialog -->
+</div><!-- modal -->
+
+
+
+
+<div class="modal fade modal-material" id="modal-report-apportionments" tabindex="-1" role="dialog"
+     aria-labelledby="myModalLabel-2">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header nav-divider">
+                <h4 class="modal-title" id="myModalLabel-2">Selecione a empresa:</h4>
+            </div>
+
+            <div class="modal-body">
+                @yield('expenses.modal-report-apportionments')
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-dct" data-dismiss="modal"
+                        onclick="$('#form-select-company-to-report-apportionments').submit()"><span
+                            class="glyphicon glyphicon-download-alt" aria-hidden="true"></span> Extrair
+                </button>
+                <button type="button" class="btn btn-default" data-dismiss="modal"><span
+                            class="glyphicon glyphicon-remove" aria-hidden="true"></span> Cancelar
+                </button>
+            </div>
+        </div><!-- modal-content -->
+    </div><!-- modal-dialog -->
+</div><!-- modal -->
+
+
+<div class="modal fade modal-material" id="modal-report-supplier-apportionments" tabindex="-1" role="dialog"
+     aria-labelledby="myModalLabel-2">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header nav-divider">
+                <h4 class="modal-title" id="myModalLabel-2">Selecione a empresa:</h4>
+            </div>
+
+            <div class="modal-body">
+                @yield('expenses.modal-report-supplier-apportionments')
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-dct" data-dismiss="modal"
+                        onclick="$('#form-select-company-to-report-supplier-apportionments').submit()"><span
                             class="glyphicon glyphicon-download-alt" aria-hidden="true"></span> Extrair
                 </button>
                 <button type="button" class="btn btn-default" data-dismiss="modal"><span
@@ -440,7 +545,6 @@
         </div>
     </div>
 </div>
-
 <div class="modal fade" id="destroy-allocation" tabindex="-1" role="dialog" aria-labelledby="Delete Allocation">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -492,8 +596,8 @@
                         <th class="text-center" colspan="2">Horas</th>
                     </tr>
                     <tr>
-                        <th class="text-center" style="width: 33px;">Adicionadas</th>
-                        <th class="text-center" style="width: 99px;">À adicionar</th>
+                        <th class="text-center" style="width: 33px;" id='hoursNow'>Adicionadas</th>
+                        <th class="text-center" style="width: 99px;" id='hoursAdd'>À adicionar</th>
                     </tr>
                     </thead>
                     <tbody class="modal-result">

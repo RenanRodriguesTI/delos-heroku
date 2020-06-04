@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -11,10 +12,6 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:api');
-
 
 Route::group(['prefix' => 'expenses','middleware' => 'auth:api'], function() {
     
@@ -27,6 +24,10 @@ Route::group(['prefix' => 'expenses','middleware' => 'auth:api'], function() {
     Route::get("/requests","Api\RequestsApiController@showByRequest");
     Route::get("/descriptions","Api\ExpensesApiController@showdescription");
    
+});
+
+Route::group(['prefix' => 'project','middleware' => 'auth:api'], function(){
+    Route::get("{id}/tasks","Api\ProjectsApiController@tasks");
 });
 
 Route::group(['prefix' => 'payment', 'middleware' => 'auth:api'], function() {
@@ -43,9 +44,37 @@ Route::group(['prefix' => 'auth' ], function() {
 
 
     Route::group([
-        'middleware' => 'auth:api'
+        'middleware' =>  'auth:api'
       ], function() {
           Route::get('logout', 'Api\AuthApiController@logout');
           Route::get('user', 'Api\AuthApiController@user');
+          Route::get('activities','ActivitiesController@activitiesByUser');
       });
+});
+
+Route::group(['prefix' => 'users','middleware' => 'auth:api'], function () {
+    Route::get('{id}/activities','Api\ActivitiesApiController@activitiesByUser');
+    
+});
+
+Route::group(['prefix' => 'activities','middleware' => 'auth:api'], function () {
+    Route::post('/create','Api\ActivitiesApiController@store');
+});
+
+Route::group(['prefix' => 'places', 'middleware' => 'auth:api'], function () {
+    Route::get('/','Api\PlaceApiController@show');
+});
+
+
+Route::group(['prefix' => 'license'],function(){
+    
+
+    Route::group([ 'middleware' =>  ['auth:api']], function () {
+        Route::post('/','Api\LicenseController@license');
+        Route::post('/create','Api\LicenseController@create');    
+    });
+});
+
+Route::group(['prefix'=>'app','middleware' => 'auth:api'],function(){
+    Route::get('/version/last','Api\AppVersionApiController@last');
 });

@@ -7,26 +7,24 @@ use Delos\Dgp\Entities\Provider;
 use Delos\Dgp\Rules\CNPJRule;
 use Delos\Dgp\Rules\TelephoneRule;
 use Delos\Dgp\Rules\CNPJExistsRule;
+use Delos\Dgp\Rules\CPFExistsRule;
+use Delos\Dgp\Rules\CPFRule;
 
 class ProvidersController extends AbstractController
 {
     public function index(){
-
         switch($this->request->input('searchfilter')){
             case 'social_reason':
-                $providers = Provider::where('social_reason','like','%'.$this->request->input('search').'%')->get();
+                $providers = Provider::where('social_reason','like','%'.ltrim(rtrim($this->request->input('search'))).'%')->orderBy('social_reason','asc')->paginate(10);
             break;
-
             case 'cnpj':
-                $providers = Provider::where('cnpj','like','%'.$this->request->input('search').'%')->get();
+                $providers = Provider::where('cnpj','like','%'.ltrim(rtrim($this->request->input('search'))).'%')->orderBy('social_reason','asc')->paginate(10);
             break;
-
             case 'email':
-                $providers = Provider::where('email','like','%'.$this->request->input('search').'%')->get();
+                $providers = Provider::where('email','like','%'.ltrim(rtrim($this->request->input('search'))).'%')->orderBy('social_reason','asc')->paginate(10);
             break;
-
             default:
-                $providers = Provider::all();
+                $providers = Provider::orderBy('social_reason','asc')->paginate(10);
             break;
         }
        
@@ -38,13 +36,19 @@ class ProvidersController extends AbstractController
     }
 
     public function store(){
+        $this->request['cnpj'] =str_replace(['.','/','-'],'',$this->request->input('cnpj'));
         $this->request->validate([
             'email' =>['required','email:rfc',],
             'social_reason' =>'required',
-            'cnpj' => ['required',new CNPJRule,new CNPJExistsRule],
-            'telephone' => ['required',new TelephoneRule]
+            'cnpj' => [
+                'required',
+                mb_strlen($this->request->input('cnpj')) < 12 ? new CPFRule: new CNPJRule,
+                mb_strlen($this->request->input('cnpj')) < 12 ? new CPFExistsRule : new CNPJExistsRule],
+            'telephone' => ['required',new TelephoneRule],
+            'name' => ['required'],
+            'accountnumber' => ['required']
         ]);
-        Provider::create($this->request->all());
+        Provider::create($this->getRequestDataForStoring());
 
         return redirect()->route('providers.index');
     }
@@ -56,18 +60,33 @@ class ProvidersController extends AbstractController
 
     public function update(int $id){
         $provider = Provider::find($id);
+        $this->request['cnpj'] =str_replace(['.','/','-'],'',$this->request->input('cnpj'));
         $this->request->validate([
             'email' =>['required','email:rfc',],
             'social_reason' =>'required',
-            'cnpj' => ['required',new CNPJRule,new CNPJExistsRule],
-            'telephone' => ['required',new TelephoneRule]
+            'cnpj' => ['required',
+                        mb_strlen($this->request->input('cnpj')) < 12 ? new CPFRule: new CNPJRule,
+                        mb_strlen($this->request->input('cnpj')) < 12 ? new CPFExistsRule($id):new CNPJExistsRule($id)],
+            'telephone' => ['required',new TelephoneRule],
+            'name' => ['required'],
+            'accountnumber' => ['required']
         ]);
-        $provider->update($this->request->all());
+        $provider->update($this->getRequestDataForStoring());
         return redirect()->route('providers.index');
     }
 
     public function destroy(int $id){
         Provider::destroy($id);
         return redirect()->route('providers.index');
+    }
+
+
+    protected function getRequestDataForStoring(): array{
+        $data = $this->request->all();
+
+        $data['cnpj'] = str_replace(['.','/','-'],'',$data['cnpj']);
+        $data['telephone'] = str_replace(['-','(',')',' '],'',$data['telephone']);
+
+        return $data;
     }
 }

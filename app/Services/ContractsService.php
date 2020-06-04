@@ -43,6 +43,7 @@ class ContractsService extends AbstractService{
         unset($data['_token']);
         //$this->validator->with($data)->passesOrFail(ValidatorInterface::RULE_CREATE);
         $contracts = Contracts::create($data);
+        if($data['projects'])
         $contracts->projects()->attach($this->projectAndContract($contracts->id,$data['projects']));
         return $contracts;
     }
@@ -60,8 +61,11 @@ class ContractsService extends AbstractService{
        // $this->validator->with($data)->passesOrFail(ValidatorInterface::RULE_UPDATE);
         $contracts =  Contracts::find($id);
         $contracts->update($data);
-        $contracts->projects()->detach();
-        $contracts->projects()->attach($this->projectAndContract($contracts->id,$data['projects']));
+        if($data['projects']){
+            $contracts->projects()->detach();
+            $contracts->projects()->attach($this->projectAndContract($contracts->id,$data['projects']));
+        }
+       
         return $contracts;
     }
 

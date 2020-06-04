@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="container">
-        {!! Form::open(['route' => 'allocations.store', 'method' => 'post', 'id' => 'form-allocation']) !!}
+        {!! Form::open(['route' => 'allocations.store','autocomplete'=>'off', 'method' => 'post', 'id' => 'form-allocation']) !!}
 
         <div class="panel panel-dct">
             <div class="panel-heading">
@@ -41,13 +41,13 @@
                     'title' => 'Selecione uma tarefa',
                     'data-live-search' => 'true',
                     'data-box-actions' => 'true',
-                    'required'
+                    !$userException ? 'required' : ''
                     ]) !!}
                     <span class="help-block"><strong>{{$errors->first('task_id')}}</strong></span>
                     {!! Form::hidden('task_id_old', null, ['id' => 'task_id_old']) !!}
                 </div>
 
-                <div class="form-group {{$errors->has('start') ? ' has-error' : ''}} col-md-4 col-sm-6 col-xs-12">
+                <div class="form-group {{$errors->has('start') ? ' has-error' : ''}} col-md-3 col-sm-6 col-xs-12">
                     {!! Form::label('start', 'Data de início:') !!}
                     {!! Form::text('start', null, [
                     'class' => 'form-control',
@@ -56,7 +56,7 @@
                     <span class="help-block"><strong>{{$errors->first('start')}}</strong></span>
                 </div>
 
-                <div class="form-group {{$errors->has('finish') ? ' has-error' : ''}} col-md-4 col-sm-6 col-xs-12">
+                <div class="form-group {{$errors->has('finish') ? ' has-error' : ''}} col-md-3 col-sm-6 col-xs-12">
                     {!! Form::label('finish', 'Data de término:') !!}
                     {!! Form::text('finish', null, [
                     'class' => 'form-control',
@@ -65,7 +65,18 @@
                     <span class="help-block"><strong>{{$errors->first('finish')}}</strong></span>
                 </div>
 
-                <div class="form-group{{$errors->has('hours') ? ' has-error' : ''}} col-md-4 col-sm-12 col-xs-12">
+                <div class="form-group{{$errors->has('hourDay') ? ' has-error' : ''}} col-md-3 col-sm-12 col-xs-12">
+                    {!! Form::label('hourDay', 'Quantidade de horas por dia:') !!}
+                    <span title="Quantidade de horas trabalhada no dia."
+                          class="glyphicon glyphicon-question-sign black-tooltip"
+                          aria-hidden="true" data-toggle="tooltip" data-placement="right"></span>
+                    {!! Form::number('hourDay', 8, [
+                    'class' => 'form-control validation-hours',
+                    ]) !!}
+                    <span class="help-block"><strong>{{$errors->first('hourDay')}}</strong></span>
+                </div>
+
+                <div class="form-group{{$errors->has('hours') ? ' has-error' : ''}} col-md-3 col-sm-12 col-xs-12">
                     {!! Form::label('hours', 'Quantidade total de horas:') !!}
                     <span title="@lang('tips.whats-quantity-hours')"
                           class="glyphicon glyphicon-question-sign black-tooltip"
@@ -74,12 +85,20 @@
                     'class' => 'form-control validation-hours',
                     'required'
                     ]) !!}
+                    <div class='circle' style='display:none'></div>
                     <span class="help-block"><strong>{{$errors->first('hours')}}</strong></span>
+                </div>
+
+                <div class='form-group col-md-3 col-sm-12 col-xs-12"'>
+                {!! Form::label('jobWeekEnd', 'Trabalhar final de semana e feriado:') !!}
+                <span aria-hidden="true" data-toggle="tooltip" data-placement="top"></span>	    <span aria-hidden="true" data-toggle="tooltip" data-placement="top"></span>
+                <br>
+                <input type="checkbox" name='jobWeekEnd' id='jobWeekEnd' data-toggle="toggle" data-on="Sim" data-off="Não" {{!$userException ? 'disabled' :''}} >
                 </div>
 
                 <div class="form-group col-xs-12 {{$errors->has('description') ? 'has-error' : ''}}">
                     {!! Form::label('', 'Descrição:') !!}
-                    {!! Form::textarea('description', null, ['class' => 'form-control', 'required' => 'required', 'style' => 'min-height: 87px;']) !!}
+                    {!! Form::textarea('description', null, ['class' => 'form-control', 'required' => 'required', 'style' => 'min-height: 87px;', 'id' =>'description']) !!}
                     <span class="help-block"><strong>{{$errors->first('description')}}</strong></span>
                 </div>
 
@@ -106,7 +125,18 @@
         {!! Form::close() !!}
     </div>
     <script type="text/javascript">
-        $('textarea').ckeditor();
+     $('textarea').ckeditor(); 
+     $('#send-form-allocation').click(function(){
+        $('textarea#description').val(CKEDITOR.instances.description.getData()) ;
+    
+    });
+
+        // $(function(){
+        //     $('#jobWeekEnd').bootstrapToggle({
+        //         on: 'Enabled',
+        //         off: 'Disabled'
+        //     });
+        // })
     </script>
 
 @endsection

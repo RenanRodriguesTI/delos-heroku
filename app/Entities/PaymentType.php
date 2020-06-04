@@ -7,8 +7,12 @@ use Delos\Dgp\Repositories\Criterias\MultiTenant\RelationshipsTrait;
 class PaymentType extends AbstractAudit
 {
     use RelationshipsTrait;
+    use SoftDeleteWithRestoreTrait;
 
-    protected $fillable = ['name'];
+    protected $fillable = [
+        'name',
+        'ative'
+    ];
 
     public function expenseTypes()
     {

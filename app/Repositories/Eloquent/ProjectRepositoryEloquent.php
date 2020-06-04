@@ -80,18 +80,15 @@
             $httparament = app('request')->input('showall');
             if(!$httparament || $httparament =='false'){
                 $this->model = $this->model->whereHas('allocations',function($query) use($now){
-                    if(\Auth::user()->role_id == self::ROOT_ROLE_ID){
-                        $query->where('finish','>=',$now->toDateString());
-                    } else{
-                        $query->where('user_id',Auth::user()->id)->where('finish','>=',$now->toDateString());
-                    }
-                  
+                    $query->where('user_id',Auth::user()->id)->whereHas('project',function($query) use($now){
+                        $query->where('finish','>=',$now->toDateString())->orWhere('extension','>=',$now->toDateString());
+                    });
+                });
+            } else{
+                $this->model = $this->model->where(function($query) use($now){
+                    $query->where('finish','>=',$now->toDateString())->orWhere('extension','>=',$now->toDateString());
                 });
             }
-
-            $this->model = $this->model->where(function($query) use($now){
-                $query->where('finish','>=',$now->toDateString())->orWhere('extension','>=',$now->toDateString());
-            });
             $projects = $this;
             if ($applyWithTrashed) {
                 $projects = $projects->withTrashed();

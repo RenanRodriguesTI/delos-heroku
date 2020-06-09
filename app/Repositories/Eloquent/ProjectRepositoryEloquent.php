@@ -62,8 +62,8 @@
             if ($applyWithTrashed) {
                 $projects = $projects->withTrashed();
             }
-
             $projects = $projects->all();
+            
             $projects->transform(function ($project) {
                 return [
                     'id'          => $project->id,
@@ -80,44 +80,7 @@
             $httparament = app('request')->input('showall');
             if(!$httparament || $httparament =='false'){
                 $this->model = $this->model->whereHas('allocations',function($query) use($now){
-                    $query->where('user_id',Auth::user()->id)->whereHas('project',function($query) use($now){
-                        $query->where('finish','>=',$now->toDateString())->orWhere('extension','>=',$now->toDateString());
-                    });
-                });
-            } else{
-                $this->model = $this->model->where(function($query) use($now){
-                    $query->where('finish','>=',$now->toDateString())->orWhere('extension','>=',$now->toDateString());
-                });
-            }
-            $projects = $this;
-            if ($applyWithTrashed) {
-                $projects = $projects->withTrashed();
-            }
-            $projects = $projects->all();
-            $projects->transform(function ($project) {
-                return [
-                    'id'          => $project->id,
-                    'description' => $project->full_description
-                ];
-            });
-
-            return $projects->pluck('description', 'id')->toArray();
-        }
-
-
-        public function getPairsForActivity($applyWithTrashed = true): array
-        {
-            $now = Carbon::now();
-            $start = app('request')->input('start');
-            $finish = app('request')->input('finish');
-            $httparament = app('request')->input('showall');
-            if(!$httparament || $httparament =='false'){
-                $this->model = $this->model->whereHas('allocations',function($query) use($now){
-                    if(\Auth::user()->role_id == self::ROOT_ROLE_ID){
-                        $query->where('finish','>=',$now->toDateString());
-                    } else{
-                        $query->where('user_id',Auth::user()->id)->where('finish','>=',$now->toDateString());
-                    }
+                    $query->where('user_id',Auth::user()->id)->where('finish','>=',$now->toDateString());
                   
                 });
             }
@@ -138,6 +101,51 @@
             });
 
             return $projects->pluck('description', 'id')->toArray();
+        }
+
+
+        public function getPairsForRequests($applyWithTrashed = true): array
+        {
+            $start = app('request')->input('start');
+            $finish = app('request')->input('finish');
+            $requests = app('request')->input('requests');
+            $showall = app('request')->input('showall');
+    
+            if ($start) {
+                $this->model = $this->model->whereNull('deleted_at')->where('start', '<=', $start);
+            }
+    
+            if ($finish) {
+                $this->model = $this->model->whereNull('deleted_at')->where('finish', '>=', $finish);
+            }
+    
+            switch($showall){
+                case 'false':
+                    $this->model = $this->model->whereHas('allocations',function($query) use($start,$finish){
+    
+                        $query->where('user_id',Auth::user()->id)->where('start','<=', $start)->where('finish','>=',$finish)->whereHas('project',function($query) use($finish){
+                            $query->orWhere('extension','>=',$finish);
+                        });
+                    });
+                break;
+    
+                default:
+                    $this->model = $this->model->orWhere('extension','>=',$finish);
+                break;
+            }
+            $projects = $this;
+            if ($applyWithTrashed) {
+                $projects = $projects->withTrashed();
+            }
+            $projects = $projects->all();
+            // $projects->transform(function ($project) {
+            //     return [
+            //         'id'          => $project->id,
+            //         'description' => $project->full_description
+            //     ];
+            // });
+
+            return $projects->toArray();
         }
 
         /**
@@ -285,12 +293,7 @@
                 break;
                 default:
                     $projects = $this->model->whereHas('allocations',function($query) use($date){
-                        if(\Auth::user()->role_id == self::ROOT_ROLE_ID){
-                            $query->where('start','<=',$date->toDateString())->where('finish','>=',$date->toDateString());
-                        } else{
-                            $query->where('user_id',Auth::user()->id)->where('start','<=',$date->toDateString())->where('finish','>=',$date->toDateString());
-                        }
-
+                        $query->where('user_id',Auth::user()->id)->where('start','<=',$date->toDateString())->where('finish','>=',$date->toDateString());
                         $query->where('parent_id',null);
                     })->where(function($query) use($date){
                         $query->where('finish','>=',$date->toDateString())->orWhere('extension','>=',$date->toDateString());
@@ -303,7 +306,7 @@
                 $projects = $projects->orWhere('id',str_replace(' - project','',$cod));
             } else{
                 if($cod){
-                    $projects = $projects->orWhereHas('requests',function($query){
+                    $projects = $projects->orWhereHas('requests',function($query)use($cod){
                         $query->where('id',$cod);
                     });
                 }

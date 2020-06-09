@@ -136,6 +136,10 @@
 
                 $before = $this->repository->find($id);
 
+                if($before->project_id != $data['project_id']){
+                    $data['exported'] = false;
+                }
+
                 $expense = $this->service->update($data, $id);
 
                 $this->applyChangesUserAndProjectOnDisk($expense, $before);
@@ -227,7 +231,7 @@
          */
         private function applyChangesUserAndProjectOnDisk(Expense $after, Expense $before): void
         {
-            if ( $before->user_id != $after->user_id || $before->request_id != $after->request_id || $before->project_id != $after->project_id ) {
+            if (!Storage::exists('images/invoices/'.$after->s3_name)&& ( $before->user_id != $after->user_id || $before->request_id != $after->request_id || $before->project_id != $after->project_id )) {
                 Storage::move($this->getFullPath($before) . '/' . $before->s3_name, $this->getFullPath($after) . '/' . $after->s3_name);
             }
         }
@@ -243,8 +247,17 @@
             if ( !$id ) {
                 $id = $expense->user->id;
             }
-            return 'images/invoices/' . $expense->project->company->groupCompany->id . '/' . $expense->project->id . '/' . $id;
+
+            if(Storage::exists('images/invoices/' . $expense->project->company->groupCompany->id . '/' . $expense->project->id . '/' . $id.'/'.$expense->s3_name)){
+                return 'images/invoices/' . $expense->project->company->groupCompany->id . '/' . $expense->project->id . '/' . $id;
+            }
+
+            return 'images/invoices';
+            
         }
+
+           
+          
 
         /**
          * @param array $data

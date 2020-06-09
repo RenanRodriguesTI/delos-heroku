@@ -141,7 +141,7 @@ function updateProjectSelect() {
     if($('#start').val() !== '' && $('#finish').val() !== '' ){
         $.ajax({
             dataType: "json",
-            url: location.origin + '/projects?showall='+$('#allRequest').prop("checked"),
+            url: location.origin + '/requests/projects?showall='+$('#allRequest').prop("checked"),
             data: data,
             success: function (response) {
                 $('#project_id').empty();
@@ -151,7 +151,8 @@ function updateProjectSelect() {
                     $('#project_id').append(html);
                 });
     
-                $('#project_id').selectpicker('refresh');
+                $('#project_id').selectpicker('destroy');
+                $('#project_id').selectpicker(); 
             }
         });
     }

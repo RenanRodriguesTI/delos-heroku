@@ -111,7 +111,7 @@
                         </tr>
                     @endcan
                     <tr>
-                        <td><b>Despesas Extras</b></td>
+                        <td><b>Despesas do projeto</b></td>
                         <td>{{number_format($project->extra_expenses, 2, ',', '.')}}</td>
                     </tr>
 

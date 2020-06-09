@@ -33,8 +33,10 @@
 
 
         public function index(){
+
             if($this->request->wantsJson()){
-                $this->response->json([app(ProjectRepository::class)]);
+                return $this->response->json(['data'=>app(ProjectRepository::class)
+                ->getPairsForRequests(false)]);
             }
             return parent::index();
         }

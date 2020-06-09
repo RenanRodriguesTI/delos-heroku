@@ -41,8 +41,7 @@ trait ExcelReport
                 $sheet->getStyle($column)->getNumberFormat()
             ->setFormatCode('0.00');
             }
-            $sheet->getStyle('P')->getNumberFormat()
-            ->setFormatCode('0.00');
+            
             $sheet->fromArray($data, null, 'A2', false, false);
 
         })->download($extension);

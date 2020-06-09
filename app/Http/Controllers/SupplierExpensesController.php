@@ -186,6 +186,10 @@ class SupplierExpensesController  extends AbstractController
             ]);
 
             $expense = SupplierExpenses::find($id);
+            if($expense->project_id != $data['project_id']){
+                $data['exported'] = false;
+            }
+            
             $expense->update($data);
 
             if ( $this->isUpload($data) ) {
@@ -207,7 +211,7 @@ class SupplierExpensesController  extends AbstractController
         $expense = SupplierExpenses::find($id);
         $this->authorize('destroy-supplier-expense', $expense);
         //$this->deleteFileOnDisk($id);
-        $expense->delete();
+        $expense->forceDelete();
         return $this->response->redirectToRoute('supplierExpense.index')
             ->with('success', $this->getMessage('deleted'));
     }

@@ -177,6 +177,7 @@
                     Route::get('show/{id}', ['as' => 'show', 'uses' => 'RequestsController@show']);
                     Route::get('approve/{id}', ['as' => 'approve', 'uses' => 'RequestsController@approve']);
                     Route::post('refuse/{id}', ['as' => 'refuse', 'uses' => 'RequestsController@refuse']);
+                    Route::get('/projects','RequestsController@index');
                 });
 
                 Route::group(['prefix' => 'missing-activities', 'as' => 'missingActivities.'], function () {

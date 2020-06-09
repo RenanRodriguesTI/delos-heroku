@@ -131,7 +131,9 @@
                                                 <li>
                                                     <a> @lang('menu.invoices')</a>
                                                     <ul class="nav child_menu">
+                                                        @can('index-supplier-expense')
                                                         <li><a href="{{route('supplierExpense.index')}}">Fornecedores</a></li>
+                                                        @endcan
                                                         <li> <a href="{{route('expenses.index')}}?deleted_at=whereNull">Usuários</a></li>
                                                     </ul>
                                                 </li>
@@ -253,12 +255,6 @@
                                                     <a href="{{route('appVersions.index')}}">Versões do Aplicativo</a>
                                                 </li>
                                             @endcan
-                                                <li>
-                                                    <a href='{{route("paymentProvider.index")}}'> Tipos de Pagamento para Fornecedores</a>
-                                                </li>
-                                                <li>
-                                                    <a href='{{route("payment.index")}}'>Tipos de Pagamento para Usuário</a>
-                                                </li>
                                         </ul>
                                     </li>
                                 @endcan

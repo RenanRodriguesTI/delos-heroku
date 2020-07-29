@@ -289,7 +289,7 @@ class ProjectService extends AbstractService
             $user = Auth::user();
             $imported = 0;
             try{
-                Excel::filter('chunk')->load('storage/app/file.csv')->formatDates(true)->chunk(100, function($results) use ($user,$imported)
+                Excel::filter('chunk')->load('storage/app/file.xlsx')->formatDates(true)->chunk(100, function($results) use ($user,$imported)
             {
                 $imported += count($results->toArray());
                 $load = Excel::load('storage/app/file.xlsx', function($reader) {
@@ -303,8 +303,6 @@ class ProjectService extends AbstractService
 
 
             });
-            } catch(Exception $error){
-                var_dump($error);
-            }
+            } catch()
         }
     }

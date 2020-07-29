@@ -32,51 +32,50 @@ class EditedProjectEmail
         $this->mailer
 
             ->send('emails.edited-project', compact('originalProject' ,'editedProject', 'user', 'title'), function (Message $message) use ($editedProject, $originalProject) {
-                    //Modificação feita para teste não comitar essa classe
-                   
+
                 if ($editedProject->owner_id !== $originalProject->owner_id) {
-                    $message->to(env('TEST_DESTINATION_EMAIL'), $editedProject->owner->name);
-                    $message->to(env('TEST_DESTINATION_EMAIL'), $originalProject->owner->name);
+                    $message->to($editedProject->owner->email, $editedProject->owner->name);
+                    $message->to($originalProject->owner->email, $originalProject->owner->name);
                 } else {
-                    $message->to(env('TEST_DESTINATION_EMAIL'), $editedProject->owner->name);
+                    $message->to($editedProject->owner->email, $editedProject->owner->name);
                 }
 
                 if ($editedProject->co_owner_id != $originalProject->co_owner_id) {
 
                     if($editedProject->coOwner !== null) {
-                        $message->to(env('TEST_DESTINATION_EMAIL'), $editedProject->coOwner->name);
+                        $message->to($editedProject->coOwner->email, $editedProject->coOwner->name);
                     }
 
                     if($originalProject->coOwner !== null) {
-                        $message->to(env('TEST_DESTINATION_EMAIL'), $originalProject->coOwner->name);
+                        $message->to($originalProject->coOwner->email, $originalProject->coOwner->name);
                     }
                 } else {
                     if($editedProject->coOwner !== null) {
-                        $message->to(env('TEST_DESTINATION_EMAIL'), $editedProject->coOwner->name);
+                        $message->to($editedProject->coOwner->email, $editedProject->coOwner->name);
                     }
                 }
 
                 if ($editedProject->seller_id != null) {
-                    $message->addCc(env('TEST_DESTINATION_EMAIL'), $editedProject->seller->name);
+                    $message->addCc($editedProject->seller->email, $editedProject->seller->name);
                 }
 
                 if ($editedProject->client_id != $originalProject->client_id) {
 
                     if($editedProject->client !== null) {
-                        $message->to(env('TEST_DESTINATION_EMAIL'), $editedProject->client->name);
+                        $message->to($editedProject->client->email, $editedProject->client->name);
                     }
 
                     if($originalProject->client !== null) {
-                        $message->to(env('TEST_DESTINATION_EMAIL'), $originalProject->client->name);
+                        $message->to($originalProject->client->email, $originalProject->client->name);
                     }
                 } else {
                     if($editedProject->client !== null) {
-                        $message->to(env('TEST_DESTINATION_EMAIL'), $editedProject->client->name);
+                        $message->to($editedProject->client->email, $editedProject->client->name);
                     }
                 }
 
                 foreach($this->getReceivers() as $receiver) {
-                    $message->cc(env('TEST_DESTINATION_EMAIL'), $receiver['name']);
+                    $message->cc($receiver['email'], $receiver['name']);
                 }
                 
                 $subject = trans('subjects.edited-project');

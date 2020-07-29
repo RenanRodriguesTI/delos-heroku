@@ -62,6 +62,9 @@
 
                     Route::get('/calc-hours',['as'=>'calcHoursPeriod','uses' =>'AllocationsController@calcHoursPeriod']);
                     Route::post('/{id}/check-hours',['as'=>'checkHours','uses' => 'AllocationsController@checkHours']);
+
+                    Route::get('/{id}/add-tasks',['as'=>'addTasks','uses' => 'AllocationsController@addTasksIndex']);
+                    Route::post('/{id}/add-tasks',['as'=>'addTaskStore','uses' =>'AllocationsController@addTaskStore' ]);
                 });
 
                 Route::group(['prefix' => 'clients'], function () {
@@ -469,5 +472,16 @@
         Route::get('{id}/destroy',['as'=>'destroy','uses' =>'PaymentTypeProvidersController@destroy']);
         Route::get('{id}/edit',['as'=>'edit','uses' =>'PaymentTypeProvidersController@edit']);
         Route::post('{id}',['as'=>'update','uses' =>'PaymentTypeProvidersController@update']);
+        });
+
+        Route::group(['prefix' =>'office','as'=>'office.'],function(){
+            Route::get('',['as'=>'index','uses'=>'OfficesController@index']);
+            Route::post('',['as'=>'store','uses'=>'OfficesController@store']);
+            Route::get('{id}/edit',['as'=>'edit','uses'=>'OfficesController@edit']);
+            Route::post('{id}/edit',['as'=>'update','uses'=>'OfficesController@update']);
+            Route::get('{id}/destroy',['as'=>'destroy','uses'=>'OfficesController@destroy']);
+            Route::post('{id}/update/history',['as'=>'updateHistory','uses' =>'OfficesController@updateHistory']);
+            Route::get('{id}/history/{idhistory}/delete',['as'=>'deleteHistory','uses'=>'OfficesController@deleteHistory']);
+            Route::post('{id}/history/store',['as'=>'storeHistory','uses'=>'OfficesController@storeHistory']);
         });
     });

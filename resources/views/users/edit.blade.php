@@ -8,6 +8,7 @@
             @if(strrpos(mb_strtoupper($user->name),'PS')>-1)
             <li id='link-contratos'><a data-toggle="tab" href="#contratos">Contratos</a></li>
             @endif
+            <li><a data-toggle="tab" href="#cargos">Cargos</a></li>
         </ul>
         <div class="tab-content">
             <div id="usuario" class="panel panel-dct  tab-pane fade in active">
@@ -40,6 +41,14 @@
                     <h3 class="panel-title bold">Contratos: {{$user->name}}</h3>
                 </div>
                 @include('users.contracts.index')
+            </div>
+
+            <div id='cargos' class='panel panel-dct tab-pane fade'>
+                <div class='panel-heading'>
+                    <h3 class='panel-title bold'>Histórico</h3>
+                </div>
+
+                @include('users.office-history.index')
             </div>
         </div>
        

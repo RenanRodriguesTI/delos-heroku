@@ -1,6 +1,6 @@
 <div class="modal fade" id="create-license" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel">
     <div class="modal-dialog" role="document">
-      <form id="form-create-license" action="{{route('users.generate.key',['id'=>$user->id])}}" class="modal-content">
+      <form id="form-create-license" action="{{route('users.generate.key',['id'=> 0])}}" class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
           <h4 class="modal-title" id="gridSystemModalLabel">Gerador de Licença</h4>

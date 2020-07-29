@@ -87,7 +87,8 @@
                     $hours = $this->findWhere([
                                                   ['start', '>=', $day->format('Y-m-d')],
                                                   ['finish', '<=', $day->format('Y-m-d')],
-                                                  'user_id' => $userId
+                                                  'user_id' => $userId,
+                                                  ['parent_id','!=',null]
                                               ])
                                   ->sum('hours');
                     $possibles->push([

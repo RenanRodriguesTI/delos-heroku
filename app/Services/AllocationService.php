@@ -10,12 +10,13 @@
 
     use Carbon\Carbon;
     use Delos\Dgp\Entities\Allocation;
+    use Delos\Dgp\Entities\AllocationTask;
     use Delos\Dgp\Events\DeletedAllocation;
     use Delos\Dgp\Events\SavedAllocation;
+    // use Delos\Dgp\Events\NotifyToPaPAllocations;
     use Delos\Dgp\Repositories\Contracts\ProjectRepository;
     use Delos\Dgp\Repositories\Eloquent\AllocationRepositoryEloquent;
     use Prettus\Validator\Contracts\ValidatorInterface;
-
     /**
      * Class AllocationService
      * @package Delos\Dgp\Services
@@ -34,12 +35,18 @@
         {
             $data['jobWeekEnd'] =isset($data['jobWeekEnd']);
            if(app('auth')->getUser()->name === 'ANA CAROLINA CALVETI' || app('auth')->getUser()->name === "VERONICA SALVATI"){
-               if(!$data['task_id']){
-                unset($data['task_id']);
-               }
+            //    if(!$data['task_id']){
+            //     unset($data['task_id']);
+            //    }
                 
                 $this->changevalidation();
            }
+
+           if(isset($data['task_id']) && !$data['task_id']){
+            unset($data['task_id']);
+            $this->changevalidation();
+           }
+          
             $this->addValidationToDates($data);
             $this->addValidationToHours($data);
 
@@ -80,11 +87,15 @@
             $data['jobWeekEnd'] =isset($data['jobWeekEnd']);
             $this->validator->setId($id);       
             $allocations = collect();
-
+            
+            if(isset($data['task_id'])){
+                unset($data['task_id']);
+                $this->changevalidation();
+            }
             if(app('auth')->getUser()->name === 'ANA CAROLINA CALVETI' || app('auth')->getUser()->name === "VERONICA SALVATI"){
-                if(!$data['task_id']){
-                 unset($data['task_id']);
-                }
+                // if(!$data['task_id']){
+                //  unset($data['task_id']);
+                // }
                  
                  $this->changevalidation();
                
@@ -92,7 +103,7 @@
                 $this->addHoursLimitValidate($id);
             }
            $this->validator->with($data)->passesOrFail(ValidatorInterface::RULE_UPDATE);
-
+           $beforeFaterAllocation = $this->repository->find($id);
            $faterAllocation = $this->repository->update($data, $id);
            $data['parent_id'] = $faterAllocation->id;
            if($faterAllocation){
@@ -121,6 +132,13 @@
                     }
                 });
            }
+
+        //    if((!$beforeFaterAllocation->task && $faterAllocation->task) || (!$beforeFaterAllocation->hours != $faterAllocation->hours)){
+        //         if(\Auth::user()->name != 'ANA CAROLINA CALVETI'){
+        //             $allocation = new Allocation($data);    
+        //             $this->event->fire( new NotifyToPaPAllocations($allocation));
+        //         }    
+        //    }
            $this->fireEvent($data);
            return $allocations;
         }
@@ -136,8 +154,8 @@
 
             $rules['create']['start']  .= '|after_or_equal:' . $project->start->format('d/m/Y');
             $rules['update']['start']  .= '|after_or_equal:' . $project->start->format('d/m/Y');
-            $rules['create']['finish'] .= '|before_or_equal:' . $project->finish->format('d/m/Y');
-            $rules['update']['finish'] .= '|before_or_equal:' . $project->finish->format('d/m/Y');
+            $rules['create']['finish'] .= '|before_or_equal:' . (!$project->extension ? $project->finish->format('d/m/Y') : $project->extension->format('d/m/Y'));
+            $rules['update']['finish'] .= '|before_or_equal:' . (!$project->extension ? $project->finish->format('d/m/Y') : $project->extension->format('d/m/Y'));
 
             $this->validator->setRules($rules);
         }
@@ -253,5 +271,11 @@
         public function repositoryClass(): string
         {
             return AllocationRepositoryEloquent::class;
+        }
+
+        public function createTask(array $data,int $id){
+            $allocation = $this->repository->find($id);
+            $allocationTask = AllocationTask::create(array_merge(['allocation_id' =>$allocation->id],$data));
+            return $allocationTask;
         }
     }

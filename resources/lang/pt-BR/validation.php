@@ -152,6 +152,7 @@
             'description_id' => 'Descrição',
             'provider_id' =>'Fornecedor',
             'voucher_type_id' => 'Tipo de Comprovante',
-            'version'=>'Versão'
+            'version'=>'Versão',
+            'task_id'=>'Tarefa'
         ],
     ];

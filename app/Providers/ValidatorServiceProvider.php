@@ -157,5 +157,8 @@ class ValidatorServiceProvider extends ServiceProvider
         $this->app->when(\Delos\Dgp\Services\PaymentProviderService::class)
                 ->needs(ValidatorInterface::class)
                 ->give(\Delos\Dgp\Validators\PaymentValidator::class);
+        $this->app->when(\Delos\Dgp\Services\OfficeService::class)
+                ->needs(ValidatorInterface::class)
+                ->give(\Delos\Dgp\Validators\OfficeValidator::class);
     }
 }

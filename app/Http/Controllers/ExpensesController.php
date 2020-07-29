@@ -232,7 +232,9 @@
         private function applyChangesUserAndProjectOnDisk(Expense $after, Expense $before): void
         {
             if (!Storage::exists('images/invoices/'.$after->s3_name)&& ( $before->user_id != $after->user_id || $before->request_id != $after->request_id || $before->project_id != $after->project_id )) {
-                Storage::move($this->getFullPath($before) . '/' . $before->s3_name, $this->getFullPath($after) . '/' . $after->s3_name);
+                if(Storage::exists(($this->getFullPath($before) . '/' . $before->s3_name))){
+                    Storage::move($this->getFullPath($before) . '/' . $before->s3_name, $this->getFullPath($after) . '/' . $after->s3_name);
+                }
             }
         }
 

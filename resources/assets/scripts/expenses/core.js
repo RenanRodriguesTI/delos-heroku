@@ -239,7 +239,9 @@ if ($('#form-expenses').length) {
 
     iniciateFormsWhenAccessPage(moment(date, 'DD/MM/YYYY').format(formatUSA));
 
-    applyMaskIn('#invoice', '9999');
+    if($('#invoice').val() != 'RECIBO'){
+        applyMaskIn('#invoice', '9999');
+    }
     startDatePickerIssue(date, '01/03/2017');
     modalLoadWhenSubmitForm();
     isReceipt();

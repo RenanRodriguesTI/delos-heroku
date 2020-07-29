@@ -48,21 +48,21 @@ class SendEmailWhenRequestIsCreatedListener implements ShouldQueue
             $project = $request->project;
 
             foreach($request->users as $user) {
-                $message->to(env('TEST_DESTINATION_EMAIL'), $user->name);
+                $message->to($user->email, $user->name);
             }
 
             //if owner is not part of this request
             if($request->users()->where('id', $project->owner->id)->first() == null) {
-                $message->cc(env('TEST_DESTINATION_EMAIL'), $project->owner->name);
+                $message->cc($project->owner->email, $project->owner->name);
             }
 
             //if co-owner is not part of this request
             if($project->coOwner != null && $request->users()->where('id', $project->coOwner->id)->first() == null) {
-                $message->cc(env('TEST_DESTINATION_EMAIL'), $project->coOwner->name);
+                $message->cc($project->coOwner->email, $project->coOwner->name);
             }
 
             foreach($this->getReceivers() as $receiver) {
-                $message->cc(env('TEST_DESTINATION_EMAIL'), $receiver['name']);
+                $message->cc($receiver['email'], $receiver['name']);
             }
 
             $subject = $this->translator->get('subjects.created-request');

@@ -61,8 +61,7 @@ class AbsencesEmailToHumanResources extends Command
                 $this->notify($humanResource, 'Verifique se há atividades com a tarefa ausência', "Podem haver atividades com tarefas ausências", 'emails.absences', $data);
 
                 $this->mailer->send('emails.absences', $data, function (Message $m) use($humanResource) {
-                    //não comitar
-                    $m->to(env('TEST_DESTINATION_EMAIL'), $humanResource['name']);
+                    $m->to($humanResource['email'], $humanResource['name']);
                     $m->subject($this->translator->trans('subjects.absences'));
                 });
             }

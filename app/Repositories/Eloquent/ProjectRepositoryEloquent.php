@@ -62,8 +62,7 @@
             if ($applyWithTrashed) {
                 $projects = $projects->withTrashed();
             }
-            $projects = $projects->all();
-            
+            $projects = $projects->all(); 
             $projects->transform(function ($project) {
                 return [
                     'id'          => $project->id,

@@ -33,9 +33,25 @@ class ProjectsApiController  extends Controller
         ],412);
         $data = \Carbon\Carbon::parse($data)->format('d-m-Y');
 
-       $projects = DB::select("select * from project_user pu inner join  projects p on pu.project_id =  p.id  where pu.user_id =:iduser and deleted_at is null and STR_TO_DATE(:data, '%d-%m-%Y') <= finish",["iduser"=>$id,"data"=>$data]);
+       $projects = DB::select("
+       SELECT * FROM projects
+       where (finish >= STR_TO_DATE(:data,'%d-%m-%Y') or extension >= STR_TO_DATE(:data2,'%d-%m-%Y'))
+       and id in 
+       (Select project_id from project_user where user_id = :idUser ) 
+       and deleted_at is null
+       group by projects.id",['idUser'=>$id,'data'=>$data,'data2'=>$data]);
 
         if ($projects != null&& sizeof($projects)>0) {
+
+            $projects = collect($projects);
+            $projects = $projects->map(function($project) use($id,$data){
+                $allocations = DB::select("
+                SELECT start,finish FROM allocations WHERE parent_id in (SELECT id FROM allocations
+                WHERE user_id=:userid
+                and project_id =:project and finish >= STR_TO_DATE(:data,'%d-%m-%Y') and parent_id is null)",['userid'=>$id,'data'=>$data,'project' =>$project->id]);
+                $project->allocations = $allocations;
+                return $project;
+            });
             return response()->json([
                 "found" => true,
                 "projects" => $projects,

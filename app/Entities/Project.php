@@ -186,7 +186,9 @@
         }
 
         public function setExtensionAttribute($value){
-            $this->attributes['extension'] = Carbon::createFromFormat('d/m/Y', $value);
+            if($value){
+                $this->attributes['extension'] = Carbon::createFromFormat('d/m/Y', $value);
+            }
         }
 
         public function setSellerIdAttribute($value)

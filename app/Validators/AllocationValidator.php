@@ -24,7 +24,7 @@
             ValidatorInterface::RULE_CREATE => [
                 'project_id'       => 'required|integer|exists:projects,id',
                 'user_id'          => 'required|integer|exists:users,id',
-                'task_id'          => 'required|integer|exists:tasks,id',
+                'task_id'          => 'integer|exists:tasks,id',
                 'group_company_id' => 'required|integer|exists:group_companies,id',
                 'start'            => 'required|date_format:d/m/Y',
                 'finish'           => 'required|date_format:d/m/Y',
@@ -34,7 +34,7 @@
             ValidatorInterface::RULE_UPDATE => [
                 'project_id'       => 'required|integer|exists:projects,id',
                 'user_id'          => 'required|integer|exists:users,id',
-                'task_id'          => 'required|integer|exists:tasks,id',
+                'task_id'          => 'integer|exists:tasks,id',
                 'group_company_id' => 'required|integer|exists:group_companies,id',
                 'start'            => 'required|date_format:d/m/Y',
                 'finish'           => 'required|date_format:d/m/Y',

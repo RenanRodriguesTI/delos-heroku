@@ -1216,6 +1216,27 @@ select, select.form-control {
     animation: loading linear .4s infinite;
 }
 
+.circle-type-2{
+    width: 16px;
+    height: 16px;
+    border-left: 1px solid #2E7D32;
+    position: absolute;
+    top: 0px;
+    right: 18px;
+    border-radius: 50%;
+    animation: loading linear .4s infinite;
+}
+
+.circle-icon{
+    width: 16px;
+    height: 16px;
+    border-left: 1px solid  white;
+    border-radius: 50%;
+    animation: loading linear .4s infinite;
+}
+
+
+
 .count_message2 {
     background-color: smoke;
     margin-top: -20px;
@@ -1237,4 +1258,28 @@ select, select.form-control {
 }
 .col-buttons{
     width: 140px !important;
+}
+
+.panel-title-sub{
+    font-size: 14px;
+}
+
+.color_user{
+    width: 24px;
+    height: 24px;
+}
+
+.display-center{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.owner.profile_view {
+    background-color: #1f8128e3;
+    color:white;
+}
+
+.owner.profile_view h2{
+    color: white;
 }

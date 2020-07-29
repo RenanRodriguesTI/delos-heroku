@@ -4,7 +4,6 @@ namespace Delos\Dgp\Providers;
 
 use Illuminate\Support\ServiceProvider as SupportServiceProvider;
 use Delos\Dgp\Services\ServiceInterface;
-use Laravel\Passport\Passport;
 class ServiceProvider extends SupportServiceProvider
 {
     /**
@@ -182,9 +181,12 @@ class ServiceProvider extends SupportServiceProvider
                     ->needs(ServiceInterface::class)
                     ->give(\Delos\Dgp\Services\PaymentService::class);
         
-                    $this->app->when(\Delos\Dgp\Http\Controllers\PaymentTypeProvidersController::class)
+        $this->app->when(\Delos\Dgp\Http\Controllers\PaymentTypeProvidersController::class)
                     ->needs(ServiceInterface::class)
                     ->give(\Delos\Dgp\Services\PaymentProviderService::class);
 
+        $this->app->when(\Delos\Dgp\Http\Controllers\OfficesController::class)
+            ->needs(ServiceInterface::class)
+            ->give(\Delos\Dgp\Services\OfficeService::class);
     }
 }

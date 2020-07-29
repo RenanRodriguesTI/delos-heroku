@@ -49,14 +49,17 @@
                 @endif
 
                 <br>
-
+                
                 <div class="row">
                     <div class="col-xs-12">
                         <div class="row">
                             @foreach($members as $user)
                                 <div class="col-md-4 col-sm-6 col-xs-12 profile_details">
-                                    <div class="well profile_view col-xs-12">
+                                    <div class="well {{$project->owner_id == $user->id ? 'owner':''}} profile_view col-xs-12">
                                         <div class="left col-xs-7">
+                                            @if($project->owner_id == $user->id)
+                                                <h2>Lider</h2>
+                                            @endif
                                             <h2>{{$user->name}}</h2>
                                             <br>
                                             <ul class="list-unstyled">

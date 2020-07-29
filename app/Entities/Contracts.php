@@ -27,7 +27,7 @@ class Contracts extends Model
         'end',
         'created_at',
         'updated_at',
-        'delete_at'
+        'deleted_at'
     ];
 
     public function setStartAttribute($value){

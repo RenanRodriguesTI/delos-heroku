@@ -24,10 +24,10 @@ class ExpensesApiController extends AbstractController
 
             $data = $this->getDataToStore();
             $this->request->validate([
-                "issue_date"=>'required|date'
+                "issue_date"=>'required|date_format:"d/m/Y"'
             ]);
             
-            $data["issue_date"] = \Carbon\Carbon::parse($data["issue_date"])->format('d/m/Y');
+           // $data["issue_date"] = \Carbon\Carbon::parse($data["issue_date"])->format('d/m/Y');
 
             $expense = $this->service->create($data);
             $invoice = $expense->invoice . '-' . $expense->id;
@@ -110,11 +110,16 @@ class ExpensesApiController extends AbstractController
 
 
 
-            if($expenses!=null && sizeof($expenses))
-            return $this->response->json([
-                "found"=>true,
-                "expenses"=>$expenses
-            ],200);
+            if($expenses!=null && sizeof($expenses)){
+               $expenses = collect($expenses)->map(function($item){
+                    $item->link =  $this->getLink($item->s3_name);
+                    return $item;
+                });
+                return $this->response->json([
+                    "found"=>true,
+                    "expenses"=>$expenses
+                ],200);
+            }
             else
             return $this->response->json([
                 "found"=>false,
@@ -127,6 +132,10 @@ class ExpensesApiController extends AbstractController
                 "message"=>$erro->getMessage()
             ],400);
         }
+    }
+
+    public function getLink($s3_name){
+        return  Storage::url('images/invoices/'.$s3_name);
     }
 
     public function show($id) {

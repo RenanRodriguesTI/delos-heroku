@@ -26,6 +26,10 @@
         width:100%;
         margin-bottom: 20px
     }
+
+    .swal-text{
+        text-align: center !important;
+    }
 </style>
 <div class="container">
     <div class="panel panel-dct">
@@ -55,18 +59,6 @@
         </div>
         @include('messages')
         <div class="panel-body">
-            <div class="pull-right" style="display:none">
-                <div class="btn-group">
-                    @can('proposal-values-create-project')
-                        <a href="{{route('projects.descriptionValues.create', ['id' => 0])}}" class="btn btn-dct">
-                            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                            Importar 
-                        </a>
-                    @endcan
-            </div>
-            </div>
-
-    
             <div class="row">   
                 <form method="get" action="{{route('revenues.index') }}" class="display-flex-start-bottom">
                     <div class="col-xs-5">

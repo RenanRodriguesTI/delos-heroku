@@ -46,13 +46,12 @@ class RefusedRequestEmail implements ShouldQueue
 
             $owner = $request->project->owner;
 
-            
-            //Não comitar esse arquivo
-            $message->to(env('TEST_DESTINATION_EMAIL'), $owner->name);
+            $message->to($owner->email, $owner->name);
+
             $coOwner = $request->project->coOwner;
 
             if($coOwner !== null) {
-                $message->cc(env('TEST_DESTINATION_EMAIL'), $coOwner->name);
+                $message->cc($coOwner->email, $coOwner->name);
             }
 
             $subject = $this->translator->trans('subjects.refused-request');

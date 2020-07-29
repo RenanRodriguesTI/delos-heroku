@@ -37,9 +37,8 @@ class NotifyBankSlipApproved
 
         $this->mailer->send('emails.approved-bank-slip', compact('transaction'), function (Message $message) use ($transaction) {
             $subject = "Recebemos seu pagamento";
-            //Modificação feita para teste não comitar essa classe
-            $message->to(env('TEST_DESTINATION_EMAIL'), $transaction->groupCompany->paymentInformation->name);
-            // $message->to($transaction->groupCompany->paymentInformation->email, $transaction->groupCompany->paymentInformation->name);
+
+            $message->to($transaction->groupCompany->paymentInformation->email, $transaction->groupCompany->paymentInformation->name);
             $message->subject($subject);
         });
     }

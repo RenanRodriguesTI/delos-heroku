@@ -46,7 +46,7 @@ class InvoiceFileProviderUpload
         $fileRenamed = $this->moveAndRename($this->getFullPath($expense), $fileName);
 
         $this->putOnDisk($fileRenamed, $fullFilename);
-        
+
         $expense->update(['s3_name' => $fileName]);
     }
 

@@ -83,6 +83,10 @@ class ProjectsController extends AbstractController
         $collaborators = $userRepository->getAllUsersWhoCanBeMembers(['id', 'name']);
         $users = $collaborators->diff($members);
         $users = $users->pluck('name', 'id');
+        $all = $this->request->input('allCollaborators') ? $collaborators->pluck('name', 'id'): $users;
+        if($this->request->wantsJson() ){
+            return $all;
+        }
 
         return $this->response
             ->view("{$this->getViewNamespace()}.members", compact('project', 'members', 'users'));
@@ -96,6 +100,13 @@ class ProjectsController extends AbstractController
         try {
 
             $this->service->addMember($projectId, $request->input('members'));
+
+            if($this->request->wantsJson()){
+                return $this->response->json([
+                    'status' => 'success',
+                    'message' =>'member add'
+                ],200);
+            }
 
             return $this->response
                 ->redirectToRoute('projects.membersToAdd', ['id' => $projectId]);

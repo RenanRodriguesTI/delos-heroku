@@ -79,6 +79,21 @@
             ],
             'Delos\Dgp\Events\SavedSupplierExpenseImport' =>[
                 'Delos\Dgp\Listeners\AttachDebitMemoListener'
+            ],
+            'Delos\Dgp\Events\NotifyToPaPAllocations' =>[
+                'Delos\Dgp\Listeners\SendEmailAlocationsToPap'
+            ],
+            'Delos\Dgp\Events\SavedOffice' =>[
+                'Delos\Dgp\Listeners\SavedOfficeListener'
+            ],
+            'Delos\Dgp\Events\UpdatedOffice' =>[
+                'Delos\Dgp\Listeners\UpdatedOfficeListener'
+            ],
+            'Delos\Dgp\Events\UpdateUser' =>[
+                'Delos\Dgp\Listeners\UpdateUserListener'
+            ],
+            'Delos\Dgp\Events\ImportedRevenues' =>[
+                'Delos\Dgp\Listeners\ImportedRevenuesListener'
             ]
         ];
 

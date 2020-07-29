@@ -18,9 +18,17 @@
                                     : </span>{{$project->owner->name}}</li>
                             <li class="list-group-item"><span class="bold">@lang('headers.start')
                                     : </span>{{$project->start->format('d/m/Y')}}</li>
+
+                            @if(!$project->extension)
                             <li class="list-group-item"><span class="bold">@lang('headers.finish'): </span><span
                                         class="{{$project->finish->isPast() ? 'text-danger bold' : ''}}">{{$project->finish->format('d/m/Y')}}</span>
                             </li>
+                            @else
+                            <li class="list-group-item"><span class="bold">@lang('headers.finish'): </span><span
+                                        class="{{$project->extension->isPast() ? 'text-danger bold' : ''}}">{{$project->extension->format('d/m/Y')}}</span>
+                            </li>
+
+                            @endif
                             <li class="list-group-item"><span class="bold">@lang('headers.last-activity')
                                     : </span>{{$project->last_activity ? $project->last_activity->format('d/m/Y') : null}}
                             </li>

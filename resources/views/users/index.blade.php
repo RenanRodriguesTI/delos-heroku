@@ -67,7 +67,7 @@
                                                 @if(!$user->deleted_at)
                                                     @can('generate-key-user')
                                                     <li>
-                                                        <a data-toggle='modal' data-target='#create-license'>
+                                                        <a class='open-generate-license' data-toggle='modal' data-action="{{route('users.generate.key',['id'=>$user->id])}}" data-target='#create-license'>
                                                             <i class="fa fa-key" aria-hidden="true"></i>
                                                             Gerar Licença
                                                         </a>
@@ -132,7 +132,7 @@
                                                 @if(!$user->deleted_at)
                                                 @can('generate-key-user')
                                                     <li>
-                                                        <a data-toggle='modal' data-target='#create-license'>
+                                                        <a class='open-generate-license' data-action="{{route('users.generate.key',['id'=>$user->id])}}" data-toggle='modal' data-target='#create-license'>
                                                             <i class="fa fa-key" aria-hidden="true"></i>
                                                             Gerar Licença
                                                         </a>
@@ -198,3 +198,14 @@
 
     @include('users.modal-license')
 @endsection
+
+@push('scripts')
+    <script>
+
+        
+        $('.open-generate-license').click(function(){
+          console.log($(this).attr('data-action'))
+          $('#form-create-license').attr('action',$(this).attr('data-action'));
+        });
+    </script>
+@endpush

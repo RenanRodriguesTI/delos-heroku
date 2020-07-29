@@ -44,7 +44,6 @@
     var datefinish = '{{ app('request')->input('finish') }}';
     $(function() {
         var events =[];
-        var color = 0;
         @foreach($allocations as $allocation)
             @if($allocation->parent)
                 events.push({
@@ -52,11 +51,9 @@
                         start  : '{{$allocation->start}}',
                         end    : '{{$allocation->finish}}',
                         allDay : 'false',
-                        color  : color,
+                        color  : '{{$allocation->user->color ?? "#888888"}}',
                         url    : '/allocations/' + '{{$allocation->parent->id}}' + '/show'
                 });
-            @else
-                color = '{{$allocation->color }}';
             @endif
         @endforeach
         

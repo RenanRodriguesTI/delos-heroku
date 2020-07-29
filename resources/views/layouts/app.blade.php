@@ -418,6 +418,24 @@
                                                     <a href="{{route('audits.index')}}">Log</a>
                                                 </li>
                                             @endcan
+
+                                            @can('index-payment')
+                                                <li>
+                                                    <a href='{{route("payment.index")}}'>Tipos de Pagamento para Usuários </a>
+                                                </li>
+                                            @endcan
+
+                                            @can('index-payment-type-provider')
+                                                <li>
+                                                    <a href='{{route("paymentProvider.index")}}'>Tipos de Pagamento para Fornecedores</a>
+                                                </li>
+                                            @endcan
+
+                                            @can('index-office')
+                                                <li>
+                                                    <a href='{{route("office.index")}}?deleted_at=whereNull'>Cargos</a>
+                                                </li>
+                                            @endcan
                                         </ul>
                                     </li>
                                 @endcan

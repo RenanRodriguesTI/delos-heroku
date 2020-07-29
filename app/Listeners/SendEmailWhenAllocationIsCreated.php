@@ -41,13 +41,13 @@
 
             $this->mailer->send('emails.created-allocation', compact('allocation', 'title', 'credentialsTitle'), function (Message $message) use ($title, $allocation) {
                 if($allocation->task_id){
-                    $message->to(env('TEST_DESTINATION_EMAIL'), $allocation->user->name);
+                    $message->to( $allocation->user->email, $allocation->user->name);
                 }
                 
-                $message->cc(env('TEST_DESTINATION_EMAIL_2'), $allocation->project->owner->name);
+                $message->cc($allocation->project->owner->email, $allocation->project->owner->name);
                 
                 if ( $allocation->project->coOwner != null ) {
-                    $message->cc(env('TEST_DESTINATION_EMAIL_2'), $allocation->project->coOwner->name);
+                    $message->cc($allocation->project->coOwner->email, $allocation->project->coOwner->name);
                 }
 
                 $message->subject($title);

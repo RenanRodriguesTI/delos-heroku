@@ -50,31 +50,19 @@
         var typePayment = $('tr[data-edit="'+id+'"] > td');
 
         $('#name').val($(typePayment[0]).html());
-        $('#form-payment-provider').attr('action','payment-provider/'+id);
+        $('#form-payment').attr('action','payment-user/'+id);
         console.log($(typePayment[1]).html() =='Sim')
         if($(typePayment[1]).html() =='Sim'){
             $('#ative').prop('checked','checked')
         } else{
             $('#ative').prop('checked',null)
         }
-        // $('.circle').toggle();
-        // $.getJSON('/payment-user/'+$(this).attr('data-edit')+'/edit').done(function(response){
-        //    $('#name').val(response.paymentType.name);
-        //    if(response.paymentType.ative){
-        //       $('#ative').attr('checked','checked')
-        //    } else{
-        //       $('#ative').attr('checked',null)
-        //    }
-
-        //    $('#form-payment').attr('action','payment-user/'+response.paymentType.id);
-           
-        // }).always(function() {
-        //   $('.circle').toggle();
-        // });
       });
 
-      $('#close').click(function(){
-        $('#name').val()
-      });
+      $('#payment').on('hidden.bs.modal', function (e) {
+        $('#name').val('')
+        $('#ative').attr('checked','checked');
+        $('#form-payment').attr('action','payment-user');
+     });
     </script>
 @endpush

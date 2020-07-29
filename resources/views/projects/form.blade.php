@@ -220,7 +220,7 @@
         </div>
 
         <div class="form-group col-md-3 col-xs-12 {{$errors->has('extra_expenses') ? 'has-error' : ''}}">
-            <label for="extra_expenses">Despesas extras:</label>
+            <label for="extra_expenses">Despesas Orçadas:</label>
             <span title="@lang('tips.projects-extra-expenses')" class="glyphicon glyphicon-question-sign black-tooltip"
                   aria-hidden="true" data-toggle="tooltip" data-placement="top"></span>
 
@@ -262,7 +262,7 @@
         </div>
 
        
-        <div class="form-group col-md-3 col-xs-12">
+        <div class="form-group col-md-3 col-xs-12" style='display:none'>
             <label>Finalização Real</label>
             <input type="text"
                    class="form-control"
@@ -273,7 +273,7 @@
 
         <div class="form-group col-md-3 col-xs-12">
             <label>Data de Prorrogação</label>
-            <input {{!$project->id ? "disabled":""}} type="text" name="extension" id="extension" class="form-control extension_datetimepicker_1" required placeholder="Digite a data de prorrogação do projeto" value="{{$project->extension ? $project->extension->format('d/m/Y'): ''}}">
+            <input {{!$project->id ? "disabled":""}} type="text" name="extension" autocomplete='off' id="extension" class="form-control extension_datetimepicker_1" placeholder="Digite a data de prorrogação do projeto" value="{{$project->extension ? $project->extension->format('d/m/Y'): ''}}">
         </div>
     </div>
 

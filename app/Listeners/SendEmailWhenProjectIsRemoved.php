@@ -38,13 +38,12 @@ class SendEmailWhenProjectIsRemoved implements ShouldQueue
             $subject = $this->translator->trans('subjects.send-email-when-project-is-removed');
 
             foreach($project->members as $member) {
-                $message->to(env('TEST_DESTINATION_EMAIL'), $member->name);
-                break;
+                $message->to($member->email, $member->name);
             }
 
-            // foreach($this->getReceivers() as $receiver) {
-            //     $message->cc($receiver['email'], $receiver['name']);
-            // }
+            foreach($this->getReceivers() as $receiver) {
+                $message->cc($receiver['email'], $receiver['name']);
+            }
 
             $message->subject($subject);
         });

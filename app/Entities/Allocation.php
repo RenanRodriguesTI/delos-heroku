@@ -110,6 +110,10 @@
             return $this->belongsTo(GroupCompany::class);
         }
 
+        public function allocationTasks(){
+            return $this->hasMany(AllocationTask::class);
+        }
+
         /**
          * Set Start field value to Carbon
          *
@@ -132,10 +136,39 @@
 
         public function getCompiledNameAttribute()
         {
+            if($this->allocationTasks){
+                return "{$this->project->compiled_cod} - {$this->user->name} - Multiplas Tarefas";
+            }
             if(!$this->task){
                 return "{$this->project->compiled_cod} - {$this->user->name} - Não Especificado";
             }
             return "{$this->project->compiled_cod} - {$this->user->name} - {$this->task->name}";
+        }
+
+
+        public function getHoursAvailableAttribute(){
+            if($this->task){
+                return 0;
+            }
+            
+            if($this->allocationTasks){
+                $used = $this->allocationTasks->sum('hours');
+                return ($this->hours - $used);
+            }
+
+            return $this->hours;
+        }
+
+        public function getHoursUsedAttribute(){
+            if($this->task){
+                return $this->hours;
+            }
+
+            if($this->allocationTasks){
+                return $this->allocationTasks->sum('hours');
+            }
+
+            return 0;
         }
 
         public function getColorAttribute(){
@@ -143,5 +176,16 @@
             $this->color= $colors[random_int(0,count($colors) - 1)];
             
            return  $this->color;
+        }
+
+
+        public function getCompiledTasksAttribute(){
+            $tasks = collect();
+
+            foreach($this->allocationTasks as $allocationTask){
+                $tasks->push($allocationTask->task->name);
+            }
+
+            return implode(' - ',$tasks->unique()->toArray());
         }
     }

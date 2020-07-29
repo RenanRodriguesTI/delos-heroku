@@ -23,7 +23,14 @@
                     <tr>
                         <td><b>Tarefa</b></td>
                         <td style="vertical-align:middle;">
-                            <span class="task-allocation"> {{$allocation->task ? $allocation->task->name :"Não Especificado"}}</span>
+                            @if(!$allocation->allocationTasks->isEmpty())
+                            <span class="task-allocation">
+                                {{$allocation->compiled_tasks}}
+                            </span>
+                            @else
+                                <span class="task-allocation"> {{$allocation->task ? $allocation->task->name :"Não Especificado"}}</span>
+                            @endif
+                           
                             {{--<form class="form-task-allocation" style="display:none;">--}}
                             {{--<select name="status[]" class="value-task-allocation">--}}
                             {{--@foreach ($allocation->project->tasks as $task)--}}
@@ -129,6 +136,10 @@
                             </a>
                         @endcan
 
+                        <a class='btn btn-primary pull-right'   style="margin-right: 3px;" id='btn-edit-allocation' href='{{route("allocations.addTasks",["id"=>$allocation->id])}}'>
+                        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                            Tarefas
+                        </a>
 
                         <a class='btn btn-default pull-right'   style="margin-right: 3px;" id='btn-edit-allocation' href='{{route("allocations.edit",["id"=>$allocation->id])}}'>
                         <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>

@@ -41,7 +41,7 @@ class SendEmailWhenMemberIsDeletedListener implements ShouldQueue
 
         $this->mailer->send('emails.deleted-member', $data, function(Message $message) use ($member) {
             $subject = $this->translator->trans('subjects.send-email-when-member-is-deleted-listener');
-            $message->to(env('TEST_DESTINATION_EMAIL'), $member->name)
+            $message->to($member->email, $member->name)
                 ->subject($subject);
         });
     }

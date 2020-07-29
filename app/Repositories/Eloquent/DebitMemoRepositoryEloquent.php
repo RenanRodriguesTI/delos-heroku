@@ -90,37 +90,4 @@ class DebitMemoRepositoryEloquent extends BaseRepository implements DebitMemoRep
             });
         })->orderBy('id', 'desc')->first()->number ?? 0;
     }
-
-
-    // public function getDebitSupplierAndUser(){
-
-    //     $httpRequest = app('request');
-    //     $projectsIds = $httpRequest->input('projects');
-
-    //     if($this->isEligibleInput($projectsIds)){
-
-    //     }
-
-    //     $status = $httpRequest->input('status');
-
-    //     $model = $this->model->whereHas('expenses')->orWhereHas('supplierExpenses');
-
-    //     if (is_numeric($status)) {
-    //         switch ($status) {
-    //             case 0:
-    //                 $model = $model->whereNotNull('finish_at');
-    //                 break;
-    //             case 1:
-    //                 $model = $model->whereNull('finish_at');
-    //                 break;
-    //         }
-    //     }
-    //     return $model;
-    // }
-
-
-    private function isEligibleInput($input)
-    {
-        return is_array($input) && !empty($input);
-    }
 }

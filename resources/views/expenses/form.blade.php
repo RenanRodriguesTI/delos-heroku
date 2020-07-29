@@ -60,11 +60,9 @@
         <div class="col-xs-12">
             <div class="form-group col-lg-2 col-md-10 col-sm-10 col-xs-12 invoice-container  {{$errors->has('invoice') ? 'has-error' : ''}}">
                 {!! Form::label('invoice', 'Nº Nota Fiscal:') !!}
-
-
                 @if(isset($expense) && $expense->compiled_invoice  == 'RECIBO')
                     {!!
-                        Form::text('invoice', $expense->compiled_invoice ?? null, ['class' => 'form-control receipt', 'required', 'readOnly'])
+                        Form::text('invoice', $expense->compiled_invoice, ['class' => 'form-control receipt', 'required', 'readOnly'])
                     !!}
                 @else
                     {!!
@@ -103,7 +101,7 @@
                 </div>
 
                 @if(isset($expense))
-                    <a href="{{$expense->url_file}}" target="_blank">Visualizar comprovante</a>
+                    <a class='toview' href='javascript:void(0);' data-href="{{$expense->url_file}}" target="_blank">Visualizar comprovante</a>
                 @endif
 
                 <span class="help-block text-danger"><strong>{{$errors->first('invoice_file')}}</strong></span>
@@ -158,3 +156,17 @@
         </div>
     </div>
 </div>
+
+@push('scripts')
+    <script>
+        // $(document).ready(function(){
+        //     if($('#isReceipt').prop('checked')){
+        //         $("input[name='invoice']").remove();
+        //         var html = "<input class='form-control receipt' required='required' readonly='readOnly' name='invoice' type='text' value='RECIBO' id='invoice'>";
+        //         $(".invoice-container").append(html);
+        //     }
+        // });
+
+    </script>
+
+@endpush

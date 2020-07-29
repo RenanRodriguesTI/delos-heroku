@@ -14,6 +14,7 @@
                         @can('see-proposal-value')
                             <th>@lang('headers.proposal-value')</th>
                         @endcan
+                        <th>Despesas Orçadas</th>
                     </tr>
                 </thead>
 
@@ -26,10 +27,19 @@
                         <td>{{$project->owner->name}}</td>
                         <td>{{$project->start->format('d/m/Y')}}</td>
 
-                        @if($project->finish->isPast())
-                            <td class="text-danger bold">{{$project->finish->format('d/m/Y')}} &nbsp;&nbsp;<span style="background-color: #e51c23;color: rgba(0,0,0,0);">&nbsp;&nbsp;&nbsp;&nbsp;</span></td>
-                        @else
-                            <td>{{$project->finish->format('d/m/Y')}}</td>
+                        @if(!$project->extension)
+                            @if($project->finish->isPast())
+                                <td class="text-danger bold">{{$project->finish->format('d/m/Y')}} &nbsp;&nbsp;<span style="background-color: #e51c23;color: rgba(0,0,0,0);">&nbsp;&nbsp;&nbsp;&nbsp;</span></td>
+                            @else
+                                <td>{{$project->finish->format('d/m/Y')}}</td>
+                            @endif
+
+                            @else
+                                @if($project->extension->isPast())
+                                    <td class="text-danger bold">{{$project->extension->format('d/m/Y')}} &nbsp;&nbsp;<span style="background-color: #e51c23;color: rgba(0,0,0,0);">&nbsp;&nbsp;&nbsp;&nbsp;</span></td>
+                                    @else
+                                    <td>{{$project->extension->format('d/m/Y')}}</td>
+                                @endif
                         @endif
                         <td>{{$project->last_activity ? $project->last_activity->format('d/m/Y') : null}}</td>
                         <td>
@@ -87,6 +97,7 @@
                         @can('see-proposal-value')
                             <td>{{number_format($project->proposal_value, 2, ',', '.')}}</td>
                         @endcan
+                        <td>R$ {{number_format($project->extra_expenses,2,',','.')}}</td>
                     </tr>
                 @endforeach
                 </tbody>

@@ -15,12 +15,14 @@
     use Delos\Dgp\Jobs\GoogleCalendarApi;
     use Delos\Dgp\Repositories\Contracts\ProjectRepository;
     use Delos\Dgp\Repositories\Contracts\UserRepository;
+    use Delos\Dgp\Repositories\Contracts\TaskRepository;
     use Delos\Dgp\Services\ServiceInterface;
     use Illuminate\Http\Request;
     use Illuminate\Routing\Redirector;
     use Illuminate\Routing\ResponseFactory;
     use MaddHatter\LaravelFullcalendar\Calendar;
-
+    use Prettus\Validator\Exceptions\ValidatorException;
+    use Delos\Dgp\Rules\TaskHoursRule;
     /**
      * Class AllocationsController
      * @package Delos\Dgp\Http\Controllers
@@ -61,6 +63,54 @@
             $this->repository->find($id)
                              ->update(['reason' => $this->request->input('reason')]);
             return parent::destroy($id);
+        }
+
+
+        public function store()
+        {
+            try {
+                $allocations=$this->service->create($this->getRequestDataForStoring());
+                if($this->request->wantsJson()){
+                    return $this->response
+                    ->json([
+                        'allocations' => $allocations
+                    ],
+                    201);
+                }
+
+                if(isset($this->request['addTasks'])){
+                    return $this->response->redirectToRoute('allocations.addTasks',['id'=>$allocations[0]->parent_id]);
+                }
+                return $this->response->redirectTo($this->getInitialUrlIndex())->with('success', $this->getMessage('created'));
+
+            } catch ( ValidatorException $e ) {
+                if($this->request->wantsJson()){
+                    return $this->response->json($e->getMessageBag(),422);
+                }
+                return $this->redirector->back()->withErrors($e->getMessageBag())->withInput();
+            }
+
+        }
+
+        public function update(int $id)
+        {
+            try {
+              $allocations= $this->service->update($this->request->all(), $id);
+
+                if($this->request->wantsJson()){
+                    return $this->response->json(['allocations' => $allocations],200);
+                }
+
+                if(isset($this->request['addTasks'])){
+                    return $this->response->redirectToRoute('allocations.addTasks',['id'=>$allocations[0]->parent_id]);
+                }
+                return $this->response->redirectTo($this->getInitialUrlIndex())->with('success', $this->getMessage('edited'));
+            } catch ( ValidatorException $e ) {
+                if($this->request->wantsJson()){
+                    return $this->response->json(['errors' =>$e->getMessageBag()],422);
+                }
+                return $this->redirector->back()->withErrors($e->getMessageBag())->withInput();
+            }
         }
 
         public function edit(int $id)
@@ -286,4 +336,27 @@
                'check' => $check
            ],200);
         }
+
+        public function addTasksIndex(int $id){
+            $allocation = $this->repository->find($id);
+            $tasks = $allocation->project->tasks->pluck('name','id');
+            return view('allocations.tasks.add_task',compact('allocation','tasks'));
+        }
+
+        public function addTaskStore(int $id){
+            $validator = \Validator::make($this->request->all(),[
+                'task_id' =>'required|exists:tasks,id',
+                'hours' => ['required', new TaskHoursRule($id)]
+            ]);
+            
+            if($validator->fails()){
+                return $this->redirector->back()->withErrors($validator->getMessageBag())->withInput();
+            }
+
+            $this->service->createTask($this->request->all(),$id);
+            return $this->response->redirectToRoute('allocations.addTasks',['id' =>$id]);
+        }
     }
+
+
+  

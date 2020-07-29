@@ -21,7 +21,7 @@
                     <span class="help-block"><strong>{{$errors->first('project_id')}}</strong></span>
                 </div>
 
-                <div class="form-group user-group col-md-6{{$errors->has('user_id') ? ' has-error' : ''}}">
+                <div class="form-group user-group col-md-5 {{$errors->has('user_id') ? ' has-error' : ''}}">
                     {!! Form::label('user_id', 'Colaborador:') !!}
                     {!! Form::select('user_id', [], null, [
                     'class' => 'selectpicker form-control',
@@ -30,21 +30,14 @@
                     'data-box-actions' => 'true',
                     'required'
                     ]) !!}
+                    <div class='circle-type-2' id='loadding-user' style='display:none'></div>
                     <span class="help-block"><strong>{{$errors->first('user_id')}}</strong></span>
                     {!! Form::hidden('user_id_old', null, ['id' => 'user_id_old']) !!}
                 </div>
 
-                <div class="form-group task-group col-md-6 {{$errors->has('task_id') ? ' has-error' : ''}}">
-                    {!! Form::label('task_id', 'Tarefa:') !!}
-                    {!! Form::select('task_id', [], null, [
-                    'class' => 'selectpicker form-control',
-                    'title' => 'Selecione uma tarefa',
-                    'data-live-search' => 'true',
-                    'data-box-actions' => 'true',
-                    !$userException ? 'required' : ''
-                    ]) !!}
-                    <span class="help-block"><strong>{{$errors->first('task_id')}}</strong></span>
-                    {!! Form::hidden('task_id_old', null, ['id' => 'task_id_old']) !!}
+                <div class='form-group col-md-1'>
+                        {!!Form::label('alluser','Todos:')!!}<br>
+                        <input type='checkbox' id='alluser' data-toggle='toggle' data-on='Sim' data-off='Não' />
                 </div>
 
                 <div class="form-group {{$errors->has('start') ? ' has-error' : ''}} col-md-3 col-sm-6 col-xs-12">
@@ -96,6 +89,11 @@
                 <input type="checkbox" name='jobWeekEnd' id='jobWeekEnd' data-toggle="toggle" data-on="Sim" data-off="Não" {{!$userException ? 'disabled' :''}} >
                 </div>
 
+                <div class='form-group col-md-3 col-sm-12 col-xs-12'>
+                        <br>
+                        <a class="btn btn-dct" id='add-tasks-allocation' href='javascript:void(0);'>Adicionar tarefas</a>
+                </div>
+
                 <div class="form-group col-xs-12 {{$errors->has('description') ? 'has-error' : ''}}">
                     {!! Form::label('', 'Descrição:') !!}
                     {!! Form::textarea('description', null, ['class' => 'form-control', 'required' => 'required', 'style' => 'min-height: 87px;', 'id' =>'description']) !!}
@@ -130,13 +128,6 @@
         $('textarea#description').val(CKEDITOR.instances.description.getData()) ;
     
     });
-
-        // $(function(){
-        //     $('#jobWeekEnd').bootstrapToggle({
-        //         on: 'Enabled',
-        //         off: 'Disabled'
-        //     });
-        // })
     </script>
 
 @endsection

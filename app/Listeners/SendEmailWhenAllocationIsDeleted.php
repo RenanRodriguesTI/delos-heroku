@@ -41,13 +41,12 @@ class SendEmailWhenAllocationIsDeleted
 
 
         $this->mailer->send('emails.deleted-allocation', compact('allocation', 'title', 'credentialsTitle'), function (Message $message) use ($title, $allocation) {
-            //não comitar essa classe
-            $message->to(env('TEST_DESTINATION_EMAIL'), $allocation->user->name);
-            // $message->cc($allocation->project->owner->email, $allocation->project->owner->name);
+            $message->to($allocation->user->email, $allocation->user->name);
+            $message->cc($allocation->project->owner->email, $allocation->project->owner->name);
 
-            // if ( $allocation->project->coOwner != null ) {
-            //     $message->cc($allocation->project->coOwner->email, $allocation->project->coOwner->name);
-            // }
+            if ( $allocation->project->coOwner != null ) {
+                $message->cc($allocation->project->coOwner->email, $allocation->project->coOwner->name);
+            }
 
             $message->subject($title);
         });

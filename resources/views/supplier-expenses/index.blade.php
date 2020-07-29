@@ -38,6 +38,7 @@
                                 <th class="th-project">@lang('headers.project')</th>
                                 <th>Tipo de Comprovante</th>
                                 <th>@lang('headers.payment-type')</th>
+                                <th class='col-buttons'>Valor</th>
                                 <th>@lang('headers.description')</th>
                                 <th style="display: none;">@lang('headers.note')</th>
                                 <th style="min-width: 111px">@lang('headers.status')</th>
@@ -52,6 +53,7 @@
                                 <td>{{$expense->project->compiled_cod}}</td>
                                 <td>{{$expense->voucherType->name}}</td>
                                 <td>{{$expense->paymentTypeProvider->name}}</td>
+                                <td>R$ {{$expense->value}}</td>
                                 <td>{{$expense->description_id}}</td>
                                 <td>{{($expense->exported ? "Exportado":"Não Exportado")}}</td>
                                 <td class="has-btn-group">

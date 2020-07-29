@@ -85,10 +85,10 @@ class OvertimeApproval extends Command
                             $subject = $this->trans->trans('subjects.overtime-approval');
                             $message->subject($subject);
 
-                            $message->to(env('TEST_DESTINATION_EMAIL'), $owner->name);
+                            $message->to($owner->email, $owner->name);
 
                             foreach($this->getReceivers() as $receiver) {
-                                $message->cc(env('TEST_DESTINATION_EMAIL'), $receiver['name']);
+                                $message->cc($receiver['email'], $receiver['name']);
                             }
                         });
                 }

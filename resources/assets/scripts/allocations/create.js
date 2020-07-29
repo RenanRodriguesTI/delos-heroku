@@ -1,4 +1,7 @@
 $(document).ready(function () {
+
+    buttonAddTask();
+
     if ( $('#form-allocation').length ) {
         //Caso haja projeto selecionado aplicar alterações para seus respectivos inputs
         if ( $('#project_id').val() ) {
@@ -43,26 +46,34 @@ $(document).ready(function () {
         $("#start").on("dp.change", function (e) {
             $('#finish').data("DateTimePicker").minDate(e.date);
             calcHours();
+            buttonAddTask();
         });
 
         // A data de fim será a data máxima
         $("#finish").on("dp.change", function (e) {
             $('#start').data("DateTimePicker").maxDate(e.date);
             calcHours();
+            buttonAddTask();
         });
 
         // Scripts quando o select de projeto for alterado o valor
         $('#project_id').change(function (event) {
             changeInputsOfProjects(event);
+            buttonAddTask();
         });
 
         $('#hourDay').keyup(function(){
             calcHours();
+            buttonAddTask();
         });
 
         $('#jobWeekEnd').change(function(){
             calcHours();
         });
+
+        $('#hours').bind('input',function(){
+            buttonAddTask();
+        })
 
         // Exibe modal para detalhamento das alocações diárias
         $('#form-allocation').submit(function (event) {
@@ -82,6 +93,9 @@ $(document).ready(function () {
                 };
 
                 var query = $.param(data);
+                $('#preloader').show();
+                $('body').delay(350).css({'overflow-y':'hidden'});
+                $('#status').show();
                 $.getJSON('/allocations/check-period-hours?' + query)
                 .done(function (response) {
 
@@ -89,6 +103,10 @@ $(document).ready(function () {
 
                     $.each(response.possibles, function (key, item) {
                         var checkDailyHours = (item.actual_hours + item.hours_to_add) > 24;
+
+                        if(window.location.href.indexOf('edit') >-1){
+                            checkDailyHours = (item.hours_to_add) > 24;
+                        }
 
                         var html = "<tr>" +
                             "<td>" + response.user.name + "</td>" +
@@ -108,8 +126,10 @@ $(document).ready(function () {
                             $('.daily-submit-form').attr('disabled', false);
                         }
                     });
-
+                    $('#preloader').delay(350).fadeOut('slow');
+                    $('body').delay(350).css({'overflow':'visible'});
                     $("#daily-allocation-details").modal('toggle');
+                    
                 });
             }
         });
@@ -135,6 +155,11 @@ $(document).ready(function () {
             
             $('#form-allocation').submit();
         });
+
+        $('#add-tasks-allocation').click(function(){
+            $('#form-allocation').append('<input type="hidden" name="addTasks" value="clicked">');
+            $('#form-allocation').submit()
+        });
     }
 });
 
@@ -142,8 +167,7 @@ $(document).ready(function () {
 function calcHours(){
    
         var hour = $('#hourDay').val();
-    if(hour && hour >= 2 && !isNaN(hour) && hour % 2 == 0){
-       
+    if(hour && hour >= 2 && !isNaN(hour) && hour % 2 == 0 && hour <=24){
         var data = {
             'start':      $('#start').val(),
             'finish':     $('#finish').val(),
@@ -159,6 +183,7 @@ function calcHours(){
             $('div.circle').css('display','block');
         $.getJSON('/allocations/calc-hours?' + query).done(function(response){
             $('#hours').val(response.hours);
+            buttonAddTask();
             $('div.circle').css('display','none');
         });
         }
@@ -201,17 +226,51 @@ function checkHours(id){
 function changeInputsOfProjects() {
 
     // Adicionar os membros do projeto no select
-    $.getJSON('/projects/' + $('#project_id').val() + '/members', function (response) {
-        $('#user_id').empty();
-        $.each(response, function (key, item) {
-            if ( key == $('#user_id_old').val() ) {
-                $('#user_id').append("<option value='" + key + "' selected='selected'>" + item + "</option>");
-            } else {
-                $('#user_id').append("<option value='" + key + "'>" + item + "</option>");
-            }
-            $('#user_id').selectpicker('refresh');
-        });
-    });
+    if( $('#project_id').val()){
+        $('#preloader').show();
+        $('body').delay(350).css({'overflow-y':'hidden'});
+        $('#status').show();
+        $('#loadding-user').css('display','block');
+        if($('#alluser').prop('checked') ==true){
+            $.ajax({
+                url:window.location.origin+'/projects/'+$('#project_id').val()+'/members-to-add'+'?allCollaborators=true',
+                type:'GET',
+                dataType:'JSON',
+                success: function(res){
+                    $.each(res,function(key, item){
+                       
+                            $('#user_id').append("<option value='" + key + "'>" + item + "</option>");
+                        
+                    });
+                    $('#user_id').selectpicker('refresh');
+                    $('#loadding-user').css('display','none');
+                   $('#preloader').delay(350).fadeOut('slow');
+                     $('body').delay(350).css({'overflow':'visible'});
+                },
+                error: function(err){
+                    console.log('All User',err)
+                    $('#loadding-user').css('display','none');
+                   $('#preloader').delay(350).fadeOut('slow');
+                     $('body').delay(350).css({'overflow':'visible'});
+                }
+            });
+        } else{
+            $.getJSON('/projects/' + $('#project_id').val() + '/members', function (response) {
+                $('#user_id').empty();
+                $.each(response, function (key, item) {
+                    if ( key == $('#user_id_old').val() ) {
+                        $('#user_id').append("<option value='" + key + "' selected='selected'>" + item + "</option>");
+                    } else {
+                        $('#user_id').append("<option value='" + key + "'>" + item + "</option>");
+                    }
+                    $('#user_id').selectpicker('refresh');
+                });
+                $('#loadding-user').css('display','none');
+               $('#preloader').delay(350).fadeOut('slow');
+                 $('body').delay(350).css({'overflow':'visible'});
+            });
+        }
+    }
 
     // Adicionar as tarefas do projeto no select
     $.getJSON('/projects/' + $('#project_id').val() + '/tasks', function (response) {
@@ -236,4 +295,189 @@ function changeInputsOfProjects() {
         $('#finish').data("DateTimePicker").maxDate(date.add(1,'days').format('DD/MM/YYYY'));
         $('#finish').data("DateTimePicker").disabledDates([date.format('DD/MM/YYYY')]);
     });
+
+    
+    
 }
+
+
+$('#alluser').change(function(){
+
+    if( $('#project_id').val() !=''){
+        $('#loadding-user').css('display','block');
+        $('#preloader').show();
+        $('body').delay(350).css({'overflow-y':'hidden'});
+        $('#status').show();
+        if($('#alluser').prop('checked') ==true){
+            $('#user_id').empty();
+            $.ajax({
+                url:window.location.origin+'/projects/'+$('#project_id').val()+'/members-to-add'+'?allCollaborators=true',
+                type:'GET',
+                dataType:'JSON',
+                success: function(res){
+                    $.each(res,function(key, item){
+                       
+                        $('#user_id').append("<option value='" + key + "'>" + item + "</option>");
+                    
+                    });
+                    $('#user_id').selectpicker('refresh');
+                    $('#loadding-user').css('display','none');
+                   $('#preloader').delay(350).fadeOut('slow');
+                     $('body').delay(350).css({'overflow':'visible'});
+                },
+                error: function(err){
+                    console.log('All User',err)
+                    $('#loadding-user').css('display','none');
+                    $('#preloader').delay(350).fadeOut('slow');
+                    $('body').delay(350).css({'overflow':'visible'});
+                }
+            });
+        } else{
+            $.getJSON('/projects/' + $('#project_id').val() + '/members', function (response) {
+                $('#user_id').empty();
+                $.each(response, function (key, item) {
+                    if ( key == $('#user_id_old').val() ) {
+                        $('#user_id').append("<option value='" + key + "' selected='selected'>" + item + "</option>");
+                    } else {
+                        $('#user_id').append("<option value='" + key + "'>" + item + "</option>");
+                    }
+                    $('#user_id').selectpicker('refresh');
+                });
+
+                $('#loadding-user').css('display','none');
+               $('#preloader').delay(350).fadeOut('slow');
+                 $('body').delay(350).css({'overflow':'visible'});
+            });
+        }
+    }
+
+  
+});
+
+
+if(window.location.href.indexOf('allocations') >-1){
+    $('#user_id').change(function(){
+        $('#loadding-user').css('display','block');
+        $('#preloader').show();
+        $('body').delay(350).css({'overflow-y':'hidden'});
+        $('#status').show();
+        $.getJSON('/projects/' + $('#project_id').val() + '/members', function (response) {
+            var isMember = false;
+            $.each(response, function (key, item) {
+                if(isMember == false){
+                    isMember = (key == $('#user_id').val())
+                }
+            });
+            console.log(isMember)
+           if(!isMember){
+               $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                 }
+               });
+                $.ajax({
+                    type:'POST',
+                    url:window.location.origin+'/projects/'+$('#project_id').val() + '/members',
+                    dataType:'JSON',
+                    data:{
+                        members:[$('#user_id').val()]
+                    },
+                    success: function(res){
+                        console.log('Membro adicionado')
+                        if(  $('#user_id option[value="'+$('#user_id').val()+'"]').html().indexOf('PS') >-1){
+                            getModalHoursProjectAllocations();
+                        }
+                        $('#loadding-user').css('display','none');
+                       $('#preloader').delay(350).fadeOut('slow');
+                         $('body').delay(350).css({'overflow':'visible'});
+                        
+                    }, error:function(err){
+                        console.log(err)
+                        $('#loadding-user').css('display','none');
+                       $('#preloader').delay(350).fadeOut('slow');
+                         $('body').delay(350).css({'overflow':'visible'});
+                    }
+                });
+           }else{
+            $('#loadding-user').css('display','none');
+            $('#preloader').delay(350).fadeOut('slow');
+              $('body').delay(350).css({'overflow':'visible'});
+           }
+        });
+        //action="http://localhost:8000/projects/510/members"
+        //http://localhost:8000/projects/510/members/95/addhours
+    });
+    
+    
+    
+    
+    function getModalHoursProjectAllocations() {
+        if ($('#modal-table-details').hasClass('in')) {
+            $('#modal-table-details').modal('toggle');
+        }
+    
+        var updateitem = $(this).attr('id');
+        var hoursstatus = $(this).attr('data-hours');
+    
+        updateitem = '';
+        var title = $("#modalAlert .modal-title");
+        var menssage = $("#modalAlert .alertMessages");
+    
+        title.html("Atenção!");
+            $('#modalAlert .alert-footer').find('.btn-success').remove();
+            menssage.html("Deseja mesmo permitir o prestador de serviço cadastrar horas?");
+            $('#modalAlert .alert-footer').append('<a class="btn btn-success" href="javascript:void(0);' + '" id="btn-confirm-add"><span class="glyphicon glyphicon-check saving" aria-hidden="true"></span> Permitir</a>');
+            $('#modalAlert .alert-footer').append('<a class="btn btn-danger" href="javascript:void(0);' + '" id="btn-remove-hours-permission"><span class="glyphicon glyphicon-trash deleting" aria-hidden="true"></span> Não Permitir</a>');
+            $('#modalAlert .alert-footer .btn.btn-default').css('display','none')
+        
+            $('#btn-remove-hours-permission').click(function(){
+                $('#preloader').show();
+                $('body').delay(350).css({'overflow-y':'hidden'});
+                $('#status').show();
+                $('#loadding-user').css('display','block');
+                $("#modalAlert").modal("hide");
+                $.getJSON(window.location.origin+'/projects/'+$('#project_id').val()+'/members/'+$('#user_id').val()+'/addhours',function(response){
+                    $('#loadding-user').css('display','none');
+                    $('#modalAlert .alert-footer').html('');
+                   $('#preloader').delay(350).fadeOut('slow');
+                     $('body').delay(350).css({'overflow':'visible'});
+                });
+            });
+    
+            $('#btn-confirm-add').click(function(){
+                $('#preloader').show();
+                $('body').delay(350).css({'overflow-y':'hidden'});
+                $('#status').show();
+                $('#loadding-user').css('display','block');
+                $('#modalAlert').modal('hide');
+                $('#modalAlert .alert-footer').html('');
+                setTimeout(function(){
+                    $('#loadding-user').css('display','none');
+                   $('#preloader').delay(350).fadeOut('slow');
+                     $('body').delay(350).css({'overflow':'visible'});
+                },1000);
+            });
+    
+            $("#modalAlert").modal("show");
+    }
+}
+
+
+function buttonAddTask(){
+var empty = false;
+var fields = ['#project_id','#user_id_old','#start','#finish','#hourDay','#hours'];
+
+for(var i=0; i<fields.length;i++){
+    if(!$(fields[i]).val() || $(fields[i]).val().trim() == ''){
+        empty = true;
+    }
+}
+
+if(!empty){
+     $('#add-tasks-allocation').css('display','inline-block');
+} else{
+     $('#add-tasks-allocation').css('display','none');
+}
+}
+
+

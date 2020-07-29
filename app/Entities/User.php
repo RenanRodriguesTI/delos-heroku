@@ -34,6 +34,7 @@
             'office',
             'group_company_id',
             'notes',
+            'color'
         ];
 
         protected $casts = [
@@ -203,4 +204,25 @@
 
             return $coast->first();
         }
+
+        public function userOffices(){
+            return $this->hasMany(UserOffice::class);
+        }
+
+        public function getIdOfficeAttribute(){
+            $userOffice = UserOffice::where('user_id',$this->id)
+            ->orderBy('created_at','desc')
+            ->first();
+
+            return $userOffice ? $userOffice->office->id :0;
+        }
+
+        public function getStartOfficeAttribute(){
+            $office = UserOffice::where('user_id',$this->id)
+            ->orderBy('created_at','desc')
+            ->first();
+
+            return $office ? $office->start :0;
+        }
+
     }

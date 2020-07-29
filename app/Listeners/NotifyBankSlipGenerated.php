@@ -40,9 +40,7 @@ class NotifyBankSlipGenerated
         $this->mailer->send('emails.generated-bank-slip', compact('transaction'), function (Message $message) use ($transaction) {
             $subject = "Seu boleto foi gerado (anexo)";
 
-            //Modificação feita para teste não comitar essa classe
-            $message->to(env('TEST_DESTINATION_EMAIL'), $transaction->groupCompany->paymentInformation->name);
-            // $message->to($transaction->groupCompany->paymentInformation->email, $transaction->groupCompany->paymentInformation->name);
+            $message->to($transaction->groupCompany->paymentInformation->email, $transaction->groupCompany->paymentInformation->name);
             $message->attachData(Storage::get($this->getFullPath($transaction)), 'boleto.pdf');
             $message->subject($subject);
         });

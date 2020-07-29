@@ -19,7 +19,9 @@
                 'account_number'      => 'string',
                 'is_partner_business' => 'integer',
                 'group_company_id'    => 'integer:exists:group_companies',
-                'notes'               => 'string|max:255'
+                'notes'               => 'string|max:255',
+                'office_id' =>'required|exists:offices,id',
+                'start' => 'required|date_format:d/m/Y'
             ],
 
             ValidatorInterface::RULE_UPDATE => [
@@ -32,7 +34,9 @@
                 'account_number'      => 'string',
                 'is_partner_business' => 'integer',
                 'group_company_id'    => 'integer:exists:group_companies',
-                'notes'               => 'string|max:255'
+                'notes'               => 'string|max:255',
+                'office_id' =>'exists:offices,id',
+                'start' => 'required|date_format:d/m/Y'
             ],
         ];
 

@@ -100,12 +100,11 @@ class ApprovedActivitiesEmail extends Command
                             $subject = $this->translator->trans('subjects.approved-activities');
     
                             $m->subject($subject);
-                            //não commitar
-                            $m->to(env('TEST_DESTINATION_EMAIL'), $collaborator->name);
+                            $m->to($collaborator->email, $collaborator->name);
     
                             foreach($owners as $owner) {
                                 if($owner->id != $collaborator->id) {
-                                    $m->cc(env('TEST_DESTINATION_EMAIL'), $owner->name);
+                                    $m->cc($owner->email, $owner->name);
                                 }
                             }
                     });

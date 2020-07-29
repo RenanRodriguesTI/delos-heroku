@@ -187,7 +187,7 @@ class ActivityApiRepositoryEloquent extends BaseApiRepository implements Activit
 
     private function getHolidays()
     {
-        return app(HolidayApiRepository::class)->pluck('date')
+        return app(HolidayRepository::class)->pluck('date')
             ->transform(function ($holiday) {
                 return $holiday->toDateString();
             })->toArray();

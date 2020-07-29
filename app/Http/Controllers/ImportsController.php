@@ -29,7 +29,7 @@ class ImportsController extends AbstractController
         try{
             $this->service->validateFile($request->all());
             if ($request->has('files') && $request->file('files')->isValid()){
-                Storage::disk('local')->put('file.xlsx', file_get_contents($request->file('files')));
+                Storage::disk('local')->put('file.csv', file_get_contents($request->file('files')));
                 $this->service->importAllProposalValues();
                
             }

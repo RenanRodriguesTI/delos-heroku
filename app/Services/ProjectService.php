@@ -303,6 +303,8 @@ class ProjectService extends AbstractService
 
 
             });
-            } catch()
+            } catch(Exception $error){
+                var_dump(['error'=>$error->get]);
+            }
         }
     }

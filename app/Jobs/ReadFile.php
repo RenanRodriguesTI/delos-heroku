@@ -35,7 +35,7 @@ class ReadFile implements ShouldQueue
 
         var_dump( Storage::disk('heroku')->url('file.xlsx'));
 
-           Excel::filter('chunk')->load('storage/file.xlsx')->formatDates(true)->chunk(100, function($results)
+           Excel::filter('chunk')->load('file.xlsx')->formatDates(true)->chunk(100, function($results)
             {
 
 

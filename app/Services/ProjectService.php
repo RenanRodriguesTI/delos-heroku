@@ -303,7 +303,7 @@ class ProjectService extends AbstractService
                 dispatch((new ImportRevenues($results->toArray(),$load,$user)))->onConnection('database');
 
 
-            });
+            },false);
             } catch(Exception $error){
                 var_dump(['error'=>$error->get]);
             }

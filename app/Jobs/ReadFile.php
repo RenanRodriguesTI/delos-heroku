@@ -9,6 +9,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
+use Exception;
 
 class ReadFile implements ShouldQueue
 {
@@ -39,5 +40,10 @@ class ReadFile implements ShouldQueue
 
 
             });
+    }
+
+    public function failed(Exception $exception)
+    {
+        var_dump($exception->getMessage());
     }
 }

@@ -12,6 +12,7 @@
     use Delos\Dgp\Entities\ProjectProposalValue;
     use Exception;
     use Prettus\Validator\Contracts\ValidatorInterface;
+    use Illuminate\Support\Facades\Storage;
     use Illuminate\Support\Facades\DB;
     use Carbon\Carbon;
     use Maatwebsite\Excel\Facades\Excel;
@@ -288,8 +289,9 @@ class ProjectService extends AbstractService
             TemporaryImport::query()->forceDelete();
             $user = Auth::user();
             $imported = 0;
+            
             try{
-                Excel::filter('chunk')->load('storage/app/file.xlsx')->formatDates(true)->chunk(100, function($results) use ($user,$imported)
+                Excel::filter('chunk')->load(Storage::disk('local')->url('file.xlsx'))->formatDates(true)->chunk(100, function($results) use ($user,$imported)
             {
                 $imported += count($results->toArray());
                 $load = Excel::load('storage/app/file.xlsx', function($reader) {

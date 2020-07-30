@@ -9,6 +9,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
+use Delos\Dgp\Jobs\ImportRevenues;
 use Exception;
 
 class ReadFile implements ShouldQueue
@@ -38,6 +39,9 @@ class ReadFile implements ShouldQueue
            Excel::filter('chunk')->load(Storage::disk('heroku')->path('file.xlsx'))->formatDates(true)->chunk(100, function($results)
             {
 
+                    $load = Excel::load('storage/app/file.xlsx', function($reader) {
+                })->getActiveSheet()->getHighestRow();
+                dispatch((new ImportRevenues($results->toArray(),$load,'renanrodriguesmachado2@gmail.com')))->onConnection('database');
 
             });
     }

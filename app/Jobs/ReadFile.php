@@ -31,9 +31,9 @@ class ReadFile implements ShouldQueue
      */
     public function handle()
     {
-        Storage::disk('local')->put('file.xlsx', Storage::disk('s3')->get('file.xlsx'));
+        Storage::disk('heroku')->put('file.xlsx', Storage::disk('s3')->get('file.xlsx'));
 
-        var_dump( Storage::disk('local')->url('file.xlsx'));
+        var_dump( Storage::disk('heroku')->url('file.xlsx'));
 
            Excel::filter('chunk')->load('storage/file.xlsx')->formatDates(true)->chunk(100, function($results)
             {

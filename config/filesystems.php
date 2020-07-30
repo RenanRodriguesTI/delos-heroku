@@ -49,7 +49,7 @@ return [
         ],
         'heroku' => [
             'driver' => 'local',
-            'root' => storage_path('storage'),
+            'root' => storage_path('app'),
         ],
 
         'public' => [

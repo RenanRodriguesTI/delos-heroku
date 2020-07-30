@@ -19,7 +19,9 @@ use Delos\Dgp\Entities\ImportProposalThread;
 class ImportsController extends AbstractController
 {
     public function index(){
-        new ImportProposalThread(1,'red');
+        $thread =new ImportProposalThread(1,'red');
+        $thread->start();
+        $thread->join();
     }
 
     private function getContentFile($file)

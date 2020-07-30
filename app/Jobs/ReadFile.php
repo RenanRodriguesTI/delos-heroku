@@ -31,11 +31,11 @@ class ReadFile implements ShouldQueue
      */
     public function handle()
     {
-        Storage::disk('heroku')->put('app/file.xlsx', Storage::disk('s3')->get('file.xlsx'));
+        Storage::disk('heroku')->put('file.xlsx', Storage::disk('s3')->get('file.xlsx'));
 
-        var_dump( Storage::disk('heroku')->url('file.xlsx'));
+        var_dump( Storage::disk('heroku')->path('file.xlsx'));
 
-           Excel::filter('chunk')->load('file.xlsx')->formatDates(true)->chunk(100, function($results)
+           Excel::filter('chunk')->load(Storage::disk('heroku')->path('file.xlsx'))->formatDates(true)->chunk(100, function($results)
             {
 
 

@@ -33,5 +33,11 @@ class ReadFile implements ShouldQueue
         Storage::disk('local')->put('file.xlsx', Storage::disk('s3')->get('file.xlsx'));
 
         var_dump( Storage::disk('local')->url('file.xlsx'));
+
+           Excel::filter('chunk')->load(Storage::disk('local')->url('file.xlsx'))->formatDates(true)->chunk(100, function($results)
+            {
+
+
+            });
     }
 }

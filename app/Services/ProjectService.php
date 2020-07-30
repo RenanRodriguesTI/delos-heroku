@@ -18,8 +18,7 @@
     use Delos\Dgp\Jobs\ImportRevenues;
     use Delos\Dgp\Entities\TemporaryImport;
     use Illuminate\Support\Facades\Auth;
-    use Illuminate\Support\Facades\Storage;
-    use Delos\Dgp\Jobs\ReadFile;
+    use Delos\Dgp\Jobs\ReadFileRevenues;
 
 class ProjectService extends AbstractService
     {
@@ -288,23 +287,7 @@ class ProjectService extends AbstractService
 
         public function importAllProposalValues(){
             TemporaryImport::query()->forceDelete();
-            $user = Auth::user();
-            $imported = 0;
-
-            dispatch(new ReadFile());
-            // Excel::filter('chunk')->load('storage/app/file.xlsx')->formatDates(true)->chunk(100, function($results) use ($user,$imported)
-            // {
-            //     $imported += count($results->toArray());
-            //     $load = Excel::load('storage/app/file.xlsx', function($reader) {
-            //     })->getActiveSheet()->getHighestRow();
-
-            //     if($imported == ($load - 1)){
-            //         return true;
-            //     }
-
-            //     dispatch((new ImportRevenues($results->toArray(),$load,$user)))->onConnection('database');
-
-
-            // });
+            $user = (object)['name'=>Auth::user()->name,'email'=>Auth::user()->email];
+            dispatch(new ReadFileRevenues($user));
         }
     }

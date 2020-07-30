@@ -14,14 +14,10 @@ use Carbon\Carbon;
 use Prettus\Validator\Exceptions\ValidatorException;
 use Illuminate\Support\Collection;
 use PhpParser\Node\Expr\Cast\Double;
-use Delos\Dgp\Entities\ImportProposalThread;
 
 class ImportsController extends AbstractController
 {
     public function index(){
-        $thread =new ImportProposalThread(1,'red');
-        $thread->start();
-        $thread->join();
     }
 
     private function getContentFile($file)
@@ -35,7 +31,6 @@ class ImportsController extends AbstractController
             if ($request->has('files') && $request->file('files')->isValid()){
                 Storage::disk('s3')->put('file.xlsx', file_get_contents($request->file('files')));
                 $this->service->importAllProposalValues();
-               
             }
 
             if($this->request->wantsJson()){

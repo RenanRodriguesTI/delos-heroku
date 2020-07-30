@@ -14,10 +14,12 @@ use Carbon\Carbon;
 use Prettus\Validator\Exceptions\ValidatorException;
 use Illuminate\Support\Collection;
 use PhpParser\Node\Expr\Cast\Double;
+use Delos\Dgp\Entities\ImportProposalThread;
 
 class ImportsController extends AbstractController
 {
     public function index(){
+        new ImportProposalThread(1,'red');
     }
 
     private function getContentFile($file)

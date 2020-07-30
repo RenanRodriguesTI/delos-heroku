@@ -12,13 +12,14 @@
     use Delos\Dgp\Entities\ProjectProposalValue;
     use Exception;
     use Prettus\Validator\Contracts\ValidatorInterface;
-    use Illuminate\Support\Facades\Storage;
     use Illuminate\Support\Facades\DB;
     use Carbon\Carbon;
     use Maatwebsite\Excel\Facades\Excel;
     use Delos\Dgp\Jobs\ImportRevenues;
     use Delos\Dgp\Entities\TemporaryImport;
     use Illuminate\Support\Facades\Auth;
+    use Illuminate\Support\Facades\Storage;
+    use Delos\Dgp\Jobs\ReadFile;
 
 class ProjectService extends AbstractService
     {
@@ -289,23 +290,21 @@ class ProjectService extends AbstractService
             TemporaryImport::query()->forceDelete();
             $user = Auth::user();
             $imported = 0;
-            try{
-                Excel::filter('chunk')->load('storage/app/file.xlsx')->formatDates(true)->chunk(100, function($results) use ($user,$imported)
-            {
-                $imported += count($results->toArray());
-                $load = Excel::load('storage/app/file.xlsx', function($reader) {
-                })->getActiveSheet()->getHighestRow();
 
-                if($imported == ($load - 1)){
-                    return true;
-                }
+            dispatch(new ReadFile());
+            // Excel::filter('chunk')->load('storage/app/file.xlsx')->formatDates(true)->chunk(100, function($results) use ($user,$imported)
+            // {
+            //     $imported += count($results->toArray());
+            //     $load = Excel::load('storage/app/file.xlsx', function($reader) {
+            //     })->getActiveSheet()->getHighestRow();
 
-                dispatch((new ImportRevenues($results->toArray(),$load,$user)))->onConnection('database');
+            //     if($imported == ($load - 1)){
+            //         return true;
+            //     }
+
+            //     dispatch((new ImportRevenues($results->toArray(),$load,$user)))->onConnection('database');
 
 
-            },false);
-            } catch(Exception $error){
-                var_dump(['error'=>$error->get]);
-            }
+            // });
         }
     }

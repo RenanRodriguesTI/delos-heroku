@@ -16,6 +16,7 @@
     use Delos\Dgp\Repositories\Contracts\ProjectRepository;
     use Delos\Dgp\Repositories\Contracts\UserRepository;
     use Delos\Dgp\Repositories\Contracts\TaskRepository;
+    use Delos\Dgp\Repositories\Contracts\AllocationRepository;
     use Delos\Dgp\Services\ServiceInterface;
     use Illuminate\Http\Request;
     use Illuminate\Routing\Redirector;
@@ -339,14 +340,15 @@
 
         public function addTasksIndex(int $id){
             $allocation = $this->repository->find($id);
+            $allocationTasks =$allocation->allocationTasks()->paginate(15);
             $tasks = $allocation->project->tasks->pluck('name','id');
-            return view('allocations.tasks.add_task',compact('allocation','tasks'));
+            return view('allocations.tasks.add_task',compact('allocation','tasks','allocationTasks'));
         }
 
         public function addTaskStore(int $id){
             $validator = \Validator::make($this->request->all(),[
                 'task_id' =>'required|exists:tasks,id',
-                'hours' => ['required', new TaskHoursRule($id)]
+                'hours' => ['required', new TaskHoursRule($id)],
             ]);
             
             if($validator->fails()){
@@ -356,6 +358,26 @@
             $this->service->createTask($this->request->all(),$id);
             return $this->response->redirectToRoute('allocations.addTasks',['id' =>$id]);
         }
+
+        public function updateTask(int $id,int $allocationTaskId){
+            $validator = \Validator::make($this->request->all(),[
+                'task_id' =>'required|exists:tasks,id',
+                'hours' => ['required', new TaskHoursRule($id,$allocationTaskId,true)],
+            ]);
+            
+            if($validator->fails()){
+                return $this->redirector->back()->withErrors($validator->getMessageBag())->withInput();
+            }
+
+            $this->service->updateTask($this->request->all(),$id, $allocationTaskId);
+            return $this->response->redirectToRoute('allocations.addTasks',['id' =>$id]);
+        }
+
+        public function destroyTask($id,$allocationTaskId){
+            $this->service->deleteTask($id,$allocationTaskId);
+            return $this->response->redirectToRoute('allocations.addTasks',['id' =>$id]);
+        }
+        
     }
 
 

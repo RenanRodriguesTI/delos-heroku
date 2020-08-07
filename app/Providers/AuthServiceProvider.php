@@ -41,6 +41,14 @@ class AuthServiceProvider extends ServiceProvider
                     });
             });
 
+            Gate::define('destroy-task-allocation',function(){
+                return true;
+            });
+
+            Gate::define('update-task-allocation',function(){
+                return true;
+            });
+
             Passport::routes();
         } catch(\Exception $e) {
 

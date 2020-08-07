@@ -3,6 +3,7 @@
 namespace Delos\Dgp\Entities;
 
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class AllocationTask extends Model
 {
@@ -10,7 +11,7 @@ class AllocationTask extends Model
         'id',
         'task_id',
         'allocation_id',
-        'hours'
+        'hours',
     ];
 
     public function allocation(){

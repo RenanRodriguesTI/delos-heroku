@@ -47,10 +47,6 @@ return [
             'driver' => 'local',
             'root' => storage_path('app'),
         ],
-        'heroku' => [
-            'driver' => 'local',
-            'root' => storage_path('app'),
-        ],
 
         'public' => [
             'driver' => 'local',

@@ -65,6 +65,8 @@
 
                     Route::get('/{id}/add-tasks',['as'=>'addTasks','uses' => 'AllocationsController@addTasksIndex']);
                     Route::post('/{id}/add-tasks',['as'=>'addTaskStore','uses' =>'AllocationsController@addTaskStore' ]);
+                    Route::get('/{id}/{allocationTaskId}/destroy-task',['as'=>'destroyTask','uses'=>'AllocationsController@destroyTask']);
+                    Route::post('/{id}/{allocationTaskId}/update-task',['as'=>'updateTask','uses'=>'AllocationsController@updateTask']);
                 });
 
                 Route::group(['prefix' => 'clients'], function () {

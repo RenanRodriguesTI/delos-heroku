@@ -68,8 +68,7 @@ var scripts = [
     './resources/assets/scripts/coast-users/index.js',
     './resources/assets/scripts/expenses/core.js',
     './resources/assets/scripts/core.js',
-    './resources/assets/scripts/jquery.mask.js',
-    './resources/assets/scripts/sweetalert.js'
+    './resources/assets/scripts/jquery.mask.js'
 ];
 
 var styles = [

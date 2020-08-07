@@ -36,7 +36,8 @@
             'reason',
             'status',
             'parent_id',
-            'jobWeekEnd'
+            'jobWeekEnd',
+            'automatic'
         ];
 
         private $color ='';
@@ -136,7 +137,7 @@
 
         public function getCompiledNameAttribute()
         {
-            if($this->allocationTasks){
+            if(!$this->allocationTasks->isEmpty()){
                 return "{$this->project->compiled_cod} - {$this->user->name} - Multiplas Tarefas";
             }
             if(!$this->task){

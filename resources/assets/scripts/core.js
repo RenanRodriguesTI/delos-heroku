@@ -951,36 +951,7 @@ $('#file').change(function() {
     if ($(this).val() != '') {
         $('#preloader').show();
         $('#status').show();
-        var form = new FormData();
-        form.append('files',$('#file')[0].files[0]);
-        $.ajaxSetup({
-            headers: {
-               'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-         });
-        $.ajax({
-            type:'POST',
-            url:'import/upload',
-            dataType:'JSON',
-            processData:false,
-            contentType:false,
-            data:form,
-            async:true,
-            success:function(data){
-                $('#preloader').hide();
-                $('#file').val('');
-                swal({
-                    title: "Faturamentos",
-                    text: "Estamos importando seus faturamentos. \n Quando terminarmos a importação será enviado um e-mail.",
-                    icon: "success",
-                    button: "Fechar",
-                  });
-            },
-            error:function(err){
-                $('#preloader').hide();
-            }
-        });
-        // $('#form-import').submit();
+        $('#form-import').submit();
     }
 
 });

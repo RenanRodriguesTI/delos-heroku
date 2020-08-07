@@ -18,6 +18,7 @@ use PhpParser\Node\Expr\Cast\Double;
 class ImportsController extends AbstractController
 {
     public function index(){
+        return view('revenues.error');
     }
 
     private function getContentFile($file)
@@ -29,17 +30,12 @@ class ImportsController extends AbstractController
         try{
             $this->service->validateFile($request->all());
             if ($request->has('files') && $request->file('files')->isValid()){
-                Storage::disk('s3')->put('file.xlsx', file_get_contents($request->file('files')));
+                Storage::disk('local')->put('file.xlsx', file_get_contents($request->file('files')));
+                $data = Excel::load('storage/app/file.xlsx')->get();
                 $this->service->importAllProposalValues();
             }
 
-            if($this->request->wantsJson()){
-                return $this->response->json([
-                    'res'=> 'file is processing'
-                ],200);
-            }
-
-            return redirect()->route('revenues.index');
+        return redirect()->route('revenues.index');
 
         } catch( ValidatorException $e){
             $fileerrors = collect($e->getMessageBag()->messages());

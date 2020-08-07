@@ -92,8 +92,11 @@
             'Delos\Dgp\Events\UpdateUser' =>[
                 'Delos\Dgp\Listeners\UpdateUserListener'
             ],
-            'Delos\Dgp\Events\ImportedRevenues' =>[
-                'Delos\Dgp\Listeners\ImportedRevenuesListener'
+            'Delos\Dgp\Events\UpdateOwnerProject' =>[
+                'Delos\Dgp\Listeners\UpdateOwnerProjectListener'
+            ],
+            'Delos\Dgp\Events\DispatchAutoAllocation' =>[
+                'Delos\Dgp\Listeners\AutoAllocationUpdateListener'
             ]
         ];
 

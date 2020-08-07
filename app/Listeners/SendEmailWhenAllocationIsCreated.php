@@ -40,7 +40,7 @@
 
 
             $this->mailer->send('emails.created-allocation', compact('allocation', 'title', 'credentialsTitle'), function (Message $message) use ($title, $allocation) {
-                if($allocation->task_id){
+                if($allocation->task_id || !$allocation->allocationTasks->isEmpty()){
                     $message->to( $allocation->user->email, $allocation->user->name);
                 }
                 

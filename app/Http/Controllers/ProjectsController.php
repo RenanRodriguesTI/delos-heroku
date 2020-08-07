@@ -31,7 +31,7 @@ class ProjectsController extends AbstractController
             'groups' => app(GroupRepository::class)->pluck('name', 'id'),
             'companies' => app(CompanyRepository::class)->pluck('name', 'id'),
             'usersRoleClient' => app(UserRepository::class)->getFromClientRole()->pluck('name', 'id'),
-            'accepted' => app('auth')->getUser()->name === 'VERONICA SALVATI'
+            'accepted' => app('auth')->getUser()->name === 'VERONICA SALVATI' || app('auth')->getUser()->name === 'Administrador'
         ];
     }
 

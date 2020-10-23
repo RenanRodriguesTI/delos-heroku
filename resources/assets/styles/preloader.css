@@ -6,7 +6,7 @@
     bottom: 0;
     background-color: #fff;
     /* change if the mask should have another color then white */
-    z-index: 1070;
+    z-index: 10000000;
     /* makes sure it stays on top */
 }
 

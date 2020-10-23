@@ -19,7 +19,9 @@ class Activity extends AbstractAudit
         'note',
         'approved',
         'weekend',
-        'approver_id'
+        'approver_id',
+        'concluded',
+        'reason'
     ];
     protected $casts = [
         'date' => 'datetime',

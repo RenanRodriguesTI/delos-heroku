@@ -47,7 +47,7 @@
 
                             @foreach($user->allocations as $allocation)
                                     @if ($allocation->parent)
-                                        r.AddTaskItem(new JSGantt.TaskItem(Math.floor((Math.random() * (99999 * 9999)) + (99 * 9)), '{{$allocation->project->compiled_cod}}', '{{$allocation->start->format('Y-m-d')}}', '{{$allocation->finish->format('Y-m-d')}}', 'gtaskgreen', '', 0, '{{$allocation->project->description}}', 100, 0, {{$user->id}}, 1, '', '', '{{$allocation->task->name}}', r));
+                                        r.AddTaskItem(new JSGantt.TaskItem(Math.floor((Math.random() * (99999 * 9999)) + (99 * 9)), '{{$allocation->project->compiled_cod}}', '{{$allocation->start->format('Y-m-d')}}', '{{$allocation->finish->format('Y-m-d')}}', 'gtaskgreen', '', 0, '{{$allocation->project->description}}', 100, 0, {{$user->id}}, 1, '', '', '{{$allocation->task ? $allocation->task->name : "Mutiplas Tarefas"}}', r));
                                     @endif
                             @endforeach
                         @endforeach

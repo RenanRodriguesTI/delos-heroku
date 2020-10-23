@@ -199,6 +199,12 @@
             @endif
         </div>
 
+        <div class="form-group col-md-3 col-xs-12 {{$errors->has('extended_budget') ? 'has-error' : ''}}">
+            <label for="extended_budget">Orçamento Prorrogado (horas):</label>
+            <input type="text" name="extended_budget" id="extended_budget" class="form-control" value="{{$project->extended_budget}}" data-mask="0#">
+            <span class="help-block"><strong>{{$errors->first('extended_budget')}}</strong></span>
+        </div>
+
         <div class="form-group col-md-3 col-xs-12 {{$errors->has('proposal_number') ? 'has-error' : ''}}">
             <label for="proposal_number">Número da proposta:</label>
             <span title="@lang('tips.projects-proposal')" class="glyphicon glyphicon-question-sign black-tooltip"
@@ -219,6 +225,10 @@
             <span class="help-block"><strong>{{$errors->first('proposal_value')}}</strong></span>
         </div>
 
+    </div>
+
+    <div class="row">
+
         <div class="form-group col-md-3 col-xs-12 {{$errors->has('extra_expenses') ? 'has-error' : ''}}">
             <label for="extra_expenses">Despesas Orçadas:</label>
             <span title="@lang('tips.projects-extra-expenses')" class="glyphicon glyphicon-question-sign black-tooltip"
@@ -230,9 +240,6 @@
             </div>
             <span class="help-block"><strong>{{$errors->first('extra_expenses')}}</strong></span>
         </div>
-    </div>
-
-    <div class="row">
         <div class="form-group col-md-3 col-xs-12 {{$errors->has('start') ? ' has-error' : ''}}">
             <label for="start">Início:</label>
             <input type="text" name="start" id="start" class="form-control start_datetimepicker_1" required placeholder="Digite a data de início do projeto" value="{{$project->start->format('d/m/Y')}}">

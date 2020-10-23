@@ -48,14 +48,14 @@ class Kernel extends ConsoleKernel
 
         $schedule->command('populate:missing-activities');
 
-        $schedule->command('email:missing-collaborators')
-            ->mondays();
+        // $schedule->command('email:missing-collaborators')
+        //     ->mondays();
 
-        $schedule->command('email:missing-members-activities')
-            ->mondays();
+        // $schedule->command('email:missing-members-activities')
+        //     ->mondays();
 
-        $schedule->command('email:all-missing-activities')
-            ->mondays();
+        // $schedule->command('email:all-missing-activities')
+        //     ->mondays();
 
         $schedule->command('email:absences')
             ->mondays();

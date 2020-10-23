@@ -31,7 +31,8 @@ class SupplierExpenses extends AbstractAudit
        'debit_memo_id',
        'original_name',
        's3_name',
-       'import'
+       'import',
+       'voucher_number'
     ];
 
     protected $casts =[
@@ -87,6 +88,17 @@ class SupplierExpenses extends AbstractAudit
     public function getValueAttribute($value)
     {
         return number_format($value, 2, ',', '.');
+    }
+
+    
+    public function getVoucherNumberCompiledAttribute(){
+        if($this->attributes['voucher_number']){
+            
+            $vouchernumber = $this->voucherType->name == 'E-mail' ? 'EMAIL' : mb_split('-',$this->attributes['voucher_number'])[0];
+            return $vouchernumber;
+        }
+
+        return null;
     }
 
 

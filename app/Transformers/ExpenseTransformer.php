@@ -16,12 +16,13 @@
                 'request'      => $model->request_id ? $model->request_id : $model->project->compiled_cod,
                 'invoice'      => $model->invoice,
                 'issue_date'   => $model->issue_date->format('d/m/Y'),
-                'value'        => $model->value,
+                'value'        => (double)str_replace(',','.',str_replace('.','',$model->value)),
                 'payment_type' => $model->paymentType->name,
                 'description'  => $model->description,
                 'note'         => $model->note,
                 'collaborator' => $model->user->name,
                 'invoice_file' => $model->url_file,
+                'approved' =>$model->approved ? "Aprovado": "Não Aprovado",
                 'exported'     => trans("entries.status.{$model->status}")
             ];
         }

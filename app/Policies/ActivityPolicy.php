@@ -24,10 +24,35 @@ class ActivityPolicy
             return true;
         }
 
-        if ($user->can('destroy-activity')) {
+        if ($user->can('destroy-activity') && $user->role->name !='Collaborador') {
             return true;
         }
 
         return $user->id === $activity->user_id;
+    }
+
+    public function approve(User $user, Activity $activity){
+        if ($this->isThisUserLeaderOfProject($user, $activity->project)) {
+            return true;
+        }
+
+        if ($user->can('approve-activity') && $user->role->name !='Collaborador') {
+            return true;
+        }
+
+        return false;
+    }
+
+
+    public function reprove(User $user, Activity $activity){
+        if ($this->isThisUserLeaderOfProject($user, $activity->project)) {
+            return true;
+        }
+
+        if ($user->can('approve-activity') && $user->role->name !='Collaborador') {
+            return true;
+        }
+
+        return false;
     }
 }

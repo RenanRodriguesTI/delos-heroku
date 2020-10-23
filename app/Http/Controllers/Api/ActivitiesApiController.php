@@ -14,7 +14,7 @@ class ActivitiesApiController extends AbstractController
     public function activitiesByUser(int $id){
         try{
             $activities = DB::select('
-            SELECT a.id,pj.compiled_cod as project_cod_compiled,a.date,a.hours,t.name as task,p.name as place,a.note,a.created_at,a.approved
+            SELECT a.id,pj.compiled_cod as project_cod_compiled,a.date,a.hours,t.name as task,p.name as place,a.note,a.created_at,a.approved,a.concluded
             FROM activities a 
             inner join users u on a.user_id = u.id
             inner join tasks t on a.task_id = t.id

@@ -39,4 +39,8 @@ class UserPolicy
 
         return $this->isSuperUser($user);
     }
+
+    public function isPartnerBusinessOrRoot(User $user){
+        return $this->isRoot($user) || $user->is_partner_businees;
+    }
 }

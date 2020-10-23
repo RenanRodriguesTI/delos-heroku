@@ -211,7 +211,7 @@ class ImportRevenues implements ShouldQueue
             $validator = Validator::make(
                 $data,
                 [
-                    'value' => "required|numeric|max:{$maxValue}",
+                    'value' => "required|numeric|max:{number_format($maxValue)}",
                     'client_id'     => 'required|array|exists:clients,id',
                     'notes'         => 'string',
                     'invoice_number' => 'string|max:15',
@@ -246,7 +246,7 @@ class ImportRevenues implements ShouldQueue
             $validator = Validator::make(
                 $data,
                 [
-                    'value' => "required|numeric|max:{$maxValue}",
+                    'value' => "required|numeric|max:{number_format($maxValue)}",
                     'client_id'     => 'required|array|exists:clients,id',
                     'notes'         => 'string',
                     'invoice_number' => 'string|max:15',

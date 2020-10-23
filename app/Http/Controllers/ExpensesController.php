@@ -5,6 +5,8 @@
     use Carbon\Carbon;
     use Delos\Dgp\Entities\Expense;
     use Delos\Dgp\Events\SavedExpense;
+    use Delos\Dgp\Events\AproveExpense;
+    use Delos\Dgp\Events\ReproveExpense;
     use Delos\Dgp\Reports\TxtReportInterface;
     use Delos\Dgp\Repositories\Contracts\CompanyRepository;
     use Delos\Dgp\Repositories\Contracts\FinancialRatingRepository as FrRepository;
@@ -12,9 +14,13 @@
     use Delos\Dgp\Repositories\Contracts\ProjectRepository;
     use Delos\Dgp\Repositories\Contracts\RequestRepository;
     use Delos\Dgp\Repositories\Contracts\UserRepository;
+    use Delos\Dgp\Repositories\Criterias\Expense\ScopeCriteria;
+    use Delos\Dgp\Repositories\Criterias\Expense\LeaderScopeCriteria;
     use Illuminate\Support\Facades\Storage;
     use Prettus\Validator\Exceptions\ValidatorException;
     use Illuminate\Support\Facades\Auth;
+    use Illuminate\Auth\Access\AuthorizationException;
+    use Exception;
 
     /**
      * Class ExpensesController
@@ -67,6 +73,14 @@
             ]);
 
             return $vars;
+        }
+
+        public function index(){
+            if($this->request->input('manager') != null){
+                $this->repository->popCriteria(ScopeCriteria::class);
+                $this->repository->pushCriteria(LeaderScopeCriteria::class);
+            }
+            return parent::index();
         }
 
         /**
@@ -141,6 +155,9 @@
                 }
 
                 $expense = $this->service->update($data, $id);
+                
+                $invoice = $expense->invoice . '-' . $expense->id;
+                $expense->update(['invoice' => $invoice]);
 
                 $this->applyChangesUserAndProjectOnDisk($expense, $before);
 
@@ -409,4 +426,61 @@
                 $this->export($this->service->apportionments(),$filename,$extension,['G']);
             }
         }
+
+
+        public function approve(int $id){
+            $this->repository->update(['approved'=>true],$id);
+
+            return $this->response->redirectToRoute('expenses.index');
+        }
+
+        public function reprove(int $id){
+            $this->repository->update(['approved'=>false],$id);
+            return $this->response->redirectToRoute('expenses.index');
+        }
+
+        public function managerApprove(int $id){
+            try{
+                $expense = $this->repository->find($id);
+                $this->authorize('manager-approve',$expense);
+                $this->approve($id);
+
+                event(new AproveExpense($expense));
+
+                return $this->response->json([
+                   'approved_expense'=>$expense
+                ],200);
+            } catch(Exception $err){
+                if($err instanceof AuthorizationException){
+                    return $this->response->json('Unauthorized',403);
+                }
+                return $this->response->json([
+                    'status'=>'error internal server'
+                ],500);
+            }
+        }
+
+        public function managerReprove(int $id){
+            try{
+                $expense = $this->repository->find($id);
+
+                $this->authorize('manager-reprove',$expense);
+                $this->reprove($id);
+                event(new ReproveExpense($expense));
+
+                return $this->response->json([
+                   'reproved_expense'=>$expense
+                ],200);
+            } catch(Exception $err){
+
+                if($err instanceof AuthorizationException){
+                    return $this->response->json('Unauthorized',403);
+                }
+                return $this->response->json([
+                    'status'=>'error internal server'
+                ],500);
+            }
+        }
+
+
     }

@@ -67,6 +67,13 @@
                     Route::post('/{id}/add-tasks',['as'=>'addTaskStore','uses' =>'AllocationsController@addTaskStore' ]);
                     Route::get('/{id}/{allocationTaskId}/destroy-task',['as'=>'destroyTask','uses'=>'AllocationsController@destroyTask']);
                     Route::post('/{id}/{allocationTaskId}/update-task',['as'=>'updateTask','uses'=>'AllocationsController@updateTask']);
+                    Route::get('/manager',['as'=>'manager','uses'=>'AllocationsController@manager']);
+                    Route::get('/listByProject/{projectId}',['as'=>'listByProject','uses'=>'AllocationsController@listByProject']);
+                    Route::get('/manager-approved-hours',['as'=>'managerApprovedHours','uses'=>'AllocationsController@managerApprovedHours']);
+                    Route::get('/manager-expense',['as'=>'managerExpense','uses'=>'AllocationsController@managerExpense']);
+                    Route::get('/users-by-project/{projectId}',['as'=>'usersByProject','uses'=>'AllocationsController@usersByProject']);
+                    Route::get('/listByProject/{projectId}/user/{userId}',['as'=>'listByProject','uses'=>'AllocationsController@listByProject']);
+                    Route::post('/{id}/checkHoursTask',['as'=>'checkHoursTask','uses'=>'AllocationsController@checkHoursTask']);
                 });
 
                 Route::group(['prefix' => 'clients'], function () {
@@ -159,8 +166,11 @@
                     Route::get('create', ['as' => 'activities.create', 'uses' => 'ActivitiesController@create']);
                     Route::post('', ['as' => 'activities.store', 'uses' => 'ActivitiesController@store']);
                     Route::get('{id}/approve', ['as' => 'activities.approve','uses' => 'ActivitiesController@approve']);
+                    Route::get('{id}/reprove', ['as' => 'activities.reprove','uses' => 'ActivitiesController@reprove']);
                     Route::get('/external-works-report', ['as' => 'activities.externalWorksReport','uses' => 'ActivitiesController@externalWorksReport']);
                     Route::get('/{id}/download', ['as' => 'activities.download','uses' => 'ActivitiesController@downloadReport']);
+                    Route::get('/get-by-project/{projectId}',['as'=>'activities.getByProjectId','uses'=>'ActivitiesController@getByProject']);
+                    Route::get('/get-by-project/{projectId}/user/{userId}',['as'=>'activities.getByProjectId','uses'=>'ActivitiesController@getByProject']);
                 });
 
                 Route::group(['prefix' => 'project-types'], function () {
@@ -201,6 +211,10 @@
                     Route::get('/report/txt', ['as' => 'report.txt', 'uses' => 'ExpensesController@reportTxt']);
                     Route::get('paymentWriteOffs',['as'=>'paymentWriteOffs','uses' =>'ExpensesController@paymentWriteOffs']);
                     Route::get('apportionments',['as'=>'apportionments','uses' =>'ExpensesController@apportionments']);
+                    Route::get('{id}/approve',['as'=>'approve','uses'=>"ExpensesController@approve"]);
+                    Route::get('{id}/reprove',['as'=>'reprove','uses'=>'ExpensesController@reprove']);
+                    Route::get('{id}/manager-approve',['as'=>'manager-approve','uses'=>'ExpensesController@managerApprove']);
+                    Route::get('{id}/manager-reprove',['as'=>'manager-reprove','uses'=>'ExpensesController@managerReprove']);
                 });
 
                 Route::group(['prefix' => 'expense-types'], function () {
@@ -486,4 +500,33 @@
             Route::get('{id}/history/{idhistory}/delete',['as'=>'deleteHistory','uses'=>'OfficesController@deleteHistory']);
             Route::post('{id}/history/store',['as'=>'storeHistory','uses'=>'OfficesController@storeHistory']);
         });
+
+
+        Route::group(['prefix' => 'documents','as'=>'documents.'], function () {
+            Route::get('',['as'=>'index','uses'=>'DocumentsController@index']);
+            Route::get('/user/{user}/list',['as'=>'list','uses'=>'DocumentsController@list']);
+        });
+
+        Route::group(['prefix'=>'epis','as'=>'epis.'],function(){
+            Route::get('index',['as'=>'index','uses' =>'EpisController@index']);
+            Route::post('store',['as'=>'store','uses'=>'EpisController@store']);
+            Route::post('{id}/update',['as'=>'update','uses'=>'EpisController@update']);
+            Route::get('{id}/destroy',['as'=>'destroy','uses'=> 'EpisController@destroy']);
+            Route::post('withdraw',['as'=>'withdraw','uses'=>'EpisController@withdraw']);
+            Route::post('{id}/update/epi/user',['as'=>'updateEpiUser','uses'=>'EpisController@updateEpiUser']);
+        });
+
+
+        Route::group(['prefix'=>'curses','as'=>'curses.'],function(){
+            Route::post('store',['as'=>'store','uses'=>'CursesController@store']);
+            Route::post('{id}/update',['as'=>'update','uses'=>'CursesController@update']);
+            Route::get('{id}/destroy',['as'=>'destroy','uses'=> 'CursesController@destroy']);
+            
+        });
+
+        Route::group(['prefix' => 'resources','as'=>'resources.'], function () {
+            Route::get('/index',['as'=>'index','uses'=>'ResourcesController@index']);
+            Route::get('{id}/show',['as'=>'show','uses'=>'ResourcesController@show']);
+        });
+
     });

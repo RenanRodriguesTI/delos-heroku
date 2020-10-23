@@ -19,14 +19,36 @@
         
         @include('messages')
         
-        @can('create-allocation')
+       
             <div class="panel-body">
+                <div class="col-xs-12">
+                @can('create-allocation')
                 <a href="{{route('allocations.create')}}" class="btn btn-dct" id="btn-create-allocation">
                     <span class="glyphicon glyphicon-plus"></span>
                     Nova Alocação
                 </a>
+                @endcan
+
+                @can('manager-allocation')
+                    <a href="{{route('allocations.manager')}}"  class="btn btn-dct"><i class="fa fa-institution"></i> &nbsp;Gerenciar Tarefas</a>
+                @endcan
+
+                @can('manager-approved-hours-allocation')
+                    <a class="btn btn-dct" href="{{route("allocations.managerApprovedHours")}}?search=&approved=0"><i class="fa fa-institution"></i> &nbsp; Aprovar Horas</a>
+                @endcan
+
+                @can('manager-expense-allocation')
+                    <a class="btn btn-dct" href="{{route("allocations.managerExpense")}}?search=&approved=0"><i class="fa fa-institution"></i> &nbsp; Aprovar Despesas</a>
+                @endcan
+
+                @can('index-resource')
+                    <a class="btn btn-dct" href="{{route('resources.index')}}"><i class="fa fa-institution"></i> &nbsp;RECURSOS DISPONÍVEIS</a>
+                @endcan
+                    
+                </div>
+               
             </div>
-        @endcan
+        
         
         @include('allocations.search')  
         

@@ -57,7 +57,7 @@
         public function indexProjects()
         {
             $projectsToSearch = $this->projectRepository->withTrashed()
-                                                        ->pluck('full_description', 'id');
+                                                        ->pluck('description', 'id');
             $projects         = $this->getProjectsToGantt();
 
             return view('reports.ganttProjects', compact('projects', 'projectsToSearch'));

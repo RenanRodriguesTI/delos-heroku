@@ -116,7 +116,7 @@
                                 @endcan
                                 
                                 @can('approve-request', $request)
-                                <a href="{{route('requests.approve', ['id' => $request->id])}}" class="btn btn-dct">
+                                <a href="{{route('requests.approve', ['id' => $request->id])}}{{strstr(Request::fullUrl(),'?')}}" class="btn btn-dct">
                                     <span class="glyphicon glyphicon-ok"></span>
                                     Aprovar
                                 </a>

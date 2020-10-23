@@ -8,6 +8,8 @@ use Delos\Dgp\Repositories\Contracts\CompanyRepository;
 use Delos\Dgp\Repositories\Contracts\GroupCompanyRepository;
 use Delos\Dgp\Repositories\Contracts\RoleRepository;
 use Delos\Dgp\Repositories\Contracts\OfficeRepository;
+use Delos\Dgp\Repositories\Contracts\CurseRepository;
+use Delos\Dgp\Repositories\Contracts\EpiRepository;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Http\Request;
 use Prettus\Validator\Exceptions\ValidatorException;
@@ -48,7 +50,10 @@ class UsersController extends AbstractController
             'companies' => app(CompanyRepository::class)->pluck('name', 'id'),
             'groupCompanies' => app(GroupCompanyRepository::class)->pluck('name', 'id'),
             'projects' => User::where('id',$id)->with('projects')->first()->projects->pluck('description','id'),   
-            'offices' =>app(OfficeRepository::class)->pluck('name','id')
+            'offices' =>app(OfficeRepository::class)->pluck('name','id'),
+            'curses' => app(CurseRepository::class)->findWhere(['user_id'=>$id])->all(),
+            'epis' =>app(EpiRepository::class)->getEpiUser($id),
+            'userId' => $id
         ];
     }
 

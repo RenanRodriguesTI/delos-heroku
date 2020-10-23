@@ -86,7 +86,8 @@
                         {{--</td>--}}
                     {{--</tr>--}}
 
-                    <tr>
+                    {{--
+                        <tr>
                         <td><b>Quantidade total de horas</b></td>
                         <td class="">
                             {{$allocation->hours}}
@@ -97,6 +98,7 @@
                         <td><b>Quantidade de horas por dia</b></td>
                         <td>{{$allocation->hourDay}}</td>
                     </tr>
+                        --}}
 
                     <tr>
                         <td><b>Descrição</b></td>
@@ -136,15 +138,19 @@
                             </a>
                         @endcan
 
+                        @can('add-task-store-allocation')
                         <a class='btn btn-primary pull-right'   style="margin-right: 3px;" id='btn-edit-allocation' href='{{route("allocations.addTasks",["id"=>$allocation->id])}}'>
                         <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
                             Tarefas
                         </a>
+                        @endcan
 
+                        @can('update-allocation')
                         <a class='btn btn-default pull-right'   style="margin-right: 3px;" id='btn-edit-allocation' href='{{route("allocations.edit",["id"=>$allocation->id])}}'>
                         <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
                             Editar
                         </a>
+                        @endcan
                     </div>
                 </div>
             </div>

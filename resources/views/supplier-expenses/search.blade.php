@@ -2,7 +2,7 @@
     <form>
         <div class="row">
             <div class="col-xs-12">
-                {{-- <div class="col-xs-12 col-sm-12 col-lg-2 nopadding">
+                <div class="col-xs-12 col-sm-12 col-lg-2 nopadding">
                     <div class="form-group">
                         {!!
                             Form::text('search',
@@ -10,11 +10,11 @@
                                 [
                                     'class' => 'form-control',
                                     'id' => 'form-search-expenses',
-                                    'placeholder' => 'Nota Fiscal',
+                                    'placeholder' => 'N° Comprovante',
                                 ])
                         !!}
                     </div>
-                </div> --}}
+                </div> 
 
                 <div class="col-xs-12 col-sm-12 col-lg-2 nopadding">
                     <div class="form-group">
@@ -31,7 +31,7 @@
                     </div>
                 </div>
 
-                <div class="col-xs-12 col-sm-12 col-lg-3 nopadding">
+                <div class="col-xs-12 col-sm-12 col-lg-2 nopadding">
                     <div class="form-group">
 
                         {!! Form::text('period', Request::get('period'), [

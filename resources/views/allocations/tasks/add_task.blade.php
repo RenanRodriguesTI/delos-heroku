@@ -5,10 +5,9 @@
         <div class='panel-heading'>
             <h2 class='panel-title-sub bold'>Projeto: {{$allocation->project->full_description}}</h2>
             <h2 class='panel-title-sub bold'>Colaborador: {{$allocation->user->name}} - Periodo: {{$allocation->start->format('d/m/Y')}} - {{$allocation->finish->format('d/m/Y')}} </h2>
-            <h2 class='panel-title-sub bold'>Quantidade total de horas: {{$allocation->hours}}</h2>
-            <h2 class='panel-title-sub bold'>Horas utilizadas: {{$allocation->hours_used}}</h2>
-            <h2 class='panel-title-sub bold'>Horas disponíveis: {{$allocation->hours_available}}</h2>
-
+            <h2 class='panel-title-sub bold'>Quantidade total de horas: {{$allocation->project->hours}}</h2>
+            <h2 class='panel-title-sub bold'>Horas utilizadas: {{$allocation->project->used_buget}}</h2>
+            <h2 class='panel-title-sub bold'>Horas disponíveis: {{$allocation->project->remaining_budget}}</h2>
         </div>
         <div class='panel-body'>
             <a href="{{url()->previous() == url()->current() ? route('allocations.index') . '?deleted_at=whereNull' : url()->previous()}}" class="btn btn-default">
@@ -16,7 +15,7 @@
                 Voltar
             </a>
 
-            @if($allocation->hours != $allocation->hours_used)
+            @if($allocation->project->hours != $allocation->hours_used)
             <div class="pull-right">
                 <div class="btn-group">
                     <button type='button' data-toggle='modal' data-target='#allocations-form' class="btn btn-dct">
@@ -34,6 +33,8 @@
                     <tr>
                         <th>Tarefa</th>
                         <th>Quantidade de Horas</th>
+                        <th>Inicio</th>
+                        <th>Fim</th>
                         <th>Ação</th>
                     </tr>
                 </thead>
@@ -48,7 +49,9 @@
                         @foreach($allocationTasks as $key => $allocationTask)
                     <tr class="allocation-task-{{$allocationTask->id}}">
                         <td class='task-{{$allocationTask->task_id}}'>{{$allocationTask->task->name}}</td>
-                        <td>{{number_format($allocationTask->hours,0,'.',',')}}</td>
+                        <td>{{number_format($allocationTask->hours,0,'','')}}</td>
+                        <td>{{$allocationTask->start}}</td>
+                        <td>{{$allocationTask->finish}}</td>
                         <td>
                         <div class="btn-group {{$key<=3 ? 'dropdown':'dropup'}}">
                                             <button type="button" class="btn btn-default btn-sm dropdown-toggle"
@@ -58,7 +61,7 @@
                                                 @lang('buttons.options') &nbsp;<span class="caret"></span>
                                             </button>
                                             <ul class="dropdown-menu dropdown-menu-right">
-                                                
+                                                @can('update-task-allocation')
                                                 <li class="divider"></li>
 
                                                 <li>
@@ -66,9 +69,9 @@
                                                         <span class="glyphicon glyphicon-edit"></span>&nbsp; Editar
                                                     </a>
                                                 </li>
-
+                                                @endcan
                                                 <li class='divider'></li>
-
+                                                @can('destroy-task-allocation')
                                                 <li>
                                                 <a id='{{route("allocations.destroyTask",["id"=>$allocationTask->allocation_id,"allocationTaskId"=>$allocationTask->id ])}}'
                                                                class="delete" style="cursor: pointer"
@@ -77,6 +80,7 @@
                                                             </a>
                                                 </li>
                                                 <li class="divider"></li>
+                                                @endcan
                                             </ul>
 
                                 </div>
@@ -104,6 +108,7 @@
     <script>
 
         $(document).ready(function(){
+            console.log($('#allocation_task_id').val())
             if($('#allocation_task_id').val()){
                 $('#allocation-add-task').attr('action',"/allocations/{{$allocation->id}}/"+task_id.replace('allocation-task-','')+"/update-task");
             } else{
@@ -118,6 +123,11 @@
             $('#allocation-add-task').attr('action',"/allocations/{{$allocation->id}}/"+task_id.replace('allocation-task-','')+"/update-task")
             $('#task_id').selectpicker('val',$($('.'+task_id+' td')[0]).attr('class').replace('task-',''));
             $('#hours').val($($('.'+task_id+' td')[1]).html());
+            if($($('.'+task_id+' td')[2]).html() =='Sim'){
+                $('#concludes').attr('checked','checked')
+            } else{
+                $('#concludes').attr('checked',false);
+            }
         });
     </script>
 @endpush

@@ -196,12 +196,12 @@
                     'request_id'   => $item->request_id ?? $item->project->compiled_cod,
                     'issue_date'   => $item->issue_date->format('d/m/Y'),
                     'invoice'      => $item->compiled_invoice,
-                    'url_invoice'  => $item->url_file,
+                    'url_invoice'  => $item->id > 14178 ? $item->new_url_file: $item->url_file ,
                     'description'  => $item->description,
                     'note'         => $item->note,
                     'collaborator' => $item->user->name,
                     'payment_type' => $item->paymentType->name,
-                    'value'        => (double)(str_replace(',', '.', $item->value))
+                    'value'        => (double)str_replace(',','.',str_replace('.','',$item->value))
                 ];
             })->toArray();
 
@@ -211,11 +211,11 @@
                     'issue_date'   => $item->issue_date->format('d/m/Y'),
                     'invoice'      => '',
                     'url_invoice'  => $item->url_file,
-                    'description'  => $item->description->name,
+                    'description'  => $item->description_id,
                     'note'         => $item->note,
                     'collaborator' => $item->provider->social_reason,
                     'payment_type' => $item->paymentTypeProvider->name,
-                    'value'        => (double)(str_replace(',', '.', $item->value))
+                    'value'        => (double)str_replace(',','.',str_replace('.','',$item->value))
                 ];
             })->toArray();
 

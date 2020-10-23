@@ -10,13 +10,13 @@
 
             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-2">
                 <div class="form-group">
-                    {!! Form::text('start', Request::query('search'), ['class' => 'form-control datepicker', 'placeholder' => 'De', 'id' => 'start']) !!}
+                    {!! Form::text('start', Request::query('start'), ['class' => 'form-control datepicker', 'placeholder' => 'De', 'id' => 'start']) !!}
                 </div>
             </div>
 
             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-2">
                 <div class="form-group">
-                    {!! Form::text('finish', Request::query('search'), ['class' => 'form-control datepicker', 'placeholder' => 'Até', 'id' => 'finish']) !!}
+                    {!! Form::text('finish', Request::query('finish'), ['class' => 'form-control datepicker', 'placeholder' => 'Até', 'id' => 'finish']) !!}
                 </div>
             </div>
 

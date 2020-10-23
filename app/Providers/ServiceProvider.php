@@ -4,6 +4,7 @@ namespace Delos\Dgp\Providers;
 
 use Illuminate\Support\ServiceProvider as SupportServiceProvider;
 use Delos\Dgp\Services\ServiceInterface;
+
 class ServiceProvider extends SupportServiceProvider
 {
     /**
@@ -23,170 +24,190 @@ class ServiceProvider extends SupportServiceProvider
     public function register()
     {
         $this->app->when(\Delos\Dgp\Http\Controllers\ClientsController::class)
-                  ->needs(ServiceInterface::class)
-                  ->give(\Delos\Dgp\Services\ClientService::class);
+            ->needs(ServiceInterface::class)
+            ->give(\Delos\Dgp\Services\ClientService::class);
 
         $this->app->when(\Delos\Dgp\Http\Controllers\GroupsController::class)
-                  ->needs(ServiceInterface::class)
-                  ->give(\Delos\Dgp\Services\GroupService::class);
+            ->needs(ServiceInterface::class)
+            ->give(\Delos\Dgp\Services\GroupService::class);
 
         $this->app->when(\Delos\Dgp\Http\Controllers\RolesController::class)
-                  ->needs(ServiceInterface::class)
-                  ->give(\Delos\Dgp\Services\RoleService::class);
+            ->needs(ServiceInterface::class)
+            ->give(\Delos\Dgp\Services\RoleService::class);
 
         $this->app->when(\Delos\Dgp\Http\Controllers\UsersController::class)
-                  ->needs(ServiceInterface::class)
-                  ->give(\Delos\Dgp\Services\UserService::class);
+            ->needs(ServiceInterface::class)
+            ->give(\Delos\Dgp\Services\UserService::class);
 
         $this->app->when(\Delos\Dgp\Http\Controllers\FinancialRatingsController::class)
-                  ->needs(ServiceInterface::class)
-                  ->give(\Delos\Dgp\Services\FinancialRatingService::class);
+            ->needs(ServiceInterface::class)
+            ->give(\Delos\Dgp\Services\FinancialRatingService::class);
 
         $this->app->when(\Delos\Dgp\Http\Controllers\ProjectsController::class)
-                  ->needs(ServiceInterface::class)
-                  ->give(\Delos\Dgp\Services\ProjectService::class);
+            ->needs(ServiceInterface::class)
+            ->give(\Delos\Dgp\Services\ProjectService::class);
 
         $this->app->when(\Delos\Dgp\Http\Controllers\CarTypesController::class)
-                  ->needs(ServiceInterface::class)
-                  ->give(\Delos\Dgp\Services\CarTypeService::class);
+            ->needs(ServiceInterface::class)
+            ->give(\Delos\Dgp\Services\CarTypeService::class);
 
         $this->app->when(\Delos\Dgp\Http\Controllers\PlacesController::class)
-                  ->needs(ServiceInterface::class)
-                  ->give(\Delos\Dgp\Services\PlaceService::class);
+            ->needs(ServiceInterface::class)
+            ->give(\Delos\Dgp\Services\PlaceService::class);
 
         $this->app->when(\Delos\Dgp\Http\Controllers\TasksController::class)
-                  ->needs(ServiceInterface::class)
-                  ->give(\Delos\Dgp\Services\TaskService::class);
+            ->needs(ServiceInterface::class)
+            ->give(\Delos\Dgp\Services\TaskService::class);
 
         $this->app->when(\Delos\Dgp\Http\Controllers\ActivitiesController::class)
-                  ->needs(ServiceInterface::class)
-                  ->give(\Delos\Dgp\Services\ActivityService::class);
+            ->needs(ServiceInterface::class)
+            ->give(\Delos\Dgp\Services\ActivityService::class);
 
         $this->app->when(\Delos\Dgp\Http\Controllers\AuditsController::class)
-                  ->needs(ServiceInterface::class)
-                  ->give(\Delos\Dgp\Services\AuditService::class);
+            ->needs(ServiceInterface::class)
+            ->give(\Delos\Dgp\Services\AuditService::class);
 
         $this->app->when(\Delos\Dgp\Http\Controllers\PermissionsController::class)
-                  ->needs(ServiceInterface::class)
-                  ->give(\Delos\Dgp\Services\PermissionService::class);
+            ->needs(ServiceInterface::class)
+            ->give(\Delos\Dgp\Services\PermissionService::class);
 
         $this->app->when(\Delos\Dgp\Http\Controllers\ProjectTypesController::class)
-                  ->needs(ServiceInterface::class)
-                  ->give(\Delos\Dgp\Services\ProjectTypeService::class);
+            ->needs(ServiceInterface::class)
+            ->give(\Delos\Dgp\Services\ProjectTypeService::class);
 
         $this->app->when(\Delos\Dgp\Http\Controllers\RequestsController::class)
-                  ->needs(ServiceInterface::class)
-                  ->give(\Delos\Dgp\Services\RequestService::class);
+            ->needs(ServiceInterface::class)
+            ->give(\Delos\Dgp\Services\RequestService::class);
 
         $this->app->when(\Delos\Dgp\Http\Controllers\TransportationFacilitiesController::class)
-                  ->needs(ServiceInterface::class)
-                  ->give(\Delos\Dgp\Services\TransportationFacilityService::class);
+            ->needs(ServiceInterface::class)
+            ->give(\Delos\Dgp\Services\TransportationFacilityService::class);
 
         $this->app->when(\Delos\Dgp\Http\Controllers\StatesController::class)
-                  ->needs(ServiceInterface::class)
-                  ->give(\Delos\Dgp\Services\StateService::class);
+            ->needs(ServiceInterface::class)
+            ->give(\Delos\Dgp\Services\StateService::class);
 
         $this->app->when(\Delos\Dgp\Http\Controllers\AirportsController::class)
-                  ->needs(ServiceInterface::class)
-                  ->give(\Delos\Dgp\Services\AirportService::class);
+            ->needs(ServiceInterface::class)
+            ->give(\Delos\Dgp\Services\AirportService::class);
 
         $this->app->when(\Delos\Dgp\Http\Controllers\MissingActivitiesController::class)
-                  ->needs(ServiceInterface::class)
-                  ->give(\Delos\Dgp\Services\MissingActivityService::class);
+            ->needs(ServiceInterface::class)
+            ->give(\Delos\Dgp\Services\MissingActivityService::class);
 
         $this->app->when(\Delos\Dgp\Http\Controllers\CitiesController::class)
-                  ->needs(ServiceInterface::class)
-                  ->give(\Delos\Dgp\Services\CityService::class);
+            ->needs(ServiceInterface::class)
+            ->give(\Delos\Dgp\Services\CityService::class);
 
         $this->app->when(\Delos\Dgp\Http\Controllers\ExpenseTypesController::class)
-                  ->needs(ServiceInterface::class)
-                  ->give(\Delos\Dgp\Services\ExpenseTypeService::class);
+            ->needs(ServiceInterface::class)
+            ->give(\Delos\Dgp\Services\ExpenseTypeService::class);
 
         $this->app->when(\Delos\Dgp\Http\Controllers\ExpensesController::class)
-                  ->needs(ServiceInterface::class)
-                  ->give(\Delos\Dgp\Services\ExpenseService::class);
+            ->needs(ServiceInterface::class)
+            ->give(\Delos\Dgp\Services\ExpenseService::class);
 
         $this->app->when(\Delos\Dgp\Http\Controllers\DebitMemosController::class)
-                  ->needs(ServiceInterface::class)
-                  ->give(\Delos\Dgp\Services\DebitMemoService::class);
+            ->needs(ServiceInterface::class)
+            ->give(\Delos\Dgp\Services\DebitMemoService::class);
 
         $this->app->when(\Delos\Dgp\Http\Controllers\HolidaysController::class)
-                  ->needs(ServiceInterface::class)
-                  ->give(\Delos\Dgp\Services\HolidayService::class);
+            ->needs(ServiceInterface::class)
+            ->give(\Delos\Dgp\Services\HolidayService::class);
 
         $this->app->when(\Delos\Dgp\Http\Controllers\CompaniesController::class)
-                  ->needs(ServiceInterface::class)
-                  ->give(\Delos\Dgp\Services\CompanyService::class);
+            ->needs(ServiceInterface::class)
+            ->give(\Delos\Dgp\Services\CompanyService::class);
 
         $this->app->when(\Delos\Dgp\Http\Controllers\GroupCompaniesController::class)
-                  ->needs(ServiceInterface::class)
-                  ->give(\Delos\Dgp\Services\GroupCompanyService::class);
+            ->needs(ServiceInterface::class)
+            ->give(\Delos\Dgp\Services\GroupCompanyService::class);
 
         $this->app->when(\Delos\Dgp\Http\Controllers\PlansController::class)
-                  ->needs(ServiceInterface::class)
-                  ->give(\Delos\Dgp\Services\PlanService::class);
+            ->needs(ServiceInterface::class)
+            ->give(\Delos\Dgp\Services\PlanService::class);
 
         $this->app->when(\Delos\Dgp\Http\Controllers\ModulesController::class)
-                  ->needs(ServiceInterface::class)
-                  ->give(\Delos\Dgp\Services\ModuleService::class);
+            ->needs(ServiceInterface::class)
+            ->give(\Delos\Dgp\Services\ModuleService::class);
 
         $this->app->when(\Delos\Dgp\Http\Controllers\AllocationsController::class)
-                  ->needs(ServiceInterface::class)
-                  ->give(\Delos\Dgp\Services\AllocationService::class);
+            ->needs(ServiceInterface::class)
+            ->give(\Delos\Dgp\Services\AllocationService::class);
 
         $this->app->when(\Delos\Dgp\Http\Controllers\CoastUsersController::class)
-                  ->needs(ServiceInterface::class)
-                  ->give(\Delos\Dgp\Services\CoastUserService::class);
+            ->needs(ServiceInterface::class)
+            ->give(\Delos\Dgp\Services\CoastUserService::class);
 
         $this->app->when(\Delos\Dgp\Http\Controllers\ImportsController::class)
-                  ->needs(ServiceInterface::class)
-                  ->give(\Delos\Dgp\Services\ProjectService::class);
-        
+            ->needs(ServiceInterface::class)
+            ->give(\Delos\Dgp\Services\ProjectService::class);
+
         $this->app->when(\Delos\Dgp\Http\Controllers\RevenuesController::class)
-                  ->needs(ServiceInterface::class)
-                  ->give(\Delos\Dgp\Services\ProjectService::class);
-                  
+            ->needs(ServiceInterface::class)
+            ->give(\Delos\Dgp\Services\ProjectService::class);
+
         $this->app->when(\Delos\Dgp\Http\Controllers\ContractsController::class)
-                  ->needs(ServiceInterface::class)
-                  ->give(\Delos\Dgp\Services\ContractsService::class);
-        
+            ->needs(ServiceInterface::class)
+            ->give(\Delos\Dgp\Services\ContractsService::class);
+
         $this->app->when(\Delos\Dgp\Http\Controllers\ProvidersController::class)
-                  ->needs(ServiceInterface::class)
-                  ->give(\Delos\Dgp\Services\ProviderService::class);
+            ->needs(ServiceInterface::class)
+            ->give(\Delos\Dgp\Services\ProviderService::class);
 
 
         $this->app->when(\Delos\Dgp\Http\Controllers\SupplierExpensesController::class)
-                  ->needs(ServiceInterface::class)
-                  ->give(\Delos\Dgp\Services\ExpenseService::class);
+            ->needs(ServiceInterface::class)
+            ->give(\Delos\Dgp\Services\ExpenseService::class);
 
 
         $this->app->when(\Delos\Dgp\Http\Controllers\SupplierExpensesImportsController::class)
-                  ->needs(ServiceInterface::class)
-                  ->give(\Delos\Dgp\Services\SupplierExpensesService::class);
+            ->needs(ServiceInterface::class)
+            ->give(\Delos\Dgp\Services\SupplierExpensesService::class);
 
-                  
+
         $this->app->when(\Delos\Dgp\Http\Controllers\Api\ExpensesApiController::class)
-                    ->needs(ServiceInterface::class)
-                    ->give(\Delos\Dgp\Services\ExpenseService::class);
+            ->needs(ServiceInterface::class)
+            ->give(\Delos\Dgp\Services\ExpenseService::class);
 
         $this->app->when(\Delos\Dgp\Http\Controllers\Api\ActivitiesApiController::class)
-                    ->needs(ServiceInterface::class)
-                    ->give(\Delos\Dgp\Services\Api\ActivityApiService::class);
+            ->needs(ServiceInterface::class)
+            ->give(\Delos\Dgp\Services\Api\ActivityApiService::class);
 
         $this->app->when(\Delos\Dgp\Http\Controllers\AppVersionsController::class)
-                    ->needs(ServiceInterface::class)
-                    ->give(\Delos\Dgp\Services\AppVersionService::class);
-                    
+            ->needs(ServiceInterface::class)
+            ->give(\Delos\Dgp\Services\AppVersionService::class);
+
         $this->app->when(\Delos\Dgp\Http\Controllers\PaymentController::class)
-                    ->needs(ServiceInterface::class)
-                    ->give(\Delos\Dgp\Services\PaymentService::class);
-        
+            ->needs(ServiceInterface::class)
+            ->give(\Delos\Dgp\Services\PaymentService::class);
+
         $this->app->when(\Delos\Dgp\Http\Controllers\PaymentTypeProvidersController::class)
-                    ->needs(ServiceInterface::class)
-                    ->give(\Delos\Dgp\Services\PaymentProviderService::class);
+            ->needs(ServiceInterface::class)
+            ->give(\Delos\Dgp\Services\PaymentProviderService::class);
 
         $this->app->when(\Delos\Dgp\Http\Controllers\OfficesController::class)
             ->needs(ServiceInterface::class)
             ->give(\Delos\Dgp\Services\OfficeService::class);
+
+        $this->app->when(\Delos\Dgp\Http\Controllers\DocumentsController::class)
+            ->needs(ServiceInterface::class)
+            ->give(\Delos\Dgp\Services\UserService::class);
+
+        $this->app->when(\Delos\Dgp\Http\Controllers\EpisController::class)
+            ->needs(ServiceInterface::class)
+            ->give(\Delos\Dgp\Services\EpisService::class);
+        
+        $this->app->when(\Delos\Dgp\Http\Controllers\CursesController::class)
+            ->needs(ServiceInterface::class)
+            ->give(\Delos\Dgp\Services\CurseService::class);
+
+        $this->app->when(\Delos\Dgp\Http\Controllers\ResourcesController::class)
+            ->needs(ServiceInterface::class)
+            ->give(\Delos\Dgp\Services\UserService::class);
+
+        $this->app->when(\Delos\Dgp\Http\Controllers\EpiUserController::class)
+            ->needs(ServiceInterface::class)
+            ->give(\Delos\Dgp\Services\EpiUserService::class);
     }
 }

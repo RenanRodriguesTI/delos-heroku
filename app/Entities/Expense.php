@@ -25,7 +25,8 @@ class Expense extends AbstractAudit
         'exported',
         'request_id',
         'project_id',
-        'debit_memo_id'
+        'debit_memo_id',
+        'approved'
     ];
 
     protected $casts = [
@@ -82,6 +83,13 @@ class Expense extends AbstractAudit
     {
         return env('FILESYSTEM_DISK') == 's3' ? Storage::url('images/invoices/' . session('groupCompanies')[0] . '/' . $this->project_id. '/' . $this->user->id . '/' . $this->s3_name) : asset('images/invoices/' . session('groupCompanies')[0] . '/' . $this->request->project->id. '/' . $this->user->id . '/' . $this->s3_name);
     }
+
+    public function getNewUrlFileAttribute()
+    {
+        return env('FILESYSTEM_DISK') == 's3' ? Storage::url('images/invoices/' . $this->s3_name) : asset('images/invoices/' .$this->s3_name);
+    }
+
+
 
     public function getCompiledInvoiceAttribute()
     {

@@ -19,7 +19,9 @@ use Delos\Dgp\Repositories\Contracts\ProjectRepository;
 use Delos\Dgp\Repositories\Eloquent\AllocationRepositoryEloquent;
 use Prettus\Validator\Contracts\ValidatorInterface;
 use Delos\Dgp\Repositories\Contracts\TaskRepository;
-
+use Delos\Dgp\Events\AddTaskAllocation;
+use Delos\Dgp\Events\UpdateTaskAllocation;
+use Delos\Dgp\Jobs\ResourceTaskAdded;
 /**
  * Class AllocationService
  * @package Delos\Dgp\Services
@@ -36,7 +38,11 @@ class AllocationService extends AbstractService
      */
     public function create(array $data)
     {
+        $data['group_company_id'] = \Auth::user()->groupCompany->id;
+        $this->validator->with($data)
+        ->passesOrFail(ValidatorInterface::RULE_CREATE);
         $data['jobWeekEnd'] = isset($data['jobWeekEnd']);
+        $data['works_full_time'] = isset($data['works_full_time']);
         if (app('auth')->getUser()->name === 'ANA CAROLINA CALVETI' || app('auth')->getUser()->name === "VERONICA SALVATI") {
             //    if(!$data['task_id']){
             //     unset($data['task_id']);
@@ -53,8 +59,6 @@ class AllocationService extends AbstractService
         $this->addValidationToDates($data);
         $this->addValidationToHours($data);
 
-        $data['group_company_id'] = \Auth::user()->groupCompany->id;
-
         $this->validator->with($data)
             ->passesOrFail(ValidatorInterface::RULE_CREATE);
 
@@ -62,36 +66,26 @@ class AllocationService extends AbstractService
         $allocationFather  = $this->repository->create($data);
         $allocations       = collect();
         $data['parent_id'] = $allocationFather->id;
+        $data['hours'] = isset($data['hours']) ? $data['hours']:0;
         $total = $data['hours'];
-        $remain = 0;
-        $calculed = 0;
-        \DB::transaction(function () use ($data, $allocations, $total, $remain, $calculed) {
+        \DB::transaction(function () use ($data, $allocations, $total) {
             $diffInDays    = $this->getDateRange($data['start'], $data['finish']);
             if ($this->countWorkDays($data) > 0) {
-                $remain =  ($data['hours'] % $this->countWorkDays($data));
-                $calculed = (int)($data['hours'] / $this->countWorkDays($data));
-                $total = $data['hours'] - $remain;
-                $data['hours'] =  $calculed;
+                $data['hours'] = ceil(($data['hours'] / $this->countWorkDays($data)));
+                
             }
             $exceptionWorkDays = $data['jobWeekEnd'];
-
-            $workDays = $this->countWorkDays($data);
             foreach ($diffInDays as $day) {
                 $data['start']  = $day->format('d/m/Y');
                 $data['finish'] = $day->format('d/m/Y');
 
                 if ($this->isWorkingDay($day, $exceptionWorkDays)) {
-                    $workDays--;
-                    if ($workDays == 0) {
-                        $data['hours'] += $remain;
-                    } else {
-                        if ($total > 0) {
-                            $total -= $calculed;
-                        } else {
-                            $data['hours'] = 0;
-                        }
+                    if(($total - $data["hours"]) <0){
+                        $data["hours"] =0;
+                        $total =0;
+                    } else{
+                        $total -= $data["hours"];
                     }
-
                     $allocation = $this->repository->create($data);
                     $allocations->push($allocation);
                 }
@@ -105,6 +99,7 @@ class AllocationService extends AbstractService
     public function update(array $data, $id)
     {
         $data['jobWeekEnd'] = isset($data['jobWeekEnd']);
+        $data['works_full_time'] = isset($data['works_full_time']);
         $this->validator->setId($id);
         $allocations = collect();
 
@@ -121,42 +116,34 @@ class AllocationService extends AbstractService
         $beforeFaterAllocation = $this->repository->find($id);
         $faterAllocation = $this->repository->update($data, $id);
         $data['parent_id'] = $faterAllocation->id;
-        $remain = 0;
-        $calculed = 0;
+        $data['hours'] = isset($data['hours']) ? $data['hours']:0;
         $total = $data['hours'];
         if ($faterAllocation) {
 
             $childAllocations = $this->repository->findWhere(['parent_id' => $id]);
-            \DB::transaction(function () use ($childAllocations, $data, $allocations, $total, $calculed, $remain) {
+            \DB::transaction(function () use ($childAllocations, $data, $allocations, $total) {
                 foreach ($childAllocations as $allocation) {
                     $allocation->forceDelete();
                 }
                 $diffInDays    = $this->getDateRange($data['start'], $data['finish']);
 
                 if ($this->countWorkDays($data) > 0) {
-                    $remain =  ($data['hours'] % $this->countWorkDays($data));
-                    $calculed = (int)($data['hours'] / $this->countWorkDays($data));
-                    $data['hours'] =  $calculed;
+                    $data['hours'] = ceil(($data['hours'] / $this->countWorkDays($data)));
                 }
 
                 $exceptionWorkDays = $data['jobWeekEnd'];
-                $workDays = $this->countWorkDays($data);
                 foreach ($diffInDays as $day) {
                     $data['start']  = $day->format('d/m/Y');
                     $data['finish'] = $day->format('d/m/Y');
 
                     if ($this->isWorkingDay($day, $exceptionWorkDays)) {
-                        $workDays--;
-                        if ($workDays == 0) {
-                            $data['hours'] += $remain;
-                        } else {
-                            if ($total > 0) {
-                                $total -= $calculed;
-                            } else {
-                                $data['hours'] = 0;
-                            }
-                        }
 
+                        if(($total - $data["hours"]) <0){
+                            $data["hours"] =0;
+                            $total =0;
+                        } else{
+                            $total -= $data["hours"];
+                        }
                         $allocation = $this->repository->create($data);
                         $allocations->push($allocation);
                     }
@@ -306,20 +293,17 @@ class AllocationService extends AbstractService
         return AllocationRepositoryEloquent::class;
     }
 
-    public function createTask(array $data, int $id)
+    public function createTask(array $data, int $id,$notify=false)
     {
 
         $allocation = $this->repository->find($id);
-
         $task = app(TaskRepository::class)->find($data['task_id']);
-
 
         if ($allocation) {
             \DB::beginTransaction();
             $allocationTask = AllocationTask::create(array_merge(['allocation_id' => $allocation->id], $data));
             $childAllocations = $this->repository->findWhere(['parent_id' => $id]);
             $allocationTasks = [];
-
            
             foreach ($childAllocations as $child) {
                 $allocationTask = AllocationTask::create(array_merge(['allocation_id' => $child->id], $data));
@@ -336,33 +320,59 @@ class AllocationService extends AbstractService
                 }
             }
 
+            if($notify){
+                event(new AddTaskAllocation($allocation));
+            }
             \DB::commit();
         }
         return $allocationTasks;
     }
 
+    public function checkHoursTask(array $data){
+        $diffInDays    = $this->getDateRange($data['start'], $data['finish']);
+        $hoursBase = 0;
+
+        $exceptionWorkDays = isset($data['jobWeekEnd'])? $data['jobWeekEnd']:false;
+
+        foreach ($diffInDays as $day) {
+            if($this->isWorkingDay($day,$exceptionWorkDays)){
+                $hoursBase +=8;
+            }
+        }
+        if($hoursBase > $data['hours']){
+            return 1;
+        } else{
+            if($hoursBase < $data['hours']){
+                return -1;
+            }
+        }
+
+        return 0;
+    }
+
     public function updateTask(array $data, int $id,int $allocationTaskId){
         $allocationFather = $this->repository->find($id);
         $allocationTasks =[];
+        $data['concludes']= isset($data['concludes']) ?  $data['concludes']:0;
         if($allocationFather){
             \DB::beginTransaction();
             $childAllocations = $this->repository->findWhere(['parent_id' => $id]);
             $task = $allocationFather->allocationTasks->where('id', $allocationTaskId)->first();
             $task->update($data);
-            $this->deleteTask($id,$task->id);
+            $this->deleteAllTask($id);
 
             foreach ($childAllocations as $child) {
 
                 foreach($allocationFather->allocationTasks as $taskFather){
                     $allocationTask = AllocationTask::create(array_merge(['allocation_id' => $child->id],[
-                        'task_id' => $taskFather->id,
+                        'task_id' => $taskFather->task_id,
                         'hours' => $taskFather->hours
                     ]));
                     $allocationTasks[] = $allocationTask;
                 }
               
             }
-            
+            event(new UpdateTaskAllocation($allocationFather,$task->task->name));
             \DB::commit();
         }
         return $allocationTasks;
@@ -426,6 +436,7 @@ class AllocationService extends AbstractService
 
     public function generate(array $data)
     {
+        $data['works_full_time'] = isset($data['works_full_time']);
         $data['jobWeekEnd'] = isset($data['jobWeekEnd']);
         $this->addValidationToDates($data);
         $this->addValidationToHours($data);
@@ -439,36 +450,26 @@ class AllocationService extends AbstractService
         $allocationFather  = $this->repository->create($data);
         $allocations       = collect();
         $data['parent_id'] = $allocationFather->id;
+        $data['hours'] = isset($data['hours']) ? $data['hours']:0;
         $total = $data['hours'];
-        $remain = 0;
-        $calculed = 0;
-        \DB::transaction(function () use ($data, $allocations, $total, $remain, $calculed) {
+        \DB::transaction(function () use ($data, $allocations, $total) {
             $diffInDays    = $this->getDateRange($data['start'], $data['finish']);
             if ($this->countWorkDays($data) > 0) {
-                $remain =  ($data['hours'] % $this->countWorkDays($data));
-                $calculed = (int)($data['hours'] / $this->countWorkDays($data));
-                $total = $data['hours'] - $remain;
-                $data['hours'] =  $calculed;
+              
+                $data['hours'] = ceil(($data['hours'] / $this->countWorkDays($data)));
             }
             $exceptionWorkDays = $data['jobWeekEnd'];
-
-            $workDays = $this->countWorkDays($data);
             foreach ($diffInDays as $day) {
                 $data['start']  = $day->format('d/m/Y');
                 $data['finish'] = $day->format('d/m/Y');
 
                 if ($this->isWorkingDay($day, $exceptionWorkDays)) {
-                    $workDays--;
-                    if ($workDays == 0) {
-                        $data['hours'] += $remain;
-                    } else {
-                        if ($total > 0) {
-                            $total -= $calculed;
-                        } else {
-                            $data['hours'] = 0;
-                        }
+                    if(($total - $data["hours"]) <0){
+                        $data["hours"] =0;
+                        $total =0;
+                    } else{
+                        $total -= $data["hours"];
                     }
-
                     $allocation = $this->repository->create($data);
                     $allocations->push($allocation);
                 }
@@ -481,6 +482,7 @@ class AllocationService extends AbstractService
 
     public function updateGenerate(array $data, $id)
     {
+        $data['works_full_time'] = isset($data['works_full_time']);
         $data['jobWeekEnd'] = isset($data['jobWeekEnd']);
         $this->validator->setId($id);
         $allocations = collect();
@@ -493,42 +495,33 @@ class AllocationService extends AbstractService
         $beforeFaterAllocation = $this->repository->find($id);
         $faterAllocation = $this->repository->update($data, $id);
         $data['parent_id'] = $faterAllocation->id;
-        $remain = 0;
-        $calculed = 0;
+        $data['hours'] = isset($data['hours']) ? $data['hours']:0;
         $total = $data['hours'];
         if ($faterAllocation) {
 
             $childAllocations = $this->repository->findWhere(['parent_id' => $id]);
-            \DB::transaction(function () use ($childAllocations, $data, $allocations, $total, $calculed, $remain) {
+            \DB::transaction(function () use ($childAllocations, $data, $allocations, $total) {
                 foreach ($childAllocations as $allocation) {
                     $allocation->forceDelete();
                 }
                 $diffInDays    = $this->getDateRange($data['start'], $data['finish']);
 
                 if ($this->countWorkDays($data) > 0) {
-                    $remain =  ($data['hours'] % $this->countWorkDays($data));
-                    $calculed = (int)($data['hours'] / $this->countWorkDays($data));
-                    $data['hours'] =  $calculed;
+                    $data['hours'] = ceil(($data['hours'] / $this->countWorkDays($data)));
                 }
 
                 $exceptionWorkDays = $data['jobWeekEnd'];
-                $workDays = $this->countWorkDays($data);
                 foreach ($diffInDays as $day) {
                     $data['start']  = $day->format('d/m/Y');
                     $data['finish'] = $day->format('d/m/Y');
 
                     if ($this->isWorkingDay($day, $exceptionWorkDays)) {
-                        $workDays--;
-                        if ($workDays == 0) {
-                            $data['hours'] += $remain;
-                        } else {
-                            if ($total > 0) {
-                                $total -= $calculed;
-                            } else {
-                                $data['hours'] = 0;
-                            }
+                        if(($total - $data["hours"]) <0){
+                            $data["hours"] =0;
+                            $total =0;
+                        } else{
+                            $total -= $data["hours"];
                         }
-
                         $allocation = $this->repository->create($data);
                         $allocations->push($allocation);
                     }

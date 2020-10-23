@@ -1,5 +1,5 @@
 <div class="row">
-    <div class="form-group col-lg-2 col-md-12 col-sm-12 col-xs-12 {{$errors->has('issue_date') ? 'has-error' : ''}}">
+<div class="form-group col-lg-2 col-md-12 col-sm-12 col-xs-12 {{$errors->has('issue_date') ? 'has-error' : ''}}">
         {!! Form::label('issue_date_calendar', 'Data de emissão:') !!}
 
         {!! Form::text('issue_date_calendar', '', [
@@ -12,8 +12,10 @@
 
         <span class="help-block"><strong>{{$errors->first('issue_date')}}</strong></span>
     </div>
+</div>
+<div class="row">
 
-    <div class="form-group col-lg-8 col-md-8 col-sm-8 col-xs-12 {{$errors->has('requestable_id') ? 'has-error' : ''}}">
+    <div class="form-group col-lg-11 col-md-10 col-sm-10 col-xs-12 {{$errors->has('requestable_id') ? 'has-error' : ''}}">
         {!! Form::label('requestable_id', 'Número') !!}
 
         {!! Form::select('requestable_id', ['' => 'Selecione uma opção','Projetos' => []], $expense->project_id ?? null, [
@@ -41,7 +43,7 @@
                  <input type="checkbox" id='all' data-toggle="toggle" data-on="Sim" data-off="Não">
         </div>
 
-    <div class="form-group col-xs-6 provider {{$errors->has('provider_id') ? 'has-error' : ''}}">
+    <div class="form-group col-xs-5 provider {{$errors->has('provider_id') ? 'has-error' : ''}}">
         {!! Form::label('provider_id', 'Fornecedor:') !!}
      
 
@@ -57,13 +59,19 @@
         <span class="help-block"><strong>{{$errors->first('provider_id')}}</strong></span>
     </div>
 
-    <div class="form-group col-xs-6 {{$errors->has('voucher_type_id') ? 'has-error' : ''}}">
+    <div class="form-group col-xs-4 {{$errors->has('voucher_type_id') ? 'has-error' : ''}}">
         {!! Form::label('voucher_type_id', 'Tipo de Comprovante:') !!}
 
         {!! Form::select('voucher_type_id', $vouchers,$expense->voucherType->id ?? null, ['class' => 'form-control', 'placeholder' => 'Selecione um tipo de comprovante','required']) !!}
 
         <span class="help-block"><strong>{{$errors->first('voucher_type_id')}}</strong></span>
 
+    </div>
+
+    <div class="form-group col-xs-3 {{$errors->has('voucher_number') ? 'has-error':''}}">
+            {!! Form::label('voucher_number','N° de Comprovante: ')!!}
+            {!! Form::text('voucher_number', $expense->voucher_number_compiled ?? null,['class' =>'form-control'])!!}
+            <span class="help-block"><strong>{{$errors->first('voucher_number')}}</strong></span>
     </div>
 
     <div class="row">
@@ -103,7 +111,7 @@
                 <span class="help-block"><strong>{{$errors->first('value')}}</strong></span>
             </div>
 
-            <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12 {{$errors->has('payment_type_provider_id') ? 'has-error' : ''}}">
+            <div class="form-group col-lg-5 col-md-12 col-sm-12 col-xs-12 {{$errors->has('payment_type_provider_id') ? 'has-error' : ''}}">
                 {!! Form::label('payment_type_provider_id', 'Tipo de Pagamento:') !!}
 
                 {!! Form::select('payment_type_provider_id', $paymentTypes, $expense->paymentTypeProvider->id ?? null, ['class' => 'form-control', 'placeholder' => 'Selecione um tipo de pagamento','required']) !!}
@@ -196,6 +204,45 @@
                 }
             });
         });
+
+
+        $('#voucher_type_id').change(function(){
+            if($(this).val() == 2){
+                $('#voucher_number').inputmask('remove');
+                $('#voucher_number').val('EMAIL');
+                $('#voucher_number').attr('readonly','readonly')
+            } else{
+                $('#voucher_number').attr('readonly',null);
+                if( $('#voucher_number').val().indexOf('EMAIL') >-1 ){
+                    $('#voucher_number').val('');
+                    applyMaskIn('#voucher_number', '9999999999999999999999999999999999');
+                }
+            }
+        });
+
+
+        $(document).ready(function(){
+            if(  $('#voucher_type_id').val() == 2){
+                var number = $('#voucher_number').val() ? $('#voucher_number').val():'EMAIL';
+                    $('#voucher_number').inputmask('remove');
+                    $('#voucher_number').val(number);
+                    $('#voucher_number').attr('readonly','readonly')
+
+            }else{
+                applyMaskIn('#voucher_number', '9999999999999999999999999999999999');
+            }
+            
+        });
+
+
+        function applyMaskIn(selector, mask) {
+        $(selector).inputmask(mask);
+
+        $(selector).inputmask({ "placeholder": "" });
+        $(selector).focus(function() {
+            $(selector).inputmask({ "placeholder": "" });
+        });
+    }
 
     </script>
 

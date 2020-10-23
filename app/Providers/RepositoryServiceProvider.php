@@ -64,5 +64,10 @@ class RepositoryServiceProvider extends SP
         $this->app->bind(Contracts\AppVersionApiRepository::class, Eloquent\AppVersionApiRepositoryEloquent::class);
         $this->app->bind(Contracts\PaymentTypeProviderRepository::class,Eloquent\PaymentTypeProviderRepositoryEloquent::class);
         $this->app->bind(Contracts\OfficeRepository::class,Eloquent\OfficeRepositoryEloquent::class);
+        $this->app->bind(Contracts\ApprovedNotificationRepository::class,Eloquent\ApprovedNotificationRepositoryEloquent::class);
+        $this->app->bind(Contracts\TypeNotifyRepository::class,Eloquent\TypeNotifyRepository::class);
+        $this->app->bind(Contracts\EpiRepository::class,Eloquent\EpiRepositoryEloquent::class);
+        $this->app->bind(Contracts\CurseRepository::class,Eloquent\CurseRepositoryEloquent::class);
+        $this->app->bind(Contracts\EpiUserRepository::class,Eloquent\EpiUserRepositoryEloquent::class);
     }
 }

@@ -36,9 +36,10 @@
                                 <th>Fornecedor</th>
                                 <th>@lang('headers.issue-date')</th>
                                 <th class="th-project">@lang('headers.project')</th>
-                                <th>Tipo de Comprovante</th>
-                                <th>@lang('headers.payment-type')</th>
+                                <th>N° de Comprovante</th>
                                 <th class='col-buttons'>Valor</th>
+                                <th>@lang('headers.payment-type')</th>
+                                <th>Tipo de Comprovante</th>
                                 <th>@lang('headers.description')</th>
                                 <th style="display: none;">@lang('headers.note')</th>
                                 <th style="min-width: 111px">@lang('headers.status')</th>
@@ -51,9 +52,10 @@
                                 <td>{{$expense->provider->social_reason}}</td>
                                 <td class="text-center">{{$expense->issue_date->format('d/m/Y')}}</td>
                                 <td>{{$expense->project->compiled_cod}}</td>
-                                <td>{{$expense->voucherType->name}}</td>
-                                <td>{{$expense->paymentTypeProvider->name}}</td>
+                                <td>{{$expense->voucher_number_compiled}}</td>
                                 <td>R$ {{$expense->value}}</td>
+                                <td>{{$expense->paymentTypeProvider->name}}</td>
+                                <td>{{$expense->voucherType->name}}</td>
                                 <td>{{$expense->description_id}}</td>
                                 <td>{{($expense->exported ? "Exportado":"Não Exportado")}}</td>
                                 <td class="has-btn-group">

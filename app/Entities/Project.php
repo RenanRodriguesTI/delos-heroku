@@ -16,6 +16,7 @@
             'compiled_cod',
             'financial_rating_id',
             'budget',
+            'extended_budget',
             'owner_id',
             'co_owner_id',
             'proposal_value',
@@ -35,7 +36,7 @@
             'date_change',
             'nf_nd',
             'expected_date',
-            'extension'
+            'extension',
         ];
 
         protected $casts = [
@@ -232,5 +233,78 @@
         public function setExpectedDateAttribute($value){
             $this->attributes['expected_date'] = Carbon::createFromFormat('d/m/Y', $value)
             ->toDateString();
+        }
+
+        public function getHoursAttribute(){
+            if($this->attributes['extended_budget']){
+                return $this->attributes['extended_budget'];
+            }
+
+            return $this->attributes['budget'];
+        }
+
+        public function getRemainingBudgetAttribute(){
+            $used = 0;
+
+            foreach($this->allocations->where('parent_id',null) as $allocation){
+                $used +=$allocation->allocationTasks->sum('hours');
+            }
+
+            $remain = $this->hours - $used; 
+
+            return $remain >0 ? $remain :0;
+        }
+
+        public function getUsedBugetAttribute(){
+            $used = 0;
+
+            foreach($this->allocations->where('parent_id',null) as $allocation){
+                $used +=$allocation->allocationTasks->sum('hours');
+            }
+            return $used;
+        }
+
+        public function getPendingAllocationsAttribute(){
+            $pending = false;
+            $now = Carbon::now();
+
+            foreach($this->allocations->where('parent_id',null) as $allocation){
+                if($now->greaterThanOrEqualTo($allocation->start) && $now->lessThanOrEqualTo($allocation->finish)){
+                    if($allocation->allocationTasks->isEmpty() && !$allocation->task_id){
+                        $pending = true;
+                    }
+                }
+            }
+
+            return $pending;
+        }
+
+        public function getHasPendingActivitiesAttribute(){
+            $pending = !$this
+            ->activities
+            ->where('approver_id',null)
+            ->isEmpty();
+            return $pending;
+        }
+
+        public function getHoursProgramsAttribute(){
+            $owner = $this->owner_id;
+
+            foreach($this->allocations->where('user_id',$owner)->where('parent_id',null) as $allocation){
+                foreach($allocation->allocationTasks as $allocationTask){
+                    if($allocationTask->task->name == 'CONTROLE DE PROJETOS'){
+                        return (int)$allocationTask->hours;
+                    }
+                }
+            }
+
+            return 0;
+        }
+
+        public function getHoursRemainAttribute(){
+
+            $remain = $this->hours - $this->used_buget - $this->hours_programs; 
+
+            return $remain >0 ? $remain :0;
         }
     }

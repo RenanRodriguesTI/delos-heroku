@@ -84,18 +84,7 @@
             return array_map(function ($value) {
 
                 $value->SINAL = '0';
-                $value->VALOR = number_format($value->VALOR,2);
-                return (array)$value;
-            }, $casualties);
-            
-        }
-
-         
-        public function suppplierPaymentWriteOffs($company='DELOS SERVIÇOS E SISTEMAS'){
-            $casualties = DB::select('CALL baixas_de_pagamento_fornecedores(?)', [$company]);
-            return array_map(function ($value) {
-
-                $value->SINAL = '0';
+                $value->VALOR = number_format($value->VALOR,2,'.','');
                 return (array)$value;
             }, $casualties);
             
@@ -104,7 +93,16 @@
         public function apportionments($company='DELOS SERVIÇOS E SISTEMAS'){
             $apportionments = DB::select('CALL rateios_titulos_a_pagar(?)',[$company]);
             return array_map(function($value){
+                $value->VALOR = number_format($value->VALOR,2,',','');
                 return (array)$value;
             },$apportionments);
+        }
+
+        public function approve(int $id){
+            
+        }
+
+        public function reprove(int $id){
+
         }
     }

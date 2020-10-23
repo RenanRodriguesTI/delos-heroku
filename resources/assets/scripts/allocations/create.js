@@ -75,94 +75,93 @@ $(document).ready(function () {
             buttonAddTask();
         })
 
-        // Exibe modal para detalhamento das alocações diárias
-        $('#form-allocation').submit(function (event) {
+        // // Exibe modal para detalhamento das alocações diárias
+        // $('#form-allocation').submit(function (event) {
 
-            if ( !$("#daily-allocation-details").is(':visible') ) {
-                event.preventDefault();
+        //     if ( !$("#daily-allocation-details").is(':visible') ) {
+        //         event.preventDefault();
                 
-                $('.info').hide();
+        //         $('.info').hide();
 
-                var data = {
-                    'start':      $('#start').val(),
-                    'finish':     $('#finish').val(),
-                    'user_id':    $('#user_id').val(),
-                    'project_id': $('#project_id').val(),
-                    'hours':      $('#hours').val(),
-                    'jobWeekEnd': $('#jobWeekEnd').prop('checked')
-                };
+        //         var data = {
+        //             'start':      $('#start').val(),
+        //             'finish':     $('#finish').val(),
+        //             'user_id':    $('#user_id').val(),
+        //             'project_id': $('#project_id').val(),
+        //             'hours':      $('#hours').val(),
+        //             'jobWeekEnd': $('#jobWeekEnd').prop('checked')
+        //         };
 
-                var query = $.param(data);
-                $('#preloader').show();
-                $('body').delay(350).css({'overflow-y':'hidden'});
-                $('#status').show();
-                $.getJSON('/allocations/check-period-hours?' + query)
-                .done(function (response) {
+        //         var query = $.param(data);
+        //         $('#preloader').show();
+        //         $('body').delay(350).css({'overflow-y':'hidden'});
+        //         $('#status').show();
+        //         $.getJSON('/allocations/check-period-hours?' + query)
+        //         .done(function (response) {
 
-                    $('.modal-result').empty();
+        //             $('.modal-result').empty();
 
-                    $.each(response.possibles, function (key, item) {
-                        var checkDailyHours = (item.actual_hours + item.hours_to_add) > 24;
+        //             $.each(response.possibles, function (key, item) {
+        //                 var checkDailyHours = (item.actual_hours + item.hours_to_add) > 24;
 
-                        if(window.location.href.indexOf('edit') >-1){
-                            checkDailyHours = (item.hours_to_add) > 24;
-                        }
+        //                 if(window.location.href.indexOf('edit') >-1){
+        //                     checkDailyHours = (item.hours_to_add) > 24;
+        //                 }
 
-                        var html = "<tr>" +
-                            "<td>" + response.user.name + "</td>" +
-                            "<td>" + item.date + "</td>" +
-                            "<td>" + response.project.full_description + "</td>" +
-                            "<td class='text-center'>" + item.actual_hours + "</td>" +
-                            "<td class='text-center'>" + item.hours_to_add + "</td>" +
-                            "</tr>";
+        //                 var html = "<tr>" +
+        //                     "<td>" + response.user.name + "</td>" +
+        //                     "<td>" + item.date + "</td>" +
+        //                     "<td>" + response.project.full_description + "</td>" +
+        //                     "<td class='text-center'>" + item.actual_hours + "</td>" +
+        //                     "<td class='text-center'>" + item.hours_to_add + "</td>" +
+        //                     "</tr>";
 
-                        $('.modal-result').append(html);
+        //                 $('.modal-result').append(html);
 
-                        if ( checkDailyHours ) {
-                            $('.modal-result tr td:last-child').addClass('alert-danger');
-                            $('.info').show();
-                            $('.daily-submit-form').attr('disabled', true);
-                        } else {
-                            $('.daily-submit-form').attr('disabled', false);
-                        }
-                    });
-                    $('#preloader').delay(350).fadeOut('slow');
-                    $('body').delay(350).css({'overflow':'visible'});
-                    $("#daily-allocation-details").modal('toggle');
+        //                 if ( checkDailyHours ) {
+        //                     $('.modal-result tr td:last-child').addClass('alert-danger');
+        //                     $('.info').show();
+        //                     $('.daily-submit-form').attr('disabled', true);
+        //                 } else {
+        //                     $('.daily-submit-form').attr('disabled', false);
+        //                 }
+        //             });
+        //             $('#preloader').delay(350).fadeOut('slow');
+        //             $('body').delay(350).css({'overflow':'visible'});
+        //             $("#daily-allocation-details").modal('toggle');
                     
-                });
-            }
-        });
+        //         });
+        //     }
+        // });
 
-        $('.daily-submit-form').click(function () {
-            var count      = 8;
-            var button     = $(this);
+        // $('.daily-submit-form').click(function () {
+        //     var count      = 8;
+        //     var button     = $(this);
 
-            button.html('Habilitará em ' + count);
-            button.attr('disabled', true);
+        //     button.html('Habilitará em ' + count);
+        //     button.attr('disabled', true);
 
-            var timeOut = setInterval(function () {
-                button.html('Habilitará em ' + count);
-                button.attr('disabled', true);
-                count--;
-            }, 1000);
+        //     var timeOut = setInterval(function () {
+        //         button.html('Habilitará em ' + count);
+        //         button.attr('disabled', true);
+        //         count--;
+        //     }, 1000);
 
-            setTimeout(function () {
-                button.html(beforeHtml);
-                button.removeAttr('disabled');
-                window.clearTimeout(timeOut);
-            }, 9000);
+        //     setTimeout(function () {
+        //         button.html(beforeHtml);
+        //         button.removeAttr('disabled');
+        //         window.clearTimeout(timeOut);
+        //     }, 9000);
             
-            $('#form-allocation').submit();
-        });
+        //     $('#form-allocation').submit();
+        // });
 
-        $('#add-tasks-allocation').click(function(){
-            $('#form-allocation').append('<input type="hidden" name="addTasks" value="clicked">');
-            $('#form-allocation').submit()
-        });
+        // $('#add-tasks-allocation').click(function(){
+        //     $('#form-allocation').append('<input type="hidden" name="addTasks" value="clicked">');
+        //     $('#form-allocation').submit()
+        // });
     }
 });
-
 
 function calcHours(){
    
@@ -224,14 +223,13 @@ function checkHours(id){
 }
 
 function changeInputsOfProjects() {
-
     // Adicionar os membros do projeto no select
     if( $('#project_id').val()){
         $('#preloader').show();
         $('body').delay(350).css({'overflow-y':'hidden'});
         $('#status').show();
         $('#loadding-user').css('display','block');
-        if($('#alluser').prop('checked') ==true){
+        if(true){
             $.ajax({
                 url:window.location.origin+'/projects/'+$('#project_id').val()+'/members-to-add'+'?allCollaborators=true',
                 type:'GET',
@@ -243,6 +241,7 @@ function changeInputsOfProjects() {
                         
                     });
                     $('#user_id').selectpicker('refresh');
+                    $('#user_id').selectpicker('val',$('#user_id_old').val());
                     $('#loadding-user').css('display','none');
                    $('#preloader').delay(350).fadeOut('slow');
                      $('body').delay(350).css({'overflow':'visible'});
@@ -384,9 +383,9 @@ if(window.location.href.indexOf('allocations') >-1){
                     },
                     success: function(res){
                         console.log('Membro adicionado')
-                        if(  $('#user_id option[value="'+$('#user_id').val()+'"]').html().indexOf('PS') >-1){
-                            getModalHoursProjectAllocations();
-                        }
+                        // if(  $('#user_id option[value="'+$('#user_id').val()+'"]').html().indexOf('PS') >-1){
+                        //     getModalHoursProjectAllocations();
+                        // }
                         $('#loadding-user').css('display','none');
                        $('#preloader').delay(350).fadeOut('slow');
                          $('body').delay(350).css({'overflow':'visible'});
@@ -404,8 +403,6 @@ if(window.location.href.indexOf('allocations') >-1){
               $('body').delay(350).css({'overflow':'visible'});
            }
         });
-        //action="http://localhost:8000/projects/510/members"
-        //http://localhost:8000/projects/510/members/95/addhours
     });
     
     
@@ -465,7 +462,7 @@ if(window.location.href.indexOf('allocations') >-1){
 
 function buttonAddTask(){
 var empty = false;
-var fields = ['#project_id','#user_id_old','#start','#finish','#hourDay','#hours'];
+var fields = ['#project_id','#user_id_old','#start','#finish'];
 
 for(var i=0; i<fields.length;i++){
     if(!$(fields[i]).val() || $(fields[i]).val().trim() == ''){

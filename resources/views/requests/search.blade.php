@@ -1,7 +1,9 @@
 <div class="panel-body">
     <form id="requests_index">
         <div class="row">
-
+            @if(Request::input('approved'))
+                <input name="approved" type="hidden" value="{{Request::input('approved')}}" />
+            @endif
             <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
                 <div class="form-group">
                     {!! Form::text('period', Request::get('period'), [

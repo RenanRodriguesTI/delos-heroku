@@ -1,7 +1,6 @@
 @extends('layouts.app')
 
 @section('content')
-
     <div class="container">
         <div class="panel panel-dct">
             <div class="panel-heading">
@@ -89,7 +88,7 @@
                                             <ul class="dropdown-menu dropdown-menu-right">
                                                 <li class="divider"></li>
                                                 <li>
-                                                    <a href="{{route('requests.show', ['id' => $request->id])}}">
+                                                    <a href="{{route('requests.show', ['id' => $request->id])}}{{strstr(Request::fullUrl(),'?')}}">
                                                         <span class="glyphicon glyphicon-list-alt"></span> @lang('buttons.details')
                                                     </a>
                                                 </li>
@@ -107,7 +106,7 @@
                                             <ul class="dropdown-menu dropdown-menu-right">
                                                 <li class="divider"></li>
                                                 <li>
-                                                    <a href="{{route('requests.show', ['id' => $request->id])}}">
+                                                    <a href="{{route('requests.show', ['id' => $request->id])}}{{strstr(Request::fullUrl(),'?')}}">
                                                         <span class="glyphicon glyphicon-list-alt"></span> @lang('buttons.details')
                                                     </a>
                                                 </li>

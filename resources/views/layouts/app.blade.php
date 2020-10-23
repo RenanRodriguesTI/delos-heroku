@@ -134,7 +134,7 @@
                                                         @can('index-supplier-expense')
                                                         <li><a href="{{route('supplierExpense.index')}}">Fornecedores</a></li>
                                                         @endcan
-                                                        <li> <a href="{{route('expenses.index')}}?deleted_at=whereNull">Usuários</a></li>
+                                                        <li> <a href="{{route('expenses.index')}}">Usuários</a></li>
                                                     </ul>
                                                 </li>
                                             @endcan
@@ -147,7 +147,7 @@
                                                 
 
                                             @can('index-supplier-expenses-import')
-                                            <li>
+                                                <li style="display:none">
                                                     <a href="{{route('supplierExpensesImport.index')}}">Importar Despesas por Fornecedor</a>
                                                 </li>
                                             @endcan
@@ -255,6 +255,13 @@
                                                     <a href="{{route('appVersions.index')}}">Versões do Aplicativo</a>
                                                 </li>
                                             @endcan
+
+                                            @can('index-epi')
+                                                <li>
+                                                    <a href="{{route('epis.index')}}">Epis</a>
+                                                </li>
+                                            @endcan
+                                             
                                         </ul>
                                     </li>
                                 @endcan
@@ -439,6 +446,16 @@
                                         </ul>
                                     </li>
                                 @endcan
+
+                                @can('document.index')
+                                    <li>
+                                        <a href="{{route('documents.index')}}">
+                                            <i class="fa fa-home"></i> Documentos
+                                         </a>
+                                    </li>
+                                @endcan
+
+                              
                             </ul>
                         </div>
                     </div>

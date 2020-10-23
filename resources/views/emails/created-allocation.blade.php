@@ -55,8 +55,21 @@
                                     <td style="padding: 8px;vertical-align: middle;">{{$allocation->project->full_description}}</td>
                                 </tr>
                                 <tr>
-                                    <td class="bold" style="font-weight: bold;padding: 8px;vertical-align: middle;">Tarefa:</td>
-                                    <td style="padding: 8px;vertical-align: middle;">{{($allocation->task)?$allocation->task->name:'Não espeficado'}}</td>
+                                    <td class="bold" style="font-weight: bold;padding: 8px;vertical-align: middle;">Tarefas:</td>
+                                    @if(!$allocation->allocationTasks->isEmpty())
+                                    <td style="padding: 8px;vertical-align: middle;">
+                                        <table class='table'>
+                                            <tbody>
+                                                @foreach($allocation->allocationTasks as $allocationTask)
+                                                    <tr><td>{{$allocationTask->task->name}} </td><td>{{$allocationTask->hours}} {{$allocationTask->hours > 1 ? 'Horas':'Hora'}}</td></tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                       
+                                    </td>
+                                    @else
+                                        <td style="padding: 8px;vertical-align: middle;">{{($allocation->task)?$allocation->task->name:'Não espeficado'}}</td>
+                                    @endif
                                 </tr>
                                 <tr>
                                     <td class="bold" style="font-weight: bold;padding: 8px;vertical-align: middle;">Início:</td>
@@ -66,7 +79,8 @@
                                     <td class="bold" style="font-weight: bold;padding: 8px;vertical-align: middle;">Fim:</td>
                                     <td style="padding: 8px;vertical-align: middle;">{{$allocation->finish->format('d/m/Y')}}</td>
                                 </tr>
-                                <tr>
+                                {{--
+                                    <tr>
                                     <td class="bold" style="font-weight: bold;padding: 8px;vertical-align: middle;">Quantidade total de horas:</td>
                                     <td style="padding: 8px;vertical-align: middle;">{{$allocation->hours}}</td>
                                 </tr>
@@ -75,10 +89,16 @@
                                     <td class="bold" style="font-weight: bold;padding: 8px;vertical-align: middle;">Quantidade de horas por dia:</td>
                                     <td style="padding: 8px;vertical-align: middle;">{{$allocation->hourDay}}</td>
                                 </tr>
+                                    --}}
 
                                 <tr>
                                     <td class="bold" style="font-weight: bold;padding: 8px;vertical-align: middle;">Trabalhar final de semana ou feriado:</td>
                                     <td style="padding: 8px;vertical-align: middle;">{{$allocation->jobWeekEnd ? 'Sim' : 'Não'}}</td>
+                                </tr>
+
+                                <tr>
+                                    <td class="bold" style="font-weight: bold;padding: 8px;vertical-align: middle;">Trabalha Integral:</td>
+                                    <td style="padding: 8px;vertical-align: middle;">{{$allocation->works_full_time ? 'Sim' : 'Não'}}</td>
                                 </tr>
                             </tbody>
                         </table>

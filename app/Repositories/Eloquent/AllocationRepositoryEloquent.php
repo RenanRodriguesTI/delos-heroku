@@ -81,6 +81,7 @@
             $days      = $this->getDateRange($data['start'], $data['finish']);
             $workDays  = 0;
             $exceptionWorkDays = isset($data['jobWeekEnd']) && $data['jobWeekEnd'] == 'true';
+            $data['hours'] = isset($data['hours']) && $data['hours'] ? $data['hours']:0;
 
             foreach ( $days as $day ) {
                 if ( $this->isWorkingDay($day,$exceptionWorkDays) ) {
@@ -152,5 +153,36 @@
                                 ->all();
 
             return $allocations;
+        }
+
+        public function getChildrenForDateRange(){
+            $this->applyCriteria();
+            $this->applyScope();
+            $allocations = $this->model->whereNotNull('parent_id');
+            $start = app('request')->input('start');
+            $finish = app('request')->input('finish');
+
+            if(!$start && !$finish){
+                $start =  Carbon::now()->subDays(60)->format('d/m/Y');
+                $finish = Carbon::now()->format('d/m/Y');
+                $allocations =  $allocations
+            ->where('start','>=',Carbon::createFromFormat('d/m/Y',$start)->format('Y-m-d'))->
+            where('finish','<=',Carbon::createFromFormat('d/m/Y',$finish)->format('Y-m-d'));
+            }
+
+            if($start){
+                $allocations =  $allocations
+                ->where('start','>=',Carbon::createFromFormat('d/m/Y',$start)->format('Y-m-d'));
+            }
+
+            if($finish){
+                $allocations =  $allocations
+                ->where('finish','<=',Carbon::createFromFormat('d/m/Y',$finish)->format('Y-m-d'));
+            }
+
+
+            
+            
+            return $allocations->get();
         }
     }

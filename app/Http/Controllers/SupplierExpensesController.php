@@ -54,6 +54,7 @@ class SupplierExpensesController  extends AbstractController
         $projects = !isset($data['projects']) || !is_array($data['projects']) ? false : $data['projects'];;
         $deleted = isset($data['deleted_at']) ? $data['deleted_at'] : 'whereNull';
         $period = isset($data['period']) ? str_replace(' ', '', $data['period']) : '';
+        $search =  isset($data['search']) ? $data['search']: null;
         $query = SupplierExpenses::whereHas('project', function ($query) use ($deleted) {
             switch ($deleted) {
                 case 'whereNotNull':
@@ -85,6 +86,10 @@ class SupplierExpensesController  extends AbstractController
             $query = $query->whereIn('project_id',$projects);
         }
 
+        if($search){
+            $query = $query->where('voucher_number','like','%'.$search.'%');
+        }
+
         return $query->orderBy('issue_date','desc');
     }
 
@@ -93,13 +98,15 @@ class SupplierExpensesController  extends AbstractController
         foreach($data as $item){
             $transformer[] = [
                 'id' =>$item->id,
-                'provider_id'=>$item->provider->name,
-                'issue_date'=>$item->issue_date->format('d/m/Y'),
                 'project' =>$item->project->compiled_cod,
+                'voucher_number' =>$item->voucher_number,
                 'voucher' =>$item->voucherType->name,
+                'issue_date'=>$item->issue_date->format('d/m/Y'),
+                'value' =>(double)str_replace(',','.',str_replace('.','',$item->value)),
                 'payment_type_provider'=>$item->paymentTypeProvider->name,
                 'description'=>$item->description_id,
                 'note' => $item->note,
+                'provider_id'=>$item->provider->name,
                 's3_name'=>$item->import ? $item->s3_name:$item->url_file,
                 'export' =>$item->exported ? 'Exportado' : 'Não Exportado',
                 'import' =>$item->import ? 'Sim':'Não'
@@ -138,9 +145,17 @@ class SupplierExpensesController  extends AbstractController
                 'value' => 'required|regex:/^\d+(.\d{3})?+(.\d{3})?+(.\d{3})?+(,\d{2})?$/',
                 'description_id' => 'required',
                 'establishment_id' => 'required',
-                'original_name' => 'required|string|max:255'
+                'original_name' => 'required|string|max:255',
+                'voucher_number' => 'required|max:100'
             ]);
             $expense = SupplierExpenses::create($this->getDataToStore());
+
+            
+            if(strtoupper($expense->voucherType->name) =='E-MAIL'){
+                $expense->update(['voucher_number'=>"EMAIL-{$expense->id}"]);
+            } else{
+                $expense->update(['voucher_number'=>"{$expense->voucher_number}-{$expense->id}"]);
+            }
 
             event(new SavedSupplierExpense($expense));
 
@@ -182,7 +197,8 @@ class SupplierExpensesController  extends AbstractController
                 'value' => 'required|regex:/^\d+(.\d{3})?+(.\d{3})?+(.\d{3})?+(,\d{2})?$/',
                 'description_id' => 'required',
                 'establishment_id' => 'required',
-                'original_name' => 'string|max:255'
+                'original_name' => 'string|max:255',
+                'voucher_number' => 'required|max:100'
             ]);
 
             $expense = SupplierExpenses::find($id);
@@ -192,6 +208,11 @@ class SupplierExpensesController  extends AbstractController
             
             $expense->update($data);
 
+            if(strtoupper($expense->voucherType->name) =='E-MAIL'){
+                $expense->update(['voucher_number'=>"EMAIL-{$expense->id}"]);
+            }else{
+                $expense->update(['voucher_number'=>"{$expense->voucher_number}-{$expense->id}"]);
+            }
             if ( $this->isUpload($data) ) {
                 event(new SavedSupplierExpense($expense));
 
@@ -208,7 +229,7 @@ class SupplierExpensesController  extends AbstractController
 
     public function destroy(int $id)
     {
-        $expense = SupplierExpenses::find($id);
+        $expense = SupplierExpenses::findOrFail($id);
         $this->authorize('destroy-supplier-expense', $expense);
         //$this->deleteFileOnDisk($id);
         $expense->forceDelete();

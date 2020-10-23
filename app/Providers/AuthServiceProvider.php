@@ -41,13 +41,128 @@ class AuthServiceProvider extends ServiceProvider
                     });
             });
 
-            Gate::define('destroy-task-allocation',function(){
+            // Gate::define('manager-allocation',function(){
+            //     return true;
+            // });
+
+            // Gate::define('list-by-project-allocation',function(){
+            //     return true;
+            // });
+
+            // Gate::define('manager-approved-hours-allocation',function(){
+            //     return true;
+            // });
+
+            // Gate::define('get-by-project-activity',function(){
+            //     return true;
+            // });
+
+            // Gate::define('destroy-activity', function(){
+            //     return true;
+            // });
+
+            // Gate::define('approve-activity', function(){
+            //     return true;
+            // });
+
+
+            // Gate::define('manager-expense-allocation',function(){
+            //     return true;
+            // });
+
+            // Gate::define('manager-approve-expense',function(){
+            //     return true;
+            // });
+
+            // Gate::define('manager-reprove-expense',function(){
+            //     return true;
+            // });
+
+
+            // Gate::define('index-approved-notification',function(){
+            //     return true;
+            // });
+
+            // Gate::define('users-by-project-allocation',function(){
+            //     return true;
+            // });
+
+            // Gate::define('reprove-activity',function(){
+            //     return true;
+            // });
+
+            // Gate::define('add-tasks-index-allocation',function(){
+            //     return true;
+            // });
+
+            // Gate::define('add-task-store-allocation',function(){
+            //     return true;
+            // });
+
+            Gate::define('check-hours-task-allocation',function(){
                 return true;
             });
 
-            Gate::define('update-task-allocation',function(){
+            // Gate::define('index-document',function(){
+            //     return true;
+            // });
+
+            Gate::define('list-document',function(){
                 return true;
             });
+
+            Gate::define('store-epi',function(){
+                return true;
+            });
+
+            Gate::define('create-epi',function(){
+                return true;
+            });
+
+            // Gate::define('index-epi',function(){
+            //     return true;
+            // });
+
+            Gate::define('update-epi',function(){
+                return true;
+            });
+
+            Gate::define('destroy-epi',function(){
+                return true;
+            });
+
+            Gate::define('withdraw-epi',function(){
+                return true;
+            });
+
+            Gate::define('update-epi-user',function(){
+                return true;
+            });
+
+            Gate::define('store-curse',function(){
+                return true;
+            });
+
+            Gate::define('create-curse',function(){
+                return true;
+            });
+
+            Gate::define('update-curse',function(){
+                return true;
+            });
+
+            Gate::define('destroy-curse',function(){
+                return true;
+            });
+
+            Gate::define('index-resource',function(){
+                return true;
+            });
+
+            Gate::define('show-resource',function(){
+                return true;
+            });
+
 
             Passport::routes();
         } catch(\Exception $e) {

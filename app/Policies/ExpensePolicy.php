@@ -42,4 +42,19 @@ class ExpensePolicy
             ->permissions
             ->contains('slug', $slug);
     }
+
+    public function managerApprove(User $user,Expense $expense){
+        
+        return $this->isLeaderProject($user,$expense);
+    }
+
+    public function managerReprove(User $user, Expense $expense){
+        return $this->isLeaderProject($user,$expense);
+    }   
+
+    public function isLeaderProject(User $user,Expense $expense){
+        
+
+        return $expense->project->owner_id === $user->id;
+    }
 }

@@ -14,10 +14,12 @@ class ScopeCriteria implements CriteriaInterface
         if ($this->hasToAddScope()) {
             $model = $model->where(function ($query) {
                 $query->whereHas('project', function ($query) {
-                    $query->where('owner_id', $this->getAuthenticatedUser()->id)
-                        ->orWhere('co_owner_id', $this->getAuthenticatedUser()->id);
+                    // $query->where('owner_id', $this->getAuthenticatedUser()->id)
+                    //     ->orWhere('co_owner_id', $this->getAuthenticatedUser()->id)
+                    //     ->orWhere('user_id', $this->getAuthenticatedUser()->id);
+                    $query->where('user_id',$this->getAuthenticatedUser()->id);
                 });
-            })->orWhere('user_id', $this->getAuthenticatedUser()->id);
+            });
         }
 
         return $model;

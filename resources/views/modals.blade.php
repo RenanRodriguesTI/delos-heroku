@@ -572,6 +572,33 @@
     </div>
 </div>
 
+<div class="modal fade" id="reprove-activity" tabindex="-1" role="dialog" aria-labelledby="Delete Allocation Task">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title bold" id="modalAlertlLabel">Deseja realmente reprovar essa Atividade?</h4>
+            </div>
+            <form action="" method="POST" id="reprove-activity-form">
+                <div class="modal-body alertMessages">
+                    <div class="form-group">
+                        {{ csrf_field()  }}
+                        {!! Form::label('reason_activity_reprove','Motivo pelo qual deseja reprovar a Atividade') !!}
+                        {!! Form::text('reason_activity_reprove', '', ['class' => 'form-control', 'required']) !!}
+                    </div>
+                </div>
+                <div class="modal-footer alert-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+                    <button class="btn btn-danger reprove-activity-modal" type="button">
+                        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Reprovar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <div class="modal  fade" id="daily-allocation-details" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-lg" role="document" style="width: 80%">
         <div class="modal-content">

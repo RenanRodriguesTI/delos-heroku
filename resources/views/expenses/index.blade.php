@@ -42,6 +42,7 @@
                                 <th>@lang('headers.payment-type')</th>
                                 <th>@lang('headers.description')</th>
                                 <th style="display: none;">@lang('headers.note')</th>
+                                <th>Situação</th>
                                 <th style="min-width: 111px">@lang('headers.status')</th>
                                 <th>@lang('headers.action')</th>
                             </tr>
@@ -58,6 +59,7 @@
                                 <td>{{ $expense->paymentType->name }}</td>
                                 <td>{{$expense->description}}</td>
                                 <td style="display: none;">{{$expense->note}}</td>
+                                <td>{{$expense->approved ? "Aprovado": "Não Aprovado"}}</td>
                                 <td>@lang("entries.status.{$expense->status}")</td>
                                 <td class="has-btn-group">
                                     @if($key >= 3)
@@ -96,6 +98,27 @@
                                                     </a>
                                                 </li>
                                                 <li class="divider"></li>
+
+                                                @if((Auth::user()->id == $expense->project->owner_id || Auth::user()->can('approve-expense')) && !$expense->approved && !$expense->exported)
+                                                <li>
+                                                        <a href="{{route('expenses.approve',['id'=>$expense->id])}}">
+                                                            <i
+                                                            class="fa fa-check"></i>
+                                                            Aprovar
+                                                        </a>
+                                                    </li>
+                                                <li class="divider"></li>
+                                                @endif
+                                                @if((Auth::user()->id == $expense->project->owner_id || Auth::user()->can('reprove-expense'))  && $expense->approved && !$expense->exported)
+                                                <li>
+                                                        <a href="{{route('expenses.reprove',['id'=>$expense->id])}}">
+                                                            <i class="fa fa-times"
+                                                                    ></i>
+                                                            Reprovar
+                                                        </a>
+                                                    </li>
+                                                <li class="divider"></li>
+                                                @endif
                                             </ul>
                                         </div>
                                     @else
@@ -134,6 +157,27 @@
                                                     </a>
                                                 </li>
                                                 <li class="divider"></li>
+
+                                                @if((Auth::user()->id == $expense->project->owner_id || Auth::user()->can('approve-expense')) && !$expense->approved && !$expense->exported)
+                                                <li>
+                                                        <a href="{{route('expenses.approve',['id'=>$expense->id])}}">
+                                                            <i
+                                                            class="fa fa-check"></i>
+                                                            Aprovar
+                                                        </a>
+                                                    </li>
+                                                <li class="divider"></li>
+                                                @endif
+                                                @if((Auth::user()->id == $expense->project->owner_id || Auth::user()->can('reprove-expense'))  && $expense->approved && !$expense->exported)
+                                                <li>
+                                                        <a href="{{route('expenses.reprove',['id'=>$expense->id])}}">
+                                                            <i class="fa fa-times"
+                                                                    ></i>
+                                                            Reprovar
+                                                        </a>
+                                                    </li>
+                                                <li class="divider"></li>
+                                                @endif
                                             </ul>
                                         </div>
                                     @endif

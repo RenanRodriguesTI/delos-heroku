@@ -54,10 +54,13 @@
 
         public function destroy(int $id)
         {
+            
             DB::beginTransaction();
             $activity = Activity::query()
                 ->withoutGlobalScopes()
                 ->findOrFail($id);
+            
+            $this->authorize('destroy',$activity);
 
             $originalModel = clone $activity;
             $activity->forceDelete();
@@ -65,14 +68,35 @@
             event(new DeleteActivityEvent($originalModel));
             DB::commit();
 
+            if($this->request->wantsJson()){
+                return $this->response->json(['activity'=>$activity],200);
+            }
+
             return redirect($this->getInitialUrlIndex())
                 ->with('success', $this->getMessage('deleted'));
         }
 
         public function approve($id)
         {
-            $this->service->approve($id);
-            return $this->response->redirectToRoute($this->getRouteAliasForIndexAction());
+           $activity = $this->repository->find($id);
+           $this->authorize('approve',$activity);
+           $activity = $this->service->approve($id);
+            if($this->request->wantsJson()){
+                return $this->response->json(['activity'=>$activity],200);
+            }
+            return $this->response->redirectToRoute($this->getRouteAliasForIndexAction(),$this->request->query());
+        }
+
+        public function reprove($id)
+        {
+           $activity = $this->repository->find($id);
+           
+           $this->authorize('reprove',$activity);
+           $activity = $this->service->reprove($id,$this->request->all());
+            if($this->request->wantsJson()){
+                return $this->response->json(['activity'=>$activity],200);
+            }
+            return $this->response->redirectToRoute($this->getRouteAliasForIndexAction(),$this->request->query());
         }
 
         public function externalWorksReport()
@@ -101,5 +125,15 @@
         private function getPlaceRepository(): PlaceRepositoryEloquent
         {
             return app(PlaceRepository::class);
+        }
+
+        public function getByProject(int $id,int $userId =0){
+
+            $activities = $this->service->getByProject($id,$userId);
+            $user = app(UserRepository::class)->find($userId);
+            return $this->response->json([
+                'activities'=>$activities,
+                'user' => $user
+            ],200);
         }
     }

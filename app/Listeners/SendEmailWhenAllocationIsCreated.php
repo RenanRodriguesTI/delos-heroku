@@ -44,8 +44,13 @@
                     $message->to( $allocation->user->email, $allocation->user->name);
                 }
                 
-                $message->cc($allocation->project->owner->email, $allocation->project->owner->name);
-                
+                if($allocation->project->owner->email != $allocation->user->email){
+                    $message->cc($allocation->project->owner->email, $allocation->project->owner->name);
+                    $title = "O colaborador {$allocation->user->name} foi alocado para o projeto: {$allocation->project->compiled_cod}, por você. Adicione as tarefas ao colaborador";
+                }   else{
+                    $message->to($allocation->project->owner->email, $allocation->project->owner->name);
+                }
+
                 if ( $allocation->project->coOwner != null ) {
                     $message->cc($allocation->project->coOwner->email, $allocation->project->coOwner->name);
                 }

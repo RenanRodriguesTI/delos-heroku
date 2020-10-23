@@ -34,12 +34,13 @@ class TaskHoursRule implements Rule
     public function passes($attribute, $value)
     {
         $allocation = Allocation::find($this->id);
+        $project = $allocation->project;
         if($this->hasupdate){
-            $total = AllocationTask::where('allocation_id',$this->id)->whereNotIn('id',[$this->allocationTaskId])->sum('hours'); 
-        }else
-        $total = AllocationTask::where('allocation_id',$this->id)->sum('hours');
-        $total += $value;
-        return ($total <= $allocation->hours);
+            $task = AllocationTask::where('id',$this->allocationTaskId)->first();
+            return $value <= ($project->remaining_budget + $task->hours);
+        } else{
+           return $value <= $project->remaining_budget;
+        }
     }
 
     /**

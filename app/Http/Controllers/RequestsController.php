@@ -60,7 +60,7 @@
         public function approve(int $id)
         {
             $this->service->approve($id);
-            return $this->response->redirectToRoute('requests.index');
+            return $this->response->redirectToRoute('requests.index',$this->request->all());
         }
 
         /**
@@ -72,6 +72,6 @@
         {
             $reason = $this->request->input('reason');
             $this->service->refuse($id, $reason);
-            return $this->response->redirectToRoute('requests.index');
+            return $this->response->redirectToRoute('requests.index',$this->request->all());
         }
     }

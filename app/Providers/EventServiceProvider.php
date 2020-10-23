@@ -92,11 +92,44 @@
             'Delos\Dgp\Events\UpdateUser' =>[
                 'Delos\Dgp\Listeners\UpdateUserListener'
             ],
+            'Delos\Dgp\Events\ImportedRevenues' =>[
+                'Delos\Dgp\Listeners\ImportedRevenuesListener'
+            ],
             'Delos\Dgp\Events\UpdateOwnerProject' =>[
                 'Delos\Dgp\Listeners\UpdateOwnerProjectListener'
             ],
             'Delos\Dgp\Events\DispatchAutoAllocation' =>[
                 'Delos\Dgp\Listeners\AutoAllocationUpdateListener'
+            ],
+            'Delos\Dgp\Events\UpdatedAllocation' => [
+                'Delos\Dgp\Listeners\SendEmailWhenAllocationIsUpdated'
+            ],
+            'Delos\Dgp\Events\AddTaskAllocation' =>[
+                'Delos\Dgp\Listeners\SendEmailWhenAddTaskAllocation'
+            ],
+            'Delos\Dgp\Events\UpdateTaskAllocation' =>[
+                'Delos\Dgp\Listeners\SendEmailWhenUpdateTaskAllocation'
+            ],
+            'Delos\Dgp\Events\AproveExpense'=>[
+                'Delos\Dgp\Listeners\AproveExpenseListener'
+            ],
+            'Delos\Dgp\Events\ReproveExpense'=>[
+                'Delos\Dgp\Listeners\ReproveExpenseListener'
+            ],
+            'Delos\Dgp\Events\ActivityReproved' =>[
+                'Delos\Dgp\Listeners\ActivityReprovedListener'
+            ],
+            'Delos\Dgp\Events\ActivityApproved' =>[
+                'Delos\Dgp\Listeners\ActivityApprovedListener'
+            ],
+            'Delos\Dgp\Events\EpisUploadedFile' =>[
+                'Delos\Dgp\Listeners\EpisUploadedFileListener'
+            ],
+            'Delos\Dgp\Events\CurseUploadedFile'=>[
+                'Delos\Dgp\Listeners\CurseUploadedFileListener'
+            ],
+            'Delos\Dgp\Events\ResourceTaskAdded' =>[
+                'Delos\Dgp\Listeners\ResourceTaskAddedListener'
             ]
         ];
 

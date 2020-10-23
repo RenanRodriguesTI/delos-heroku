@@ -7,6 +7,7 @@ use Delos\Dgp\Events\CreatedProjectEvent;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailer;
 use Illuminate\Mail\Message;
+use Delos\Dgp\Repositories\Contracts\UserRepository;
 
 class SendEmailWhenProjectIsCreatedListener implements ShouldQueue
 {
@@ -33,6 +34,8 @@ class SendEmailWhenProjectIsCreatedListener implements ShouldQueue
             if ($project->seller_id != null) {
                 $message->addCc($project->seller->email, $project->seller->name);
             }
+
+            $message->cc('ana@delosconsultoria.com.br', 'ANA CAROLINA CALVETI');
 
             if ($project->client != null) {
                 $message->to($project->client->email, $project->client->name);

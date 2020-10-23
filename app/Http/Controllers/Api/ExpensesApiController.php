@@ -4,6 +4,7 @@ namespace Delos\Dgp\Http\Controllers\Api;
 use Delos\Dgp\Entities\Expense;
 use Delos\Dgp\Entities\PaymentType;
 use Delos\Dgp\Entities\Project;
+use Delos\Dgp\Entities\Allocation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
@@ -32,13 +33,43 @@ class ExpensesApiController extends AbstractController
             $expense = $this->service->create($data);
             $invoice = $expense->invoice . '-' . $expense->id;
             $expense->update(['invoice' => $invoice]);
-          
+	    $project = $expense->project;   
+  	    $allocations = Allocation::where('user_id',$expense->user_id)
+            ->where('project_id',$project->id)
+            ->where('finish','>=',$expense->issue_date)
+            ->get();
 
+            $approved = true;
+
+            if($allocations->isEmpty() || !$expense->request_id){
+                $approved = false;
+            }
+          
+            
             event(new SavedExpense($expense));
             $expense = Expense::find($expense->id);       
-            $expense->update(['link' => $expense->url_file]);
+              $expense->update([
+                'link' => $expense->url_file,
+                'approved'=>$approved
+            ]);
+
             
-       
+            
+            $allocations = Allocation::where('user_id',$expense->user_id)
+            ->where('project_id',$project->id)
+            ->where('finish','>=',$expense->issue_date)
+            ->get();
+
+            $approved = true;
+
+            if($allocations->isEmpty() || !$expense->request_id){
+                $approved = false;
+            }
+
+            $expense->update([
+                'link' => $expense->url_file,
+                'approved'=>$approved
+            ]);
 
             return $this->response->json([
                 'status' => true,
@@ -266,7 +297,8 @@ class ExpensesApiController extends AbstractController
             return $data;
         }
 
-        $data['request_id'] = $data['requestable_id'] ?? null;
+        
+        $data['request_id'] = $data['request_id'] ?? null;
         //$data['project_id'] = app(RequestRepository::class)->find($data['request_id'])->project->id;
 
         return $data;
@@ -278,7 +310,7 @@ class ExpensesApiController extends AbstractController
      */
     private function applyChangesUserAndProjectOnDisk(Expense $after, Expense $before): void
     {
-        if ( $before->user_id != $after->user_id || $before->request_id != $after->request_id || $before->project_id != $after->project_id ) {
+        if ( ($before->user_id != $after->user_id || $before->request_id != $after->request_id || $before->project_id != $after->project_id) && $after->id <= 14178 ) {
             Storage::move($this->getFullPath($before) . '/' . $before->s3_name, $this->getFullPath($after) . '/' . $after->s3_name);
         }
     }

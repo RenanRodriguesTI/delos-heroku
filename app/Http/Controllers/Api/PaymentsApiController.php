@@ -10,7 +10,7 @@ use Delos\Dgp\Entities\PaymentType;
 class PaymentsApiController  extends Controller
 {
     public function showByPaymenttypes(){
-        $paymentstypes= PaymentType::all();
+        $paymentstypes= PaymentType::where('name','!=',"Cartão Safra")->where('ative',true)->get();
 
         if($paymentstypes!=null)
         return response()->json([

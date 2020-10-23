@@ -37,7 +37,8 @@
             'status',
             'parent_id',
             'jobWeekEnd',
-            'automatic'
+            'automatic',
+            'works_full_time'
         ];
 
         private $color ='';
@@ -154,10 +155,10 @@
             
             if($this->allocationTasks){
                 $used = $this->allocationTasks->sum('hours');
-                return ($this->hours - $used);
+                return ($this->project->hours - $used);
             }
 
-            return $this->hours;
+            return $this->project->hours;
         }
 
         public function getHoursUsedAttribute(){

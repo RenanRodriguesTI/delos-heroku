@@ -100,7 +100,7 @@ class UpdateOwnerProjectListener
             app(AllocationService::class)->createTask([
                 'task_id' => app(TaskRepository::class)->findByField('name', 'controle de projetos')->first()->id,
                 'hours' => $bubgetUsed,
-            ], $allocationsOld->first()->parent_id);
+            ], $allocationsOld->first()->parent_id,true);
 
 
             $allocationsNew = app(AllocationService::class)->generate([
@@ -117,7 +117,7 @@ class UpdateOwnerProjectListener
             app(AllocationService::class)->createTask([
                 'task_id' => app(TaskRepository::class)->findByField('name', 'controle de projetos')->first()->id,
                 'hours' => $bubgetRemain,
-            ], $allocationsNew->first()->parent_id);
+            ], $allocationsNew->first()->parent_id,true);
         }
     }
 }

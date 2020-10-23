@@ -158,7 +158,7 @@
                                                     @can('approve-activity', $activity)
                                                         @if(!$activity->approved)
                                                             <li>
-                                                                <a href="{{route('activities.approve', ['id' => $activity->id])}}">
+                                                                <a href="{{route('activities.approve', array_merge(Request::query(),['id' => $activity->id]))}}">
                                                                     @lang('buttons.approve')
                                                                 </a>
                                                             </li>

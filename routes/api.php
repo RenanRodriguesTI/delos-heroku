@@ -78,3 +78,13 @@ Route::group(['prefix' => 'license'],function(){
 Route::group(['prefix'=>'app','middleware' => 'auth:api'],function(){
     Route::get('/version/last','Api\AppVersionApiController@last');
 });
+
+Route::group(['prefix'=>'notifications','middleware'=>'auth:api'],function(){
+    Route::post('/all/user/{id}','Api\ApprovedNotificationsApiController@allByUser');
+    Route::post('/approved/user/{id}','Api\ApprovedNotificationsApiController@approvedByUser');
+    Route::post('/reproved/user/{id}','Api\ApprovedNotificationsApiController@reprovedByUser');
+});
+
+Route::group(['prefix'=>'holidays','middleware'=>'auth:api'],function(){
+    Route::post('/year','Api\HolidayApiController@year');
+});

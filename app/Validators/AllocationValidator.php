@@ -29,7 +29,7 @@
                 'start'            => 'required|date_format:d/m/Y',
                 'finish'           => 'required|date_format:d/m/Y',
                 'description'      => 'string',
-                'hours'            => 'required|integer|min:1'
+                'hours'            => ''
             ],
             ValidatorInterface::RULE_UPDATE => [
                 'project_id'       => 'required|integer|exists:projects,id',
@@ -39,7 +39,7 @@
                 'start'            => 'required|date_format:d/m/Y',
                 'finish'           => 'required|date_format:d/m/Y',
                 'description'      => 'string',
-                'hours'            => 'required|integer|min:1'
+                'hours'            => ''
             ],
         ];
     }

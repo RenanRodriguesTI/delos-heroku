@@ -27,7 +27,7 @@
     "izitoast": "^1.4.0",
     "jquery": "2.2.4",
     "jquery-mask-plugin": "^1.14.12",
-    "jquery-validation": "^1.18.0",
+    "jquery-validation": "^1.19.3",
     "jquery.inputmask": "^3.3.3",
     "js-cookie": "^2.1.4",
     "laravel-elixir": "^5.0.0",
